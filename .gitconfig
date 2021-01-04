@@ -4,7 +4,6 @@
 [core]
   excludefile = ~/.gitignore
   autocrlf = input
-  safecrlf = true
   editor = vim
 [color]
     ui = auto
@@ -23,6 +22,7 @@
   untracked = yellow
 [alias]
   ai = add -i
+  b = branch 
   c = commit -m
   cln = clone --recursive
   # Switch to a branch, creating it if necessary.
@@ -37,7 +37,6 @@
   cp = cherry-pick
   st = status --column -sb
   su = stash -u
-  sk = stash -k
   ll = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 [filter "lfs"]
   required = true
