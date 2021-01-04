@@ -104,9 +104,9 @@ set noswapfile
 set expandtab
 " Be smart when using tabs ;)
 set smarttab
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+" 1 tab == 2 spaces
+set shiftwidth=2
+set tabstop=2
 " Linebreak on 500 characters
 set lbr
 set tw=500
@@ -339,5 +339,3 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-
