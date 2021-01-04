@@ -51,9 +51,11 @@
   showPatch = 1
   autocorrect = 1
 [merge]
-  tool = vim
+  tool = vimdiff
   log = true
   conflictstyle = diff3
+[difftool]
+  prompt = false
 [pull]
   ff = only
 [push]
