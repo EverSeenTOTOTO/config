@@ -2,7 +2,7 @@
   name = EverSeenTOTOTO
   email = everseenflash@163.com
 [core]
-  excludefile = ~/.gitignore
+  excludesfile = ~/.gitignore
   autocrlf = input
   editor = vim
 [color]
