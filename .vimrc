@@ -16,6 +16,9 @@ Plug 'easymotion/vim-easymotion'
 
 Plug 'tpope/vim-surround'
 
+" register
+Plug 'junegunn/vim-peekaboo'
+
 " Initialize plugin system
 call plug#end()
 
@@ -23,6 +26,7 @@ inoremap vv <esc>
 let mapleader = ","
 map <space> :
 
+set clipboard=unnamed
 set undodir=~/.vim/undo
 set undofile
 set relativenumber number
