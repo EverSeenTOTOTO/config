@@ -1,5 +1,3 @@
-alias ht="history"
-
 alias df='df -h'
 alias ll="ls -Ahl"
 alias rm="rm -rI"
@@ -12,5 +10,4 @@ alias ..='cd ..'
 
 alias path='echo -e ${PATH//:/\\n}'
 alias venv="source ~/venv/bin/activate"
-alias dcomp="docker-compose"
 alias ngr='sudo nginx -t && sudo nginx -s reload'
