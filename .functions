@@ -55,12 +55,149 @@ function dataurl() {
 	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')";
 }
 
-# `o` with no arguments opens the current directory, otherwise opens the given
-# location
-function op() {
-	if [ $# -eq 0 ]; then
-		open .;
-	else
-		open "$@";
-	fi;
+function now() {
+  echo $(date +"%Y-%m-%d %H:%M:%S")
+}
+
+function today() {
+    # Usage: x=$(today)
+    echo "$(date +%Y%m%d)"
+}
+
+function date_before() {
+    # Usage: y=$(date_before 20170905 2)
+    FROM="$1"
+    COUNT="$2"
+    echo $(date -d "${FROM} ${COUNT} days ago" +%Y%m%d)
+}
+
+function confirm() {
+    # Usage: x=$(confirm "do you want to continue?")
+    #        if [ "$x" = "yes" ]
+    QUESTION="$1"
+    read -p "${QUESTION} [y/N] " ANSWER
+    if [[ "${ANSWER}" == "y" ]] || [[ "${ANSWER}" == "Y" ]]
+    then
+        echo "yes"
+    else
+        echo "no"
+    fi
+}
+
+function rm_if_exist() {
+    # Usage: rm_if_exist "/tmp/a.txt"
+    if [ -e "$1" ]
+    then
+        rm -rf "$1"
+        return $?
+    fi
+}
+
+function mv_if_exist() {
+    if [ -e "$1" ]
+    then
+        mv "$1" "$2"
+        return $?
+    fi
+}
+
+function cp_if_exist() {
+    if [ -e "$1" ]
+    then
+        cp -r "$1" "$2"
+        return $?
+    fi
+}
+
+function str_trim() {
+    # Usage: str_trim "   example   string    "
+    : "${1#"${1%%[![:space:]]*}"}"
+    : "${_%"${_##*[![:space:]]}"}"
+    printf '%s\n' "$_"
+}
+
+function str_split() {
+   # Usage: str_split "string" "delimiter"
+   IFS=$'\n' read -d "" -ra arr <<< "${1//$2/$'\n'}"
+   printf '%s\n' "${arr[@]}"
+}
+
+function str_lstrip() {
+    # Usage: str_lstrip "string" "pattern"
+    printf '%s\n' "${1##$2}"
+}
+
+function str_rstrip() {
+    # Usage: str_rstrip "string" "pattern"
+    printf '%s\n' "${1%%$2}"
+}
+
+# Requires bash 4+
+function str_lower() {
+    # Usage: str_lower "string"
+    printf '%s\n' "${1,,}"
+}
+
+# Requires bash 4+
+function str_upper() {
+    # Usage: str_upper "string"
+    printf '%s\n' "${1^^}"
+}
+
+#====================== array ======================
+# reference https://github.com/dylanaraps/pure-bash-bible
+function array_reverse() {
+    # Usage: array_reverse "array"
+    shopt -s extdebug
+    f()(printf '%s\n' "${BASH_ARGV[@]}"); f "$@"
+    shopt -u extdebug
+}
+
+function array_rmdups() {
+    # Usage: array_rmdups "array"
+    declare -A tmp_array
+
+    for i in "$@"; do
+        [[ "$i" ]] && IFS=" " tmp_array["${i:- }"]=1
+    done
+
+    printf '%s\n' "${!tmp_array[@]}"
+}
+
+function array_random() {
+    # Usage: array_random "array"
+    local arr=("$@")
+    printf '%s\n' "${arr[RANDOM % $#]}"
+}
+
+#====================== program ======================
+
+function background() {
+    # Usage: background ./some_script.sh
+    (nohup "$@" &>/dev/null &)
+}
+
+#====================== others ======================
+function uuid() {
+    # Usage: uuid
+    C="89ab"
+
+    for ((N=0;N<16;++N)); do
+        B="$((RANDOM%256))"
+
+        case "$N" in
+            6)  printf '4%x' "$((B%16))" ;;
+            8)  printf '%c%x' "${C:$RANDOM%${#C}:1}" "$((B%16))" ;;
+
+            3|5|7|9)
+                printf '%02x-' "$B"
+            ;;
+
+            *)
+                printf '%02x' "$B"
+            ;;
+        esac
+    done
+
+    printf '\n'
 }

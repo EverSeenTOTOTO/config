@@ -24,20 +24,19 @@
   ai = add -i
   b = branch 
   c = commit -m
+  d = diff
   cln = clone --recursive
   # Switch to a branch, creating it if necessary.
   # Show verbose output about tags, branches or remotes
   tags = tag -l
   branches = branch --all
   remotes = remote --verbose
-  # List aliases.
-  aliases = config --get-regexp aliasgo = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
   po = push origin
   pu = push upstream
   cp = cherry-pick
   st = status --column -sb
   su = stash -u
-  ll = log --pretty=oneline -n 20 --graph --abbrev-commit --decorate --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  ll = log --pretty=oneline -n 99 --graph --abbrev-commit --decorate --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 [filter "lfs"]
   required = true
   clean = git-lfs clean -- %f
@@ -54,8 +53,10 @@
   tool = vimdiff
   log = true
   conflictstyle = diff3
+[diff]
+	tool = vimdiff
 [difftool]
-  prompt = false
+	prompt = false
 [pull]
   ff = only
 [push]
