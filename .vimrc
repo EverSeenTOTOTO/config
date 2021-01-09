@@ -216,12 +216,6 @@ vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " 当<leader> + Enter的时候取消高亮
 map <silent> <leader><cr> :noh<cr>
 
-" 窗口之间移动
-map <leader>j <C-W>j
-map <leader>k <C-W>k
-map <leader>h <C-W>h
-map <leader>l <C-W>l
-
 " tl切换最近的tab
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
