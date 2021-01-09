@@ -246,18 +246,6 @@ nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
 nmap s <Plug>(easymotion-overwin-f2)
 " " easymotion end
 
-" Coc Multi Cursor
-hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
-
-nmap <silent> <C-c> <Plug>(coc-cursors-position)
-nmap <silent> <C-x> <Plug>(coc-cursors-word)
-xmap <silent> <C-x> <Plug>(coc-cursors-range)
-" use normal command like `<leader>xi(`
-nmap <leader>x  <Plug>(coc-cursors-operator)
-nmap <silent> <C-c> <Plug>(coc-cursors-position)
-nmap <silent> <C-x> <Plug>(coc-cursors-word)
-xmap <silent> <C-x> <Plug>(coc-cursors-range)
-
 " Vim coc recommend config
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -342,3 +330,17 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
+" Coc Multi Cursor
+hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
+
+nmap <silent> <C-c> <Plug>(coc-cursors-position)
+nmap <silent> <C-x> <Plug>(coc-cursors-word)
+xmap <silent> <C-x> <Plug>(coc-cursors-range)
+" use normal command like `<leader>xi(`
+nmap <leader>x  <Plug>(coc-cursors-operator)
+nmap <silent> <C-c> <Plug>(coc-cursors-position)
+nmap <silent> <C-x> <Plug>(coc-cursors-word)
+xmap <silent> <C-x> <Plug>(coc-cursors-range)
+
