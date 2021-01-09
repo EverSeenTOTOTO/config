@@ -331,13 +331,10 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-highlight', 'coc-pairs', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
 " Coc Multi Cursor
 hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
 
-nmap <silent> <C-c> <Plug>(coc-cursors-position)
-nmap <silent> <C-x> <Plug>(coc-cursors-word)
-xmap <silent> <C-x> <Plug>(coc-cursors-range)
 " use normal command like `<leader>xi(`
 nmap <leader>x  <Plug>(coc-cursors-operator)
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
