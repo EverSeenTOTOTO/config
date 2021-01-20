@@ -8,10 +8,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" 文件管理器
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'Xuyuanp/nerdtree-git-plugin'
-
 " 主题和颜色
 Plug 'w0ng/vim-hybrid'
 Plug 'cormacrelf/vim-colors-github'
@@ -231,22 +227,19 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" NERDTree
-map <F3> :NERDTreeToggle<CR>
-
 " easymotion config
 let g:EasyMotion_smartcase = 1
 "let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-map <leader><leader>h <Plug>(easymotion-linebackward)
-map <leader><leader>j <Plug>(easymotion-j)
-map <leader><leader>k <Plug>(easymotion-k)
-map <leader><leader>l <Plug>(easymotion-lineforward)
-map <leader><leader>. <Plug>(easymotion-repeat)
+map <leader>h <Plug>(easymotion-linebackward)
+map <leader>j <Plug>(easymotion-j)
+map <leader>k <Plug>(easymotion-k)
+map <leader>l <Plug>(easymotion-lineforward)
+map <leader>. <Plug>(easymotion-repeat)
 " <leader>f{char} to move to {char}
-map <leader><leader>f <Plug>(easymotion-bd-f)
-nmap <leader><leader>f <Plug>(easymotion-overwin-f)
-" s{char}{char} to move to {char}{char}
-nmap s <Plug>(easymotion-overwin-f2)
+map <leader>f <Plug>(easymotion-bd-f)
+nmap <leader>f <Plug>(easymotion-overwin-f)
+" <leader>s{char}{char} to move to {char}{char}
+nmap <leader>s <Plug>(easymotion-overwin-f2)
 " " easymotion end
 
 " Vim coc recommend config
@@ -294,7 +287,7 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " gi 跳转实现处
 " gr 跳转使用处
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
@@ -338,7 +331,7 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-highlight', 'coc-pairs', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
+let g:coc_global_extensions = ['coc-explorer', 'coc-sh', 'coc-marketplace', 'coc-json', 'coc-git', 'coc-highlight', 'coc-pairs', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
 
 " CocMultiCursor
 hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
@@ -348,3 +341,4 @@ nmap <silent> <C-x> <Plug>(coc-cursors-word)
 xmap <silent> <C-x> <Plug>(coc-cursors-range)
 nmap <leader>x  <Plug>(coc-cursors-operator)
 
+nmap <space>e :CocCommand explorer<CR>
