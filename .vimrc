@@ -29,6 +29,8 @@ inoremap vv <esc>
 let mapleader = ","
 " space -> :
 map <space> :
+" space space -> @
+map <space><space> @
 
 " vim内外复制
 set clipboard=unnamed
