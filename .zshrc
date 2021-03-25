@@ -4,12 +4,7 @@ ZSH_THEME="fino-time"
 
 plugins=(git emoji docker-compose fd history zsh-autosuggestions zsh-syntax-highlighting)
 
-for file in ~/.{exports,aliases,functions}; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-for file in ~/.{exports,aliases,functions}; do
-	[ -r "$file.local" ] && [ -f "$file.local" ] && source "$file.local";
-done;
 unset file;
-source $ZSH/oh-my-zsh.sh
+source .bash_profile;
+source $ZSH/oh-my-zsh.sh;
 
