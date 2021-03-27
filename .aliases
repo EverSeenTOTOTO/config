@@ -13,3 +13,5 @@ alias ...='cd ../..'
 alias path='echo -e ${PATH//:/\\n}'
 alias venv="source ~/venv/bin/activate"
 alias ngr='sudo nginx -t && sudo nginx -s reload'
+alias nom='npm --registry https://registry.npmjs.org/'
+alias yorn='yarn --registry https://registry.npmjs.org/'
