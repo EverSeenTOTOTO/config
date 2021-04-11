@@ -11,6 +11,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " 主题和颜色
 Plug 'w0ng/vim-hybrid'
 Plug 'cormacrelf/vim-colors-github'
+Plug 'lifepillar/vim-solarized8'
 
 " EasyMotion
 Plug 'easymotion/vim-easymotion'
@@ -49,6 +50,7 @@ let $LANG='en'
 set langmenu=en
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
+
 " Turn on the Wild menu
 set wildmenu
 set wildignore=*.o,*~,*.pyc
@@ -57,6 +59,7 @@ if has("win16") || has("win32")
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
+
 "Always show current position
 set ruler
 " Configure backspace so it acts as it should act
@@ -137,8 +140,8 @@ set cmdheight=2
 " use a slightly darker background, like GitHub inline code blocks
 let g:github_colors_soft = 1
 " 主题背景
-set background=dark
-colorscheme hybrid
+set background=light
+colorscheme solarized8
 call github_colors#togglebg_map('<f5>')
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
@@ -199,15 +202,15 @@ map <down> :res -5<CR>
 map <left> :vertical resize-5<CR>
 map <right> :vertical resize+5<CR>
 
-" ,W -> :w!
+" force save
 nmap <leader>W :w!<cr>
 
 " :W -> sudo save
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 " Ctrl + jk移动行
-imap <C-j> <esc>mz:m+<cr>`zi
 nmap <C-j> mz:m+<cr>`z
+imap <C-j> <esc>mz:m+<cr>`zi
 vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
 imap <C-k> <esc>mz:m-2<cr>`zi
 nmap <C-k> mz:m-2<cr>`z
@@ -222,7 +225,7 @@ nmap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
 " te打开新tab
-map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
+map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
 
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -257,13 +260,6 @@ endfunction
 
 let g:coc_snippet_next = '<tab>'
 
-" <c-space> 触发 completion
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. Coc only does snippet and additional edit on confirm.
 " <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
@@ -275,10 +271,8 @@ else
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-
 " [g和]g在提示之间移动
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
@@ -294,10 +288,10 @@ nmap <silent> gr <Plug>(coc-references)
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" ,rn符号重命名
+" rn符号重命名
 nmap <leader>rn <Plug>(coc-rename)
 
-" ,fm格式化选中代码
+" fm格式化选中代码
 xmap <leader>fm  <Plug>(coc-format-selected)
 nmap <leader>fm <Plug>(coc-format-selected)
 
@@ -341,4 +335,5 @@ nmap <silent> <C-x> <Plug>(coc-cursors-word)
 xmap <silent> <C-x> <Plug>(coc-cursors-range)
 nmap <leader>x  <Plug>(coc-cursors-operator)
 
+" coc-explorer
 nmap <space>e :CocCommand explorer<CR>
