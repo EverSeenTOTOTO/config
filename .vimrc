@@ -22,6 +22,9 @@ Plug 'tpope/vim-surround'
 " VimRegister
 Plug 'junegunn/vim-peekaboo'
 
+" EditorCOnfig
+Plug 'editorconfig/editorconfig-vim'
+
 call plug#end()
 
 " esc -> vv
