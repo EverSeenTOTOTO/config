@@ -273,11 +273,13 @@ endif
 
 " [g和]g在提示之间移动
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+
+" [g和]g在提示之间移动
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " gd 跳转定义处
-" gt 跳转类型定义处
+" gy 跳转类型定义处
 " gi 跳转实现处
 " gr 跳转使用处
 nmap <silent> gd <Plug>(coc-definition)
