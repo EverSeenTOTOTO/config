@@ -158,20 +158,7 @@ else
   set signcolumn=yes
 endif
 
-" 状态栏
-function! StatusDiagnostic() abort
-  let info = get(b:, 'coc_diagnostic_info', {})
-  if empty(info) | return '' | endif
-  let msgs = []
-  if get(info, 'error', 0)
-    call add(msgs, 'E' . info['error'])
-  endif
-  if get(info, 'warning', 0)
-    call add(msgs, 'W' . info['warning'])
-  endif
-  return join(msgs, ' '). ' ' . get(g:, 'coc_status', '')
-endfunction
-set statusline^=%{StatusDiagnostic()}
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " 始终显示状态栏
 set laststatus=2
@@ -273,13 +260,11 @@ endif
 
 " [g和]g在提示之间移动
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-
-" [g和]g在提示之间移动
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " gd 跳转定义处
-" gy 跳转类型定义处
+" gt 跳转类型定义处
 " gi 跳转实现处
 " gr 跳转使用处
 nmap <silent> gd <Plug>(coc-definition)
@@ -327,7 +312,7 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-let g:coc_global_extensions = ['coc-explorer', 'coc-sh', 'coc-marketplace', 'coc-json', 'coc-git', 'coc-highlight', 'coc-pairs', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
+let g:coc_global_extensions = ['coc-explorer', 'coc-clangd', 'coc-flutter', 'coc-html', 'coc-marketplace', 'coc-json', 'coc-git', 'coc-highlight', 'coc-pairs', 'coc-css', 'coc-eslint', 'coc-go', 'coc-lists', 'coc-markdownlint', 'coc-python', 'coc-sh', 'coc-stylelint', 'coc-snippets', 'coc-sql', 'coc-svg', 'coc-tsserver', 'coc-vetur', 'coc-yaml', 'coc-yank']
 
 " CocMultiCursor
 hi CocCursorRange guibg=#b16286 guifg=#ebdbb2

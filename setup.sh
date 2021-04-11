@@ -21,3 +21,14 @@ fi
 if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]]; then
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 fi
+
+######################
+# npm global
+######################
+
+if command -v npm >/dev/null 2>&1; then
+  npm i -g dockerfile-language-server-nodejs
+  npm i -g pm2
+  npm i -g yarn
+fi
+
