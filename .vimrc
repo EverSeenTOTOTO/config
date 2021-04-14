@@ -222,17 +222,18 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " easymotion config
 let g:EasyMotion_smartcase = 1
+
 "let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-map <leader>h <Plug>(easymotion-linebackward)
-map <leader>j <Plug>(easymotion-j)
-map <leader>k <Plug>(easymotion-k)
-map <leader>l <Plug>(easymotion-lineforward)
+map <leader>a <Plug>(easymotion-linebackward)
+map <leader>s <Plug>(easymotion-j)
+map <leader>w <Plug>(easymotion-k)
+map <leader>d <Plug>(easymotion-lineforward)
 map <leader>. <Plug>(easymotion-repeat)
 " <leader>f{char} to move to {char}
-map <leader>f <Plug>(easymotion-bd-f)
-nmap <leader>f <Plug>(easymotion-overwin-f)
+" map <leader>f <Plug>(easymotion-bd-f)
+" nmap <leader>f <Plug>(easymotion-overwin-f)
 " <leader>s{char}{char} to move to {char}{char}
-nmap <leader>s <Plug>(easymotion-overwin-f2)
+nmap <leader>z <Plug>(easymotion-overwin-f2)
 " " easymotion end
 
 " Vim coc recommend config
@@ -279,11 +280,11 @@ nmap <silent> gr <Plug>(coc-references)
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " rn符号重命名
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>r <Plug>(coc-rename)
 
 " fm格式化选中代码
-xmap <leader>fm  <Plug>(coc-format-selected)
-nmap <leader>fm <Plug>(coc-format-selected)
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
