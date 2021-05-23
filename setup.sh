@@ -5,7 +5,7 @@ set -e
 echo "copying dot files..."
 ls -A | grep '^\.' | grep -v '^\.git$' | grep -v '^\.ssh' | xargs -I {} cp -r {} ~/
 
-echo "installing tmux..."
+# echo "installing tmux..."
 echo "install oh my zsh"
 
 #######################
