@@ -11,7 +11,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " 主题和颜色
 Plug 'w0ng/vim-hybrid'
 Plug 'cormacrelf/vim-colors-github'
-Plug 'lifepillar/vim-solarized8'
 
 " EasyMotion
 Plug 'easymotion/vim-easymotion'
@@ -144,7 +143,7 @@ set cmdheight=2
 let g:github_colors_soft = 1
 " 主题背景
 set background=light
-colorscheme solarized8
+colorscheme github
 call github_colors#togglebg_map('<f5>')
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
