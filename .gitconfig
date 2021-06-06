@@ -5,17 +5,13 @@
   excludesfile = ~/.gitignore
   autocrlf = input
   editor = vim
+	pager = git-split-diffs --color | less -RFX
 [color]
     ui = auto
 [color "branch"]
   current = yellow reverse
   local = yellow
   remote = green
-[color "diff"]
-  meta = yellow bold
-  frag = magenta bold # line info
-  old = red # deletions
-  new = green # additions
 [color "status"]
   added = green
   changed = red
@@ -49,14 +45,6 @@
 [stash]
   showPatch = 1
   autocorrect = 1
-[merge]
-  tool = vimdiff
-  log = true
-  conflictstyle = diff3
-[diff]
-	tool = vimdiff
-[difftool]
-	prompt = false
 [pull]
   ff = only
 [push]

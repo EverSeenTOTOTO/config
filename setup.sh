@@ -30,5 +30,6 @@ if command -v npm >/dev/null 2>&1; then
   npm i -g dockerfile-language-server-nodejs
   npm i -g pm2
   npm i -g yarn
+  npm i -g git-split-diffs
 fi
 
