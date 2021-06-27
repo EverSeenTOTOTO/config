@@ -10,6 +10,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'w0ng/vim-hybrid'
 Plug 'cormacrelf/vim-colors-github'
 
+" status bar
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 " multi cursor
 " Plug 'terryma/vim-multiple-cursors'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
@@ -28,10 +32,6 @@ Plug 'preservim/nerdtree'
 
 " EditorCOnfig
 Plug 'editorconfig/editorconfig-vim'
-
-" status bar
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 
@@ -212,15 +212,15 @@ imap <C-k> <esc>mz:m-2<cr>`zi
 nmap <C-k> mz:m-2<cr>`z
 vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-" 当<leader> + Enter的时候取消高亮
+" leader + Enter的时候取消高亮
 map <silent> <leader><cr> :noh<cr>
 
-" tl切换最近的tab
+" leader + tl切换最近的tab
 let g:lasttab = 1
 nmap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-" te打开新tab
+" leader + te打开新tab
 map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
 
 " cd切换pwd到当前Buffer所在directory
@@ -241,19 +241,6 @@ map <leader>. <Plug>(easymotion-repeat)
 " <leader>s{char}{char} to move to {char}{char}
 nmap <leader>z <Plug>(easymotion-overwin-f2)
 " " easymotion end
-
-" multi cursor
-let g:multi_cursor_use_default_mapping=0
-
-" Default mapping
-let g:multi_cursor_start_word_key      = '<C-n>'
-let g:multi_cursor_select_all_word_key = '<A-n>'
-let g:multi_cursor_start_key           = 'g<C-n>'
-let g:multi_cursor_select_all_key      = 'g<A-n>'
-let g:multi_cursor_next_key            = '<C-n>'
-let g:multi_cursor_prev_key            = '<C-p>'
-let g:multi_cursor_skip_key            = '<C-x>'
-let g:multi_cursor_quit_key            = '<Esc>'
 
 " NERDTree
 " Start NERDTree when Vim starts with a directory argument.
