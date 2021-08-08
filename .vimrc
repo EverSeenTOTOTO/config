@@ -35,6 +35,9 @@ Plug 'preservim/nerdtree'
 " NERDComment
 Plug 'preservim/nerdcommenter'
 
+" Vimux
+Plug 'preservim/vimux'
+
 call plug#end()
 
 " esc -> vv
@@ -169,7 +172,7 @@ if (empty($TMUX))
   endif
 endif
 
-set background=light        " for the light version
+set background=dark        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
 colorscheme one
 
@@ -291,3 +294,10 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not 
 let g:NERDToggleCheckAllLines = 1
+
+" Vimux
+" Prompt for a command to run
+map <Leader><space> :VimuxPromptCommand<CR>
+map <Leader>vl :VimuxRunLastCommand<CR>
+" Zoom the tmux runner pane
+map <leader>vz :VimuxZoomRunner<CR>
