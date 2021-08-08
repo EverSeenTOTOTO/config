@@ -27,11 +27,13 @@ Plug 'tpope/vim-surround'
 " VimRegister
 Plug 'junegunn/vim-peekaboo'
 
-" nerdtree
-Plug 'preservim/nerdtree'
-
 " EditorCOnfig
 Plug 'editorconfig/editorconfig-vim'
+
+" NERDTree
+Plug 'preservim/nerdtree'
+
+Plug 'preservim/nerdcommenter'
 
 call plug#end()
 
@@ -236,23 +238,40 @@ map <leader>w <Plug>(easymotion-k)
 map <leader>d <Plug>(easymotion-lineforward)
 map <leader>. <Plug>(easymotion-repeat)
 " <leader>f{char} to move to {char}
-" map <leader>f <Plug>(easymotion-bd-f)
-" nmap <leader>f <Plug>(easymotion-overwin-f)
-" <leader>s{char}{char} to move to {char}{char}
+map <leader>f <Plug>(easymotion-bd-f)
+nmap <leader>f <Plug>(easymotion-overwin-f)
 nmap <leader>z <Plug>(easymotion-overwin-f2)
-" " easymotion end
-
-" NERDTree
-" Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-" Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * silent NERDTreeMirror
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+" easymotion end
 
 " Airline
 let g:airline#extensions#tabline#enabled = 1
 
+" NERDTree
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+
+" NERDComment
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_javascript = 1
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
