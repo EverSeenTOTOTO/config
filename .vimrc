@@ -40,27 +40,31 @@ Plug 'preservim/vimux'
 
 call plug#end()
 
-" esc -> vv
+" 核心按键
 inoremap vv <esc>
-" <leader>
 let mapleader = ";"
-" space -> :
 map <space> :
-" space space -> @
-map <space><space> @
+map <space><leader> @
+
+" 设置
 
 " undo
 set undodir=~/.vim/undo
 set undofile
-" 相对行号
-set relativenumber number
-" 历史行数
+
+" 不与vi兼容
+set nocompatible
+
+" 历史文件行数
 set history=500
+
 " 文件变更时自动更新
 set autoread
 au FocusGained,BufEnter * checktime
+
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
+
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en'
 set langmenu=en
@@ -78,9 +82,11 @@ endif
 
 "Always show current position
 set ruler
+
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
+
 " search忽略大小写
 set ignorecase
 " search smart case
@@ -89,8 +95,10 @@ set smartcase
 set hlsearch
 " Makes search act like search in modern browsers
 set incsearch
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
+
 " 正则magic
 set magic
 " 展示匹配的括号
@@ -106,8 +114,10 @@ set tm=500
 if has("gui_macvim")
     autocmd GUIEnter * set vb t_vb=
 endif
+
 " Add a bit extra margin to the left
 set foldcolumn=1
+
 " 语法高亮
 syntax enable
 " Enable 256 colors palette in Gnome Terminal
@@ -129,6 +139,7 @@ set ffs=unix,dos,mac
 set nobackup
 set nowb
 set noswapfile
+
 " tab使用空格
 set expandtab
 " Be smart when using tabs ;)
@@ -136,6 +147,7 @@ set smarttab
 " 1 tab == 2 spaces
 set shiftwidth=2
 set tabstop=2
+
 " 超过500个字符折行
 set lbr
 set tw=500
@@ -206,24 +218,80 @@ fun! CleanExtraSpaces()
 endfun
 
 if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+    autocmd BufWritePre *.txt,*.js,*.ts,*.jsx,*.tsx,*.lua,*.vue,*.go,*.md,*.py,*.sh :call CleanExtraSpaces()
 endif
 
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
 
-" 替换方向键为调节分屏大小
+" 自动添加标题头
+
+fun! AutoSetFileHead()
+    let filetype_name = strpart(expand("%"), stridx(expand("%"), "."))
+    " .sh "
+    if filetype_name == '.sh'
+        call setline(1, "\#!/bin/bash")
+    endif
+
+    " python "
+    if filetype_name == '.py'
+        call setline(1, "\#!/usr/bin/env python")
+        call append(1, "\# encoding: utf-8")
+    endif
+
+    " zx "
+    if filetype_name == '.zx'
+        call setline(1, "#!/usr/bin/env zx")
+    endif
+
+    normal G
+    normal o
+    normal o
+endfunc
+if has("autocmd")
+  autocmd BufNewFile *.sh,*.py,*.zx :call AutoSetFileHead()
+endif
+
+" 按键配置
+
+" 行号
+nnoremap <F2> :set nu! nu?<CR>
+
+" 全选
+map <C-a> maggVG
+
+" 防止缩进取消选择
+vnoremap < <gv
+vnoremap > >gv
+
+" 分屏
+map `<up> <C-W>k
+map `<down> <C-W>j
+map `<left> <C-W>h
+map `<right> <C-W>l
 map <up> :res +5<CR>
 map <down> :res -5<CR>
 map <left> :vertical resize-5<CR>
 map <right> :vertical resize+5<CR>
 
-" force save
-nmap <leader>W :w!<cr>
-
 " :W -> sudo save
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+
+nnoremap k gk
+nnoremap gk k
+nnoremap j gj
+nnoremap gj j
+
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+
+nnoremap H ^
+nnoremap L $
+nnoremap U <C-r>
 
 " Ctrl + jk移动行
 nmap <C-j> mz:m+<cr>`z
@@ -234,7 +302,7 @@ nmap <C-k> mz:m-2<cr>`z
 vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " leader + Enter的时候取消高亮
-map <silent> <leader><cr> :noh<cr>
+map <silent> <leader>/ :noh<cr>
 
 " leader + tl切换最近的tab
 let g:lasttab = 1
@@ -246,6 +314,8 @@ map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
 
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" 插件配置
 
 " easymotion config
 let g:EasyMotion_smartcase = 1
@@ -292,7 +362,7 @@ let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
 " Vimux
