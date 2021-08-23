@@ -31,11 +31,16 @@ Plug 'editorconfig/editorconfig-vim'
 
 " NERDTree
 Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " NERDComment
 Plug 'preservim/nerdcommenter'
 
 call plug#end()
+
+" 按键配置
 
 " 核心按键
 inoremap vv <esc>
@@ -43,8 +48,68 @@ let mapleader = ";"
 map <space> :
 map <space><leader> @
 
-" 设置
+" 行号
+nnoremap <F2> :set nu! nu?<CR>
 
+" 全选
+map <C-a> maggVG
+
+" 防止缩进取消选择
+vnoremap < <gv
+vnoremap > >gv
+
+" 分屏
+map `<up> <C-W>k
+map `<down> <C-W>j
+map `<left> <C-W>h
+map `<right> <C-W>l
+map <up> :res +5<CR>
+map <down> :res -5<CR>
+map <left> :vertical resize-5<CR>
+map <right> :vertical resize+5<CR>
+
+" :W -> sudo save
+command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+
+" 折行
+nnoremap k gk
+nnoremap gk k
+nnoremap j gj
+nnoremap gj j
+
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+
+nnoremap H ^
+nnoremap L $
+nnoremap U <C-r>
+
+" Ctrl + jk移动行
+nmap <C-j> mz:m+<cr>`z
+imap <C-j> <esc>mz:m+<cr>`zi
+vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
+imap <C-k> <esc>mz:m-2<cr>`zi
+nmap <C-k> mz:m-2<cr>`z
+vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+" leader + /的时候取消高亮
+map <silent> <leader>/ :noh<cr>
+
+" leader + tl切换tab last
+let g:lasttab = 1
+nmap <leader>tl :exe "tabn ".g:lasttab<CR>
+au TabLeave * let g:lasttab = tabpagenr()
+
+" leader + te打开新tab
+map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
+
+" cd切换pwd到当前Buffer所在directory
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" 设置
 " undo
 set undodir=~/.vim/undo
 set undofile
@@ -250,67 +315,6 @@ if has("autocmd")
   autocmd BufNewFile *.sh,*.py,*.zx :call AutoSetFileHead()
 endif
 
-" 按键配置
-
-" 行号
-nnoremap <F2> :set nu! nu?<CR>
-
-" 全选
-map <C-a> maggVG
-
-" 防止缩进取消选择
-vnoremap < <gv
-vnoremap > >gv
-
-" 分屏
-map `<up> <C-W>k
-map `<down> <C-W>j
-map `<left> <C-W>h
-map `<right> <C-W>l
-map <up> :res +5<CR>
-map <down> :res -5<CR>
-map <left> :vertical resize-5<CR>
-map <right> :vertical resize+5<CR>
-
-" :W -> sudo save
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
-
-nnoremap k gk
-nnoremap gk k
-nnoremap j gj
-nnoremap gj j
-
-nnoremap <silent> n nzz
-nnoremap <silent> N Nzz
-nnoremap <silent> * *zz
-nnoremap <silent> # #zz
-nnoremap <silent> g* g*zz
-
-nnoremap H ^
-nnoremap L $
-nnoremap U <C-r>
-
-" Ctrl + jk移动行
-nmap <C-j> mz:m+<cr>`z
-imap <C-j> <esc>mz:m+<cr>`zi
-vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
-imap <C-k> <esc>mz:m-2<cr>`zi
-nmap <C-k> mz:m-2<cr>`z
-vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-" leader + Enter的时候取消高亮
-map <silent> <leader>/ :noh<cr>
-
-" leader + tl切换最近的tab
-let g:lasttab = 1
-nmap <leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
-
-" leader + te打开新tab
-map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
-
-" cd切换pwd到当前Buffer所在directory
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " 插件配置
 
@@ -330,6 +334,7 @@ nmap <leader>z <Plug>(easymotion-overwin-f2)
 " easymotion end
 
 " Airline
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
 " NERDTree
@@ -342,6 +347,9 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
     \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 
+" NERDTree git plugin
+let g:NERDTreeGitStatusUseNerdFonts = 1
+
 " NERDComment
 " Create default mappings
 let g:NERDCreateDefaultMappings = 1
@@ -353,8 +361,6 @@ let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 " Set a language to use its alternate delimiters by default
 let g:NERDAltDelims_javascript = 1
-" Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 " Allow commenting and inverting empty lines (useful when commenting a region)
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting

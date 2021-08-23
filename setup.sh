@@ -2,6 +2,7 @@
 set -e
 
 LIGHT_GREEN='\033[1;32m'
+LIGHT_BLUE='\033[1;34m'
 NC='\033[0m'
 echo "copying dot files"
 ls -A | grep '^\.' | grep -v '^\.git$' | grep -v '^\.ssh' | xargs -I % bash -c "echo -e '$LIGHT_GREEN%$NC'; cp -r % ~/"
@@ -60,6 +61,8 @@ else
   echo "skipped to install npm globals, you may installed by yourself."
 fi
 
-echo -e "\n$LIGHT_GREEN DONE!$NC Don't forget to install:"
-echo -e "\t$LIGHT_GREEN fira-code fonts$NC: a geek font for coding"
-echo -e "\t$LIGHT_GREEN autojump$NC: faster jump between directories"
+echo -e "\n$LIGHT_Blue DONE!$NC Don't forget to install:"
+echo -e "\t$LIGHT_Blue fira-code fonts$NC: a geek font for coding"
+echo -e "\t$LIGHT_Blue nerd-fonts$NC: for vim nerd icons"
+echo -e "\t$LIGHT_Blue autojump$NC: faster jump between directories"
+
