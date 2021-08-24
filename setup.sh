@@ -34,18 +34,26 @@ install_zsh_plugins zsh-autosuggestions zsh-syntax-highlighting
 ######################
 # tmux
 ######################
+# oh my tmux
+git clone https://github.com/gpakosz/.tmux.git $HOME/.oh-my-tmux --depth 1
+ln -s -f $HOME/.oh-my-tmux/.tmux.conf $HOME/.tmux.conf
+cp $HOME/.oh-my-tmux/.tmux.conf.local $HOME
+echo 'set-option -g default-shell /bin/zsh \
+# Add truecolor support \
+set -g default-terminal "xterm-256color" \
+set-option -ga terminal-overrides ",*256col*:Tc" \' >> $HOME/.tmux.conf.local
 # tpm
-install_tmux_plugs() {
-  TMUX_PLUG=~/.tmux/plugins
-  for plug in $@
-  do
-    echo -e "install tpm plugin $LIGHT_GREEN $plug $NC"
-    if [[ ! -d $TMUX_PLUG/$plug ]]; then
-      git clone https://github.com/tmux-plugins/$plug $TMUX_PLUG/$plug
-    fi
-  done
-}
-install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu tmux-urlview tmux-open
+# install_tmux_plugs() {
+#   TMUX_PLUG=~/.tmux/plugins
+#   for plug in $@
+#   do
+#     echo -e "install tpm plugin $LIGHT_GREEN $plug $NC"
+#     if [[ ! -d $TMUX_PLUG/$plug ]]; then
+#       git clone https://github.com/tmux-plugins/$plug $TMUX_PLUG/$plug
+#     fi
+#   done
+# }
+# install_tmux_plugs tpm
 
 ######################
 # npm global
