@@ -33,33 +33,20 @@ install_zsh_plugins() {
 install_zsh_plugins zsh-autosuggestions zsh-syntax-highlighting
 ```
 
-3. Install oh-my-tmux
+3. Install tmux
 
 ```bash
-if [[ ! -d $HOME/.oh-my-tmux ]]
-then
-    git clone https://github.com/gpakosz/.tmux.git $HOME/.oh-my-tmux --depth 1
-    ln -s -f $HOME/.oh-my-tmux/.tmux.conf $HOME/.tmux.conf
-    cp $HOME/.oh-my-tmux/.tmux.conf.local $HOME
-    echo '\
-    set-option -g default-shell /bin/zsh \
-# add truecolor support \
-    set -g default-terminal "xterm-256color" \
-    set-option -ga terminal-overrides ",*256col*:tc" \
-# tpm plugins \
-    set -g @plugin 'tmux-plugins/tmux-resurrect' \
-# for vim \
-    set -g @resurrect-strategy-vim 'session' \
-    set -g @resurrect-capture-pane-contents 'on' # 开启恢复面板内容功能 \
-    set -g @resurrect-save-shell-history 'on' \
-# for neovim \
-# set -g @resurrect-strategy-nvim 'session' \
-    set -g @plugin 'tmux-plugins/tmux-continuum' \
-    set -g @continuum-restore 'on' \
-    set -g @continuum-save-interval '60' # 每小时备份一次 \
-    set -g @continuum-boot 'on' \
-    ' >> $HOME/.tmux.conf.local
-fi
+install_tmux_plugs() {
+  TMUX_PLUG=~/.tmux/plugins
+  for plug in $@
+  do
+    echo -e "install tpm plugin $plug"
+    if [[ ! -d $TMUX_PLUG/$plug ]]; then
+      git clone https://github.com/tmux-plugins/$plug $TMUX_PLUG/$plug --depth 1
+    fi
+  done
+}
+install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu tmux-urlview tmux-open
 ```
 
 4. Install npm globals
