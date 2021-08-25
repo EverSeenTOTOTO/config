@@ -303,8 +303,8 @@ fun! AutoSetFileHead()
     endif
 
     " zx "
-    if filetype_name == '.zx'
-        call setline(1, "#!/usr/bin/env zx")
+    if filetype_name == '.mjs'
+        call setline(1, "\#!/usr/bin/env zx")
     endif
 
     normal G
@@ -312,7 +312,7 @@ fun! AutoSetFileHead()
     normal o
 endfunc
 if has("autocmd")
-  autocmd BufNewFile *.sh,*.py,*.zx :call AutoSetFileHead()
+  autocmd BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 endif
 
 
