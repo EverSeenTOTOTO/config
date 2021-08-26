@@ -38,10 +38,10 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " NERDComment
 Plug 'preservim/nerdcommenter'
 
-Plug 'tpope/vim-obsession'
+" ale completion
+Plug 'dense-analysis/ale'
 
 call plug#end()
-
 " 按键配置
 
 " 核心按键
@@ -338,14 +338,16 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
 " NERDTree
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
+" Mirror the NERDTree before showing it. This makes it the same on all tabs.
+nnoremap <leader>n :NERDTreeMirror<CR>:NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
-" Start NERDTree when Vim starts with a directory argument.
+" Start NERDTree, unless a file or session is specified, eg. vim -S session_file.vim.
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') && v:this_session == '' | NERDTree | endif
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1
@@ -367,3 +369,26 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
+
+" Ale Completion
+let g:ale_linter_aliases = {
+\   'jsx': ['css', 'javascript'],
+\   'vue': ['vue', 'javascript']
+\}
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['eslint'],
+\   'css': ['stylelint'],
+\   'jsx': ['stylelint', 'eslint'],
+\   'vue': ['eslint', 'vls']
+\}
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:ale_completion_autoimport = 1
+set omnifunc=ale#completion#OmniFunc
+nnoremap <leader>gd :ALEGoToDefinition<CR>
+nnoremap <leader>gr :ALEFindReferences<CR>
+nnoremap <leader>gh :ALEHover<CR>
+nnoremap <leader>gs :ALESymbolSearch<CR>
+nnoremap <leader>gn :ALERename<CR>
+nnoremap <leader>ga :ALECodeAction<CR>
