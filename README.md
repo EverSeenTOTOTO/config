@@ -69,4 +69,5 @@ You can install these for better experiance:
 
 + nerd-fonts (fira-code)
 + autojump
++ translate-shell
 

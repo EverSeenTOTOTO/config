@@ -105,11 +105,11 @@ let g:lasttab = 1
 nmap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-" leader + te打开新tab
-map <leader>t :tabedit <C-r>=expand("%:p:h")<cr>/
-
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" copy
+vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " 设置
 " undo
