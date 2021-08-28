@@ -29,6 +29,8 @@ Plug 'junegunn/vim-peekaboo'
 " EditorCOnfig
 Plug 'editorconfig/editorconfig-vim'
 
+Plug 'christoomey/vim-tmux-navigator'
+
 " NERDTree
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -38,8 +40,15 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " NERDComment
 Plug 'preservim/nerdcommenter'
 
-" ale completion
+" ale
 Plug 'dense-analysis/ale'
+
+" snippet
+" Track the engine.
+Plug 'SirVer/ultisnips'
+
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
 
 call plug#end()
 " 按键配置
@@ -85,13 +94,17 @@ nnoremap H ^
 nnoremap L $
 nnoremap U <C-r>
 
-" Ctrl + jk移动行
-nmap <C-j> mz:m+<cr>`z
-imap <C-j> <esc>mz:m+<cr>`zi
-vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
-imap <C-k> <esc>mz:m-2<cr>`zi
-nmap <C-k> mz:m-2<cr>`z
-vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
+" Alt + jk移动行
+execute "set <M-j>=\ej"
+execute "set <M-k>=\ek"
+execute "set <M-l>=\el"
+execute "set <M-h>=\eh"
+nmap <M-j> mz:m+<cr>`z
+imap <M-j> <esc>mz:m+<cr>`zi
+vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+imap <M-k> <esc>mz:m-2<cr>`zi
+nmap <M-k> mz:m-2<cr>`z
+vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " leader + /的时候取消高亮
 map <silent> <leader>/ :noh<cr>
@@ -342,9 +355,6 @@ nnoremap <C-f> :NERDTreeFind<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
     \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 " Open the existing NERDTree on each new tab.
 autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 
@@ -391,3 +401,13 @@ nnoremap <leader>gh :ALEHover<CR>
 nnoremap <leader>gs :ALESymbolSearch<CR>
 nnoremap <leader>gn :ALERename<CR>
 nnoremap <leader>ga :ALECodeAction<CR>
+
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"

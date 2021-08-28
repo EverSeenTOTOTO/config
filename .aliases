@@ -1,4 +1,5 @@
 alias df='df -h'
+alias cls='clear'
 alias mkdir='mkdir -p';
 alias fd=fdfind
 alias grep='grep --color=auto'

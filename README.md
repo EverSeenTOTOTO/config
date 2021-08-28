@@ -47,6 +47,9 @@ install_tmux_plugs() {
   done
 }
 install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu tmux-urlview tmux-open
+if [[ ! -d $TMUX_PLUG/vim-tmux-navigator ]]; then
+  git clone https://github.com/christoomey/vim-tmux-navigator.git $TMUX_PLUG/vim-tmux-navigator --depth 1
+fi
 ```
 
 4. Install npm globals
@@ -70,4 +73,3 @@ You can install these for better experiance:
 + nerd-fonts (fira-code)
 + autojump
 + translate-shell
-
