@@ -61,10 +61,6 @@ vnoremap < <gv
 vnoremap > >gv
 
 " 分屏
-map `<up> <C-W>k
-map `<down> <C-W>j
-map `<left> <C-W>h
-map `<right> <C-W>l
 map <up> :res +5<CR>
 map <down> :res -5<CR>
 map <left> :vertical resize-5<CR>
@@ -339,15 +335,18 @@ let g:airline#extensions#tabline#enabled = 1
 
 " NERDTree
 " Mirror the NERDTree before showing it. This makes it the same on all tabs.
-nnoremap <leader>n :NERDTreeMirror<CR>:NERDTreeFocus<CR>
+nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
-" Start NERDTree, unless a file or session is specified, eg. vim -S session_file.vim.
+" Start NERDTree when Vim starts with a directory argument.
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') && v:this_session == '' | NERDTree | endif
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
 autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1
