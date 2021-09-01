@@ -1,0 +1,70 @@
+priority -50
+
+snippet #! "#!/usr/bin/env node" b
+#!/usr/bin/env node
+endsnippet
+
+snippet req "assign a CommonJS-style module to a var"
+const ${0:${1/(.+\/)*(\w+)(-|\b|$)(\..+$)?/\u$2/g}} = require('$1');
+endsnippet
+
+snippet imp "import"
+import ${2} from ${1}
+endsnippet
+
+snippet ex "module.exports"
+module.exports = $1;
+endsnippet
+
+snippet if "if (condition) { ... }"
+if (${1:true}) {
+	${VISUAL}$2
+}
+endsnippet
+
+snippet ife "if (condition) { ... } else { ... }"
+if (${1:true}) {
+	${VISUAL}$2
+} else {
+	${3}
+}
+endsnippet
+
+snippet switch
+switch (${VISUAL}${1:expression}) {
+	case '${VISUAL}${3:case}':
+		${4}
+		break;
+	${0}
+	default:
+		${2}
+}
+endsnippet
+
+snippet case "case 'xyz': ... break"
+case '${VISUAL}${1:case}':
+	${VISUAL}$2
+	break;
+endsnippet
+
+snippet do "do { ... } while (condition)"
+do {
+	${VISUAL}$2
+} while (${1:/* condition */});
+endsnippet
+
+snippet ret "Return statement"
+return ${VISUAL}$2;
+endsnippet
+
+snippet clz "ts class"
+	class ${1} {
+		${0}
+	}
+endsnippet
+
+snippet clze "ts class extends"
+	class ${1} extends ${2} {
+		${0}
+	}
+endsnippet
