@@ -37,8 +37,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
-" ale
-Plug 'dense-analysis/ale'
+Plug 'ycm-core/YouCompleteMe'
 
 " snippet
 " Track the engine.
@@ -353,36 +352,20 @@ autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1
 
-" Ale Completion
-let g:ale_linter_aliases = {
-\   'jsx': ['css', 'javascript'],
-\   'vue': ['vue', 'javascript']
-\}
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['eslint'],
-\   'css': ['stylelint'],
-\   'jsx': ['stylelint', 'eslint'],
-\   'vue': ['eslint', 'vls']
-\}
-let g:ale_fix_on_save = 1
-let g:ale_completion_enabled = 1
-let g:ale_completion_autoimport = 1
-set omnifunc=ale#completion#OmniFunc
-nnoremap <leader>gd :ALEGoToDefinition<CR>
-nnoremap <leader>gr :ALEFindReferences<CR>
-nnoremap <leader>gh :ALEHover<CR>
-nnoremap <leader>gs :ALESymbolSearch<CR>
-nnoremap <leader>gn :ALERename<CR>
-nnoremap <leader>ga :ALECodeAction<CR>
+nnoremap <leader>gt :YcmCompleter GoTo<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>gs :YcmCompleter GoToSymbol<CR>
+nnoremap <leader>gf :YcmCompleter FixIt<CR>
+nnoremap <leader>gn :YcmCompleter RefactorRename
 
 " Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
 " - https://github.com/Valloric/YouCompleteMe
 " - https://github.com/nvim-lua/completion-nvim
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
