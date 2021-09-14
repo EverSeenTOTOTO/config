@@ -86,6 +86,8 @@ nnoremap <silent> g* g*zz
 nnoremap H ^
 nnoremap L $
 nnoremap U <C-r>
+nnoremap <C-u> ma<C-u>
+nnoremap <C-d> mb<C-d>
 
 " Alt + jk移动行
 execute "set <M-j>=\ej"
@@ -346,8 +348,8 @@ nnoremap <C-f> :NERDTreeFind<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
     \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-" Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
+" open the existing nerdtree on each new tab.
+" autocmd bufwinenter * if getcmdwintype() == '' | silent nerdtreemirror | endif
 
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1

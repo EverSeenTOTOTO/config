@@ -2,7 +2,7 @@ priority -50
 
 global !p
 def sub(arg):
-     names = re.sub(r'^(?:@.+?\/)(.+)$', r'\1', arg).split(r'-')
+     names = re.sub(r'^(?:.*?)([^/.]+)(\.[^.]+)?$', r'\1', arg).split(r'-')
      for i in range(len(names)):
          if(i == 0):
              names[i] = names[i].lower()
@@ -20,17 +20,13 @@ const ${2:`!p
 snip.rv = sub(t[1])`} = require("$1");
 endsnippet
 
-snippet mexp "module.exports" b
+snippet exp "module.exports" b
 module.exports = $1;
 endsnippet
 
 snippet imp "import" b
 import ${2:`!p
 snip.rv = sub(t[1])`} from "${1}";
-endsnippet
-
-snippet exp "export" w
-export default $1;
 endsnippet
 
 snippet if "if (condition) { ... }" w
@@ -74,19 +70,19 @@ snippet ret "Return statement" w
 return ${VISUAL}$2;
 endsnippet
 
-snippet cls "class" w
+snippet cl "class" w
 class ${1} {
 	${0}
 }
 endsnippet
 
-snippet clse "class extends" w
+snippet cle "class extends" w
 class ${1} extends ${2} {
 	${0}
 }
 endsnippet
 
-snippet cons "const var" w
+snippet c "const var" w
 const ${1} = ${2};
 endsnippet
 
@@ -96,8 +92,20 @@ snippet lm "lambda function" w
 };
 endsnippet
 
-snippet "(\.(?:map|forEach|filter|reduce|every|some))" "Array functions" r
+snippet "(\.(?:map|forEach|filter|reduce|every|some))" "array functions" r
 `!p snip.rv = match.group(1)`((${1}) => {
+	${VISUAL}${2}
+})
+endsnippet
+
+snippet desc "jest describe function" b
+describe("${1}", () => {
+	${VISUAL}${2}
+})
+endsnippet
+
+snippet test "jest test function" w
+test("${1}", () => {
 	${VISUAL}${2}
 })
 endsnippet
