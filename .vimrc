@@ -86,8 +86,6 @@ nnoremap <silent> g* g*zz
 nnoremap H ^
 nnoremap L $
 nnoremap U <C-r>
-nnoremap <C-u> ma<C-u>
-nnoremap <C-d> mb<C-d>
 
 " Alt + jk移动行
 execute "set <M-j>=\ej"
@@ -119,6 +117,7 @@ vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 " undo
 set undodir=~/.vim/undo
 set undofile
+set completeopt=popup,preview,menuone
 
 " 不与vi兼容
 set nocompatible
@@ -156,7 +155,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
 " search忽略大小写
-set ignorecase
+" set ignorecase
 " search smart case
 set smartcase
 " 高亮搜索结果
@@ -359,7 +358,8 @@ nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>gs :YcmCompleter GoToSymbol<CR>
 nnoremap <leader>gf :YcmCompleter FixIt<CR>
-nnoremap <leader>gn :YcmCompleter RefactorRename
+nnoremap <leader>gn :YcmCompleter RefactorRename<space>
+nnoremap <leader>gm :YcmCompleter OrganizeImports<CR>
 
 " Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
 " - https://github.com/Valloric/YouCompleteMe
