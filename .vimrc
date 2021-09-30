@@ -23,6 +23,9 @@ Plug 'easymotion/vim-easymotion'
 " VimSurround
 Plug 'tpope/vim-surround'
 
+" ale
+Plug 'dense-analysis/ale'
+
 " VimRegister
 Plug 'junegunn/vim-peekaboo'
 
@@ -83,6 +86,8 @@ nnoremap <silent> * *zz
 nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 
+vnoremap H ^
+vnoremap L $
 nnoremap H ^
 nnoremap L $
 nnoremap U <C-r>
@@ -249,7 +254,7 @@ if (has("termguicolors"))
   set termguicolors
 endif
 
-set background=dark        " for the light version
+set background=light        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
 colorscheme one
 
@@ -273,25 +278,11 @@ set laststatus=2
 " 打开文件时跳转到上次所在位置
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-" 保存文件时删除trailing white space
-fun! CleanExtraSpaces()
-    let save_cursor = getpos(".")
-    let old_query = getreg('/')
-    silent! %s/\s\+$//e
-    call setpos('.', save_cursor)
-    call setreg('/', old_query)
-endfun
-
-if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.ts,*.jsx,*.tsx,*.lua,*.vue,*.go,*.md,*.py,*.sh :call CleanExtraSpaces()
-endif
-
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
 
 " 自动添加标题头
-
 fun! AutoSetFileHead()
     let filetype_name = strpart(expand("%"), stridx(expand("%"), "."))
     " .sh "
@@ -353,6 +344,33 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1
 
+" ycm
+"
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_server_log_level = 'info'
+let g:ycm_min_num_identifier_candidate_chars = 2
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings=1
+let g:ycm_key_invoke_completion = '<c-z>'
+let g:ycm_semantic_triggers =  {
+\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+\ 'cs,lua,javascript': ['re!\w{2}'],
+\ }
+let g:ycm_filetype_whitelist = {
+\ "py":1,
+\ "go":1,
+\ "js":1,
+\ "ts":1,
+\ "jsx":1,
+\ "tsx":1,
+\ "vue":1,
+\ "sh":1,
+\ "zsh":1,
+\ }
+
+noremap <c-z> <NOP>
+
 nnoremap <leader>gt :YcmCompleter GoTo<CR>
 nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
@@ -371,3 +389,21 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
+
+" ale
+" In ~/.vim/vimrc, or somewhere similar.
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
+\}
+let g:ale_linter_aliases = {'jsx': ['css', 'javascript'],
+\ 'vue': ['vue', 'javascript'],
+\}
+let g:ale_linters = {'jsx': ['stylelint', 'eslint'],
+\ 'vue': ['eslint', 'vls'],
+\}
+" 没有声明的语言不要执行lint
+let g:ale_linters_explicit = 1
+let g:ale_lint_on_text_changed = 'normal'
+

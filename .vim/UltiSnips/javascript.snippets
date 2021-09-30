@@ -4,16 +4,12 @@ global !p
 def sub(arg):
      names = re.sub(r'^(?:.*?)([^/.]+)(\.[^.]+)?$', r'\1', arg).split(r'-')
      for i in range(len(names)):
-         if(i == 0):
+         if(i == 0 and len(names[i]) > 0 and names[i][0].islower()):
              names[i] = names[i].lower()
          else:
              names[i] = names[i].capitalize()
      return ''.join(names)
 endglobal
-
-snippet #! "#!/usr/bin/env node" b
-#!/usr/bin/env node
-endsnippet
 
 snippet req "assign a CommonJS-style module to a var" b
 const ${2:`!p
@@ -22,6 +18,11 @@ endsnippet
 
 snippet exp "module.exports" b
 module.exports = $1;
+endsnippet
+
+snippet exd "export default" b
+export { default as ${2:`!p
+snip.rv = sub(t[1])`} } from "$1";
 endsnippet
 
 snippet imp "import" b
