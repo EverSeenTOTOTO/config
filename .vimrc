@@ -23,6 +23,9 @@ Plug 'easymotion/vim-easymotion'
 " VimSurround
 Plug 'tpope/vim-surround'
 
+" undotree
+Plug 'mbbill/undotree'
+
 " ale
 Plug 'dense-analysis/ale'
 
@@ -120,8 +123,20 @@ vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " 设置
 " undo
-set undodir=~/.vim/undo
-set undofile
+if has("persistent_undo")
+   let target_path = expand('~/.undodir')
+
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call mkdir(target_path, "p", 0700)
+    endif
+
+    let &undodir=target_path
+    set undofile
+endif
+nnoremap <F5> :UndotreeToggle<CR>
+
 set completeopt=popup,preview,menuone
 
 " 不与vi兼容
