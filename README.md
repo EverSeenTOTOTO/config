@@ -56,7 +56,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs
+for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then

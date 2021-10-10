@@ -13,10 +13,6 @@ Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-" multi cursor
-" Plug 'terryma/vim-multiple-cursors'
-Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-
 " EasyMotion
 Plug 'easymotion/vim-easymotion'
 
@@ -26,15 +22,13 @@ Plug 'tpope/vim-surround'
 " undotree
 Plug 'mbbill/undotree'
 
-" ale
-Plug 'dense-analysis/ale'
-
 " VimRegister
 Plug 'junegunn/vim-peekaboo'
 
 " EditorCOnfig
 Plug 'editorconfig/editorconfig-vim'
 
+" tmux
 Plug 'christoomey/vim-tmux-navigator'
 
 " NERDTree
@@ -43,11 +37,12 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
-Plug 'ycm-core/YouCompleteMe'
-
 " snippet
 " Track the engine.
 Plug 'SirVer/ultisnips'
+
+" coc.nvim
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 " 按键配置
@@ -118,7 +113,7 @@ au TabLeave * let g:lasttab = tabpagenr()
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" copy
+" copy to clipboard
 vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " 设置
@@ -316,6 +311,11 @@ fun! AutoSetFileHead()
         call setline(1, "\#!/usr/bin/env zx")
     endif
 
+    " js "
+    if filetype_name == '.js'
+        call setline(1, "\"use strict\"")
+    endif
+
     normal G
     normal o
     normal o
@@ -323,7 +323,6 @@ endfunc
 if has("autocmd")
   autocmd BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 endif
-
 
 " 插件配置
 
@@ -359,44 +358,7 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in
 " NERDTree git plugin
 let g:NERDTreeGitStatusUseNerdFonts = 1
 
-" ycm
-"
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_server_log_level = 'info'
-let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_strings=1
-let g:ycm_key_invoke_completion = '<c-z>'
-let g:ycm_semantic_triggers =  {
-\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-\ 'cs,lua,javascript': ['re!\w{2}'],
-\ }
-let g:ycm_filetype_whitelist = {
-\ "py":1,
-\ "go":1,
-\ "js":1,
-\ "ts":1,
-\ "jsx":1,
-\ "tsx":1,
-\ "vue":1,
-\ "sh":1,
-\ "zsh":1,
-\ }
-
-noremap <c-z> <NOP>
-
-nnoremap <leader>gt :YcmCompleter GoTo<CR>
-nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-nnoremap <leader>gs :YcmCompleter GoToSymbol<CR>
-nnoremap <leader>gf :YcmCompleter FixIt<CR>
-nnoremap <leader>gn :YcmCompleter RefactorRename<space>
-nnoremap <leader>gm :YcmCompleter OrganizeImports<CR>
-
-" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
-" - https://github.com/Valloric/YouCompleteMe
-" - https://github.com/nvim-lua/completion-nvim
+" UltiSnips
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
@@ -405,20 +367,63 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
-" ale
-" In ~/.vim/vimrc, or somewhere similar.
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
-\}
-let g:ale_linter_aliases = {'jsx': ['css', 'javascript'],
-\ 'vue': ['vue', 'javascript'],
-\}
-let g:ale_linters = {'jsx': ['stylelint', 'eslint'],
-\ 'vue': ['eslint', 'vls'],
-\}
-" 没有声明的语言不要执行lint
-let g:ale_linters_explicit = 1
-let g:ale_lint_on_text_changed = 'normal'
+" coc-nvim
 
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+
+" use <tab> to navigate the completion list
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" confirm with enter
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gt <Plug>(coc-type-definition)
+nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gr <Plug>(coc-references)
+xmap <leader>gf  <Plug>(coc-format-selected)
+nmap <leader>gf  <Plug>(coc-format-selected)
+nmap <leader>gn <Plug>(coc-rename)+
+xmap <leader>ga  <Plug>(coc-codeaction-selected)
+nmap <leader>ga  <Plug>(coc-codeaction-selected)
+
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" global extensions
+let g:coc_global_extensions = [
+      \'coc-css',
+      \'coc-eslint',
+      \'coc-git',
+      \'coc-html',
+      \'coc-json',
+      \'coc-lists',
+      \'coc-markdownlint',
+      \'coc-python',
+      \'coc-stylelint',
+      \'coc-tabnine',
+      \'coc-tsserver',
+      \'coc-vetur',
+      \'coc-yaml',
+      \]
+
+" multi-cursor
+nmap <silent> <C-n> <Plug>(coc-cursors-word)*
+xmap <silent> <C-n> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)gn
+
+nnoremap <C-l> :CocList<CR>

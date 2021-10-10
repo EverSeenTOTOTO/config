@@ -1,4 +1,21 @@
 {
   "suggest.noselect": false,
-  "eslint.autoFixOnSave": true
+  "eslint.autoFixOnSave": true,
+  "languageserver": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "filetypes": ["sh"]
+    },
+    "racket": {
+      "command": "racket",
+      "args": [
+        "--lib",
+        "racket-langserver"
+      ],
+      "filetypes": [
+        "scheme"
+      ]
+    }
+  }
 }
