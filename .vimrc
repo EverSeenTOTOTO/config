@@ -113,7 +113,7 @@ au TabLeave * let g:lasttab = tabpagenr()
 " cd切换pwd到当前Buffer所在directory
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" copy to clipboard
+" copy
 vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " 设置
@@ -311,11 +311,6 @@ fun! AutoSetFileHead()
         call setline(1, "\#!/usr/bin/env zx")
     endif
 
-    " js "
-    if filetype_name == '.js'
-        call setline(1, "\"use strict\"")
-    endif
-
     normal G
     normal o
     normal o
@@ -323,6 +318,7 @@ endfunc
 if has("autocmd")
   autocmd BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 endif
+
 
 " 插件配置
 
@@ -426,4 +422,11 @@ let g:coc_global_extensions = [
 nmap <silent> <C-n> <Plug>(coc-cursors-word)*
 xmap <silent> <C-n> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)gn
 
-nnoremap <C-l> :CocList<CR>
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+nnoremap <leader>l :CocList<space>
+
+nmap <leader>[ <Plug>(coc-diagnostic-prev)
+nmap <leader>] <Plug>(coc-diagnostic-next)
+
