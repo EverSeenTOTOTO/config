@@ -1,6 +1,8 @@
 {
   "suggest.noselect": false,
   "eslint.autoFixOnSave": true,
+  "explorer.icon.enableNerdfont": true,
+  "explorer.icon.source": "vim-devicons",
   "languageserver": {
     "bash": {
       "command": "bash-language-server",

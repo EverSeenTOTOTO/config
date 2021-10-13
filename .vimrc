@@ -31,11 +31,8 @@ Plug 'editorconfig/editorconfig-vim'
 " tmux
 Plug 'christoomey/vim-tmux-navigator'
 
-" NERDTree
-Plug 'preservim/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" explorer icons
 Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " snippet
 " Track the engine.
@@ -326,33 +323,20 @@ endif
 let g:EasyMotion_smartcase = 1
 
 "let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-map <leader>a <Plug>(easymotion-linebackward)
+" map <leader>a <Plug>(easymotion-linebackward)
 map <leader>s <Plug>(easymotion-j)
 map <leader>w <Plug>(easymotion-k)
-map <leader>d <Plug>(easymotion-lineforward)
+" map <leader>d <Plug>(easymotion-lineforward)
 map <leader>. <Plug>(easymotion-repeat)
 " <leader>f{char} to move to {char}
-map <leader>f <Plug>(easymotion-bd-f)
-nmap <leader>f <Plug>(easymotion-overwin-f)
+" map <leader>f <Plug>(easymotion-bd-f)
+" nmap <leader>f <Plug>(easymotion-overwin-f)
 nmap <leader>z <Plug>(easymotion-overwin-f2)
 " easymotion end
 
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-
-" NERDTree
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
-" Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-" open the existing nerdtree on each new tab.
-" autocmd bufwinenter * if getcmdwintype() == '' | silent nerdtreemirror | endif
-
-" NERDTree git plugin
-let g:NERDTreeGitStatusUseNerdFonts = 1
 
 " UltiSnips
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
@@ -382,15 +366,29 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 " confirm with enter
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-nmap <leader>gd <Plug>(coc-definition)
-nmap <leader>gt <Plug>(coc-type-definition)
-nmap <leader>gi <Plug>(coc-implementation)
-nmap <leader>gr <Plug>(coc-references)
-xmap <leader>gf  <Plug>(coc-format-selected)
-nmap <leader>gf  <Plug>(coc-format-selected)
-nmap <leader>gn <Plug>(coc-rename)+
-xmap <leader>ga  <Plug>(coc-codeaction-selected)
-nmap <leader>ga  <Plug>(coc-codeaction-selected)
+nmap <leader>d <Plug>(coc-definition)
+nmap <leader>t <Plug>(coc-type-definition)
+nmap <leader>i <Plug>(coc-implementation)
+nmap <leader>r <Plug>(coc-references)
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>n <Plug>(coc-rename)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ga  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>gf  <Plug>(coc-fix-current)
 
 xmap if <Plug>(coc-funcobj-i)
 omap if <Plug>(coc-funcobj-i)
@@ -404,6 +402,7 @@ omap ac <Plug>(coc-classobj-a)
 " global extensions
 let g:coc_global_extensions = [
       \'coc-css',
+      \'coc-emoji',
       \'coc-eslint',
       \'coc-git',
       \'coc-html',
@@ -429,4 +428,12 @@ nnoremap <leader>l :CocList<space>
 
 nmap <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <leader>] <Plug>(coc-diagnostic-next)
+
+nnoremap <leader>gm :CocCommand tsserver.organizeImports<CR>
+
+" open Coc Explorer
+nnoremap <C-t> :CocCommand explorer
+    \ --toggle
+    \ --sources=buffer+,file+
+    \ <CR>
 
