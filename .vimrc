@@ -83,9 +83,9 @@ nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 
 vnoremap H ^
-vnoremap L $
+vnoremap L g_
 nnoremap H ^
-nnoremap L $
+nnoremap L g_
 nnoremap U <C-r>
 
 " Alt + jk移动行
@@ -101,7 +101,7 @@ nmap <M-k> mz:m-2<cr>`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " leader + /的时候取消高亮
-map <silent> <leader>/ :noh<cr>
+nnoremap <leader>/r :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 
 " leader + tl切换tab last
 let g:lasttab = 1
@@ -114,7 +114,28 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 " copy
 vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
-" 设置
+" mark on leave
+autocmd BufLeave *.{c,cpp} mark C
+autocmd BufLeave *.h       mark H
+
+" cursor type on diff mode
+if empty($TMUX)
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+else
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+endif
+
+autocmd InsertLeave,WinEnter * set cursorline
+autocmd InsertEnter,WinLeave * set nocursorline
+
+" font size
+command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
+command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
+
 " undo
 if has("persistent_undo")
    let target_path = expand('~/.undodir')
