@@ -68,15 +68,7 @@ do {
 } while (${1:/* condition */});
 endsnippet
 
-snippet ret "Return statement" w
-return ${VISUAL}$2;
-endsnippet
-
-snippet c "const var" w
-const { ${1} } = ${2};
-endsnippet
-
-snippet lm "lambda function" w
+snippet l "lambda function" w
 (${2}) => {
   ${VISUAL}$3
 };
@@ -94,7 +86,7 @@ snippet "(setTimeout|setInterval|setImmediate|requestAnimationFrame|nextTick|\$n
 })
 endsnippet
 
-snippet "(P|p)romise" "promise" r
+snippet Promise "promise" w
 Promise((resolve, reject) => {
 	${VISUAL}${1}
 })
