@@ -327,7 +327,7 @@ let g:EasyMotion_smartcase = 1
 map <leader>s <Plug>(easymotion-j)
 map <leader>w <Plug>(easymotion-k)
 " map <leader>d <Plug>(easymotion-lineforward)
-map <leader>. <Plug>(easymotion-repeat)
+" map <leader>. <Plug>(easymotion-repeat)
 " <leader>f{char} to move to {char}
 " map <leader>f <Plug>(easymotion-bd-f)
 " nmap <leader>f <Plug>(easymotion-overwin-f)
@@ -373,6 +373,16 @@ nmap <leader>r <Plug>(coc-references)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>n <Plug>(coc-rename)
+nmap <leader>. <Plug>(coc-command-repeat)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>gr <Plug>(coc-refactor)
+nmap <leader>ga  <Plug>(coc-codeaction)
+nmap <leader>gf  <Plug>(coc-fix-current)
+nmap <leader>[ <Plug>(coc-diagnostic-prev)
+nmap <leader>] <Plug>(coc-diagnostic-next)
+nnoremap <leader>l :CocList<space>
+nnoremap <leader>gm :CocCommand tsserver.organizeImports<CR>
 
 augroup mygroup
   autocmd!
@@ -381,14 +391,6 @@ augroup mygroup
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
-
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ga  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>gf  <Plug>(coc-fix-current)
 
 xmap if <Plug>(coc-funcobj-i)
 omap if <Plug>(coc-funcobj-i)
@@ -423,13 +425,6 @@ xmap <silent> <C-n> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-nnoremap <leader>l :CocList<space>
-
-nmap <leader>[ <Plug>(coc-diagnostic-prev)
-nmap <leader>] <Plug>(coc-diagnostic-next)
-
-nnoremap <leader>gm :CocCommand tsserver.organizeImports<CR>
 
 " open Coc Explorer
 nnoremap <C-t> :CocCommand explorer

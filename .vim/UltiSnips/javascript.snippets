@@ -11,18 +11,13 @@ def sub(arg):
      return ''.join(names)
 endglobal
 
+snippet #! "#!/usr/bin/env node" b
+#!/usr/bin/env node
+endsnippet
+
 snippet req "assign a CommonJS-style module to a var" b
 const ${2:`!p
 snip.rv = sub(t[1])`} = require("$1");
-endsnippet
-
-snippet exp "module.exports" b
-module.exports = $1;
-endsnippet
-
-snippet exd "export default" b
-export { default as ${2:`!p
-snip.rv = sub(t[1])`} } from "$1";
 endsnippet
 
 snippet imp "import" b
@@ -57,7 +52,13 @@ endsnippet
 
 snippet for "for statement" w
 for (const ${1} of ${2}) {
-	${3}
+	${VISUAL}$3
+}
+endsnippet
+
+snippet fori "for i" w
+for (let i = ${1})
+	${VISUAL}$2
 }
 endsnippet
 
@@ -71,31 +72,31 @@ snippet ret "Return statement" w
 return ${VISUAL}$2;
 endsnippet
 
-snippet cl "class" w
-class ${1} {
-	${0}
-}
-endsnippet
-
-snippet cle "class extends" w
-class ${1} extends ${2} {
-	${0}
-}
-endsnippet
-
 snippet c "const var" w
-const ${1} = ${2};
+const { ${1} } = ${2};
 endsnippet
 
 snippet lm "lambda function" w
 (${2}) => {
-  ${VISUAL}${3}
+  ${VISUAL}$3
 };
 endsnippet
 
 snippet "(\.(?:map|forEach|filter|reduce|every|some))" "array functions" r
 `!p snip.rv = match.group(1)`((${1}) => {
 	${VISUAL}${2}
+})
+endsnippet
+
+snippet "(setTimeout|setInterval|setImmediate|requestAnimationFrame|nextTick|\$nextTick)" "timers" r
+`!p snip.rv = match.group(1)`(() => {
+	${VISUAL}${1}
+})
+endsnippet
+
+snippet "(P|p)romise" "promise" r
+Promise((resolve, reject) => {
+	${VISUAL}${1}
 })
 endsnippet
 
