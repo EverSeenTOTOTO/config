@@ -46,7 +46,7 @@ install_tmux_plugs() {
     fi
   done
 }
-install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu tmux-urlview tmux-open
+install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu
 if [[ ! -d $TMUX_PLUG/vim-tmux-navigator ]]; then
   git clone https://github.com/christoomey/vim-tmux-navigator.git $TMUX_PLUG/vim-tmux-navigator --depth 1
 fi
@@ -69,32 +69,26 @@ done
 5. Extra steps
 
 ```bash
-function confirm()
-{
-    echo -n "$@ "
-    read -e answer
-    for response in y Y yes YES Yes
-    do
-        if [ "_$answer" == "_$response" ]
-        then
-            return 0
-        fi
-    done
-
-    # Any answer other than the list above is considerred a "no" answer
-    return 1
-}
-
 # autojump
-confirm Do U want to install autojump?
-
-if [ $? -eq 0 ]
-then 
+read -p "Do U want to install autojump?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
   AUTOJUMP=~/autojump
   echo "installing autojump"
   git clone git://github.com/wting/autojump.git $AUTOJUMP --depth 1
   cd $AUTOJUMP
   ./install.py
+fi
+
+#nvm
+read -p "Do U want to install nvm?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  cd ~
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+  cd -
 fi
 ```
 

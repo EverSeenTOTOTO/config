@@ -101,7 +101,7 @@ nmap <M-k> mz:m-2<cr>`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " leader + /的时候取消高亮
-nnoremap <leader>/r :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+nnoremap <leader>/ :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 
 " leader + tl切换tab last
 let g:lasttab = 1
