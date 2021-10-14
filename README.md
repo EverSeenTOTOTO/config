@@ -68,10 +68,39 @@ done
 
 5. Extra steps
 
+```bash
+function confirm()
+{
+    echo -n "$@ "
+    read -e answer
+    for response in y Y yes YES Yes
+    do
+        if [ "_$answer" == "_$response" ]
+        then
+            return 0
+        fi
+    done
+
+    # Any answer other than the list above is considerred a "no" answer
+    return 1
+}
+
+# autojump
+confirm Do U want to install autojump?
+
+if [ $? -eq 0 ]
+then 
+  AUTOJUMP=~/autojump
+  echo "installing autojump"
+  git clone git://github.com/wting/autojump.git $AUTOJUMP --depth 1
+  cd $AUTOJUMP
+  ./install.py
+fi
+```
+
 You can install these for better experiance:
 
 + nerd-fonts (fira-code)
-+ autojump
 + translate-shell
 + ripgrep
 + batcat
