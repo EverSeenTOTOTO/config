@@ -82,17 +82,13 @@ nnoremap <silent> * *zz
 nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 
-vnoremap H ^
-vnoremap L g_
-nnoremap H ^
-nnoremap L g_
+vnoremap H g^
+vnoremap L g$
+nnoremap H g^
+nnoremap L g$
 nnoremap U <C-r>
 
 " Alt + jk移动行
-execute "set <M-j>=\ej"
-execute "set <M-k>=\ek"
-execute "set <M-l>=\el"
-execute "set <M-h>=\eh"
 nmap <M-j> mz:m+<cr>`z
 imap <M-j> <esc>mz:m+<cr>`zi
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
@@ -112,22 +108,10 @@ au TabLeave * let g:lasttab = tabpagenr()
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " copy
-vnoremap <silent>y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
+vnoremap y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " mark on leave
-autocmd BufLeave *.{c,cpp} mark C
-autocmd BufLeave *.h       mark H
-
-" cursor type on diff mode
-if empty($TMUX)
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-  let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-else
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-endif
+autocmd BufLeave *.{js,ts,json,jsx,tsx} mark C
 
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline
@@ -151,7 +135,6 @@ if has("persistent_undo")
 endif
 nnoremap <F5> :UndotreeToggle<CR>
 
-set completeopt=popup,preview,menuone
 
 " 不与vi兼容
 set nocompatible
@@ -275,6 +258,12 @@ set cmdheight=2
 if (has("nvim"))
   "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+else 
+  set completeopt=popup,preview,menuone
+  execute "set <M-j>=\ej"
+  execute "set <M-k>=\ek"
+  execute "set <M-l>=\el"
+  execute "set <M-h>=\eh"
 endif
 "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
 "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
@@ -287,7 +276,7 @@ endif
 set background=dark        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
 let g:material_terminal_italics = 1
-let g:material_theme_style = 'palenight' 
+let g:material_theme_style = 'lighter' 
 let g:airline_theme = 'material'
 colorscheme material
 

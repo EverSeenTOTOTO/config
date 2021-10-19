@@ -56,7 +56,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server
+for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then
@@ -92,10 +92,11 @@ then
 fi
 ```
 
-You can install these for better experiance:
+Something I suggest for better experiance:
 
 + nerd-fonts (fira-code)
 + translate-shell
 + ripgrep
 + batcat
 + fdfind
++ git-filter-repo
