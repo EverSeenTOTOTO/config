@@ -56,7 +56,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim
+for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim standard-version
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then
@@ -100,3 +100,4 @@ Something I suggest for better experiance:
 + batcat
 + fdfind
 + git-filter-repo
+
