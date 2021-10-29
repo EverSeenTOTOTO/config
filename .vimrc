@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
 
 " 主题和颜色
 Plug 'rakr/vim-one'
-Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
 " status bar
 Plug 'vim-airline/vim-airline'
@@ -111,7 +110,7 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 vnoremap y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " mark on leave
-autocmd BufLeave *.{js,ts,json,jsx,tsx} mark C
+autocmd BufLeave *.{vue,js,ts,json,jsx,tsx} mark C
 
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline
@@ -275,10 +274,7 @@ endif
 " theme
 set background=dark        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
-let g:material_terminal_italics = 1
-let g:material_theme_style = 'lighter' 
-let g:airline_theme = 'material'
-colorscheme material
+colorscheme one
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.

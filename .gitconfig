@@ -29,6 +29,7 @@
   remotes = remote --verbose
   po = push origin
   pu = push upstream
+  ck = checkout
   cp = cherry-pick
   st = status --column -sb
   su = stash -u
