@@ -9,6 +9,7 @@
 
 ```bash
 ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
+cp ~/.vim/coc-settings.json ~/.config/nvim/
 ```
 
 

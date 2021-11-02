@@ -16,14 +16,14 @@ Plug 'vim-airline/vim-airline-themes'
 " EasyMotion
 Plug 'easymotion/vim-easymotion'
 
+" comment
+Plug 'tpope/vim-commentary'
+
+" indent
+Plug 'michaeljsmith/vim-indent-object'
+
 " VimSurround
 Plug 'tpope/vim-surround'
-
-" undotree
-Plug 'mbbill/undotree'
-
-" VimRegister
-Plug 'junegunn/vim-peekaboo'
 
 " EditorCOnfig
 Plug 'editorconfig/editorconfig-vim'
@@ -47,8 +47,8 @@ call plug#end()
 " 核心按键
 inoremap vv <esc>
 let mapleader = ";"
-map <space> :
 map <space><leader> @
+map <space> :
 
 " 行号
 nnoremap <F2> :set nu! nu?<CR>
@@ -65,6 +65,10 @@ map <up> :res +5<CR>
 map <down> :res -5<CR>
 map <left> :vertical resize-5<CR>
 map <right> :vertical resize+5<CR>
+map d<up> :wincmd k<cr>:wincmd c<cr>:wincmd p<cr>
+map d<down> :wincmd j<cr>:wincmd c<cr>:wincmd p<cr>
+map d<left> :wincmd h<cr>:wincmd c<cr>:wincmd p<cr>
+map d<right> :wincmd l<cr>:wincmd c<cr>:wincmd p<cr>
 
 " :W -> sudo save
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
@@ -96,7 +100,7 @@ nmap <M-k> mz:m-2<cr>`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " leader + /的时候取消高亮
-nnoremap <leader>/ :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+nmap <leader><cr> :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 
 " leader + tl切换tab last
 let g:lasttab = 1
@@ -104,20 +108,16 @@ nmap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
 " cd切换pwd到当前Buffer所在directory
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+nmap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " copy
 vnoremap y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
 " mark on leave
-autocmd BufLeave *.{vue,js,ts,json,jsx,tsx} mark C
+autocmd BufLeave * mark C
 
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline
-
-" font size
-command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
-command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 
 " undo
 if has("persistent_undo")
@@ -132,8 +132,6 @@ if has("persistent_undo")
     let &undodir=target_path
     set undofile
 endif
-nnoremap <F5> :UndotreeToggle<CR>
-
 
 " 不与vi兼容
 set nocompatible
@@ -144,6 +142,9 @@ set history=500
 " 文件变更时自动更新
 set autoread
 au FocusGained,BufEnter * checktime
+
+" grep -> rg
+set grepprg=rg\ --vimgrep\ --smart-case\ --follow
 
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
@@ -250,10 +251,6 @@ set hidden
 set cmdheight=2
 
 " 主题背景
-"Credit joshdick
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
-"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
 if (has("nvim"))
   "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -359,6 +356,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEditSplit="vertical"
 
 " coc-nvim
+hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
 
 " use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
@@ -381,24 +379,34 @@ nmap <leader>d <Plug>(coc-definition)
 nmap <leader>t <Plug>(coc-type-definition)
 nmap <leader>i <Plug>(coc-implementation)
 nmap <leader>r <Plug>(coc-references)
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-fix-current)
 nmap <leader>n <Plug>(coc-rename)
 nmap <leader>. <Plug>(coc-command-repeat)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>gr <Plug>(coc-refactor)
 nmap <leader>ga  <Plug>(coc-codeaction)
-nmap <leader>gf  <Plug>(coc-fix-current)
+nmap <leader>gf  <Plug>(coc-format-selected)
+xmap <leader>gf  <Plug>(coc-format-selected)
 nmap <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <leader>] <Plug>(coc-diagnostic-next)
-nnoremap <leader>l :CocList<space>
-nnoremap <leader>gm :CocCommand tsserver.organizeImports<CR>
+nmap <leader>/ :CocSearch<space>
+nmap <leader>l :CocList<space>
+nmap <leader>c :CocCommand<space>
+nmap <leader>y :CocList -A --normal yank<CR>
+nmap <leader>gm :CocCommand tsserver.organizeImports<CR>
+
+nmap <silent> <C-c> <Plug>(coc-cursors-position)
+nmap <silent> <C-d> <Plug>(coc-cursors-word)*
+xmap <silent> <C-d> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)gn
+" use normal command like `<leader>xi(`
+nmap <leader>x  <Plug>(coc-cursors-operator)
+
 
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  autocmd FileType javascript,typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
@@ -422,12 +430,14 @@ let g:coc_global_extensions = [
       \'coc-json',
       \'coc-lists',
       \'coc-markdownlint',
+      \'coc-pairs',
       \'coc-python',
       \'coc-stylelint',
       \'coc-tabnine',
       \'coc-tsserver',
       \'coc-vetur',
       \'coc-yaml',
+      \'coc-yank'
       \]
 
 " multi-cursor
@@ -440,6 +450,5 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " open Coc Explorer
 nnoremap <C-t> :CocCommand explorer
     \ --toggle
-    \ --sources=buffer+,file+
+    \ --sources=file+
     \ <CR>
-
