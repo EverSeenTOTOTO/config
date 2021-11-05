@@ -57,7 +57,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim standard-version
+for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim standard-version gtop
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then
@@ -67,7 +67,16 @@ do
 done
 ```
 
-5. Extra steps
+5. `cargo` tools
+
+```bash
+echo `now installing mordern linux commands with cargo...`
+if ! command -v cargo > /dev/null 2>&1; then
+  cargo install --locked ripgrep lsd bat fdfind dust gping 
+endif
+```
+
+6. Extra steps
 
 ```bash
 # autojump
@@ -75,11 +84,11 @@ read -p "Do U want to install autojump?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-  AUTOJUMP=~/autojump
   echo "installing autojump"
-  git clone git://github.com/wting/autojump.git $AUTOJUMP --depth 1
-  cd $AUTOJUMP
+  git clone git://github.com/wting/autojump.git autojump --depth 1
+  cd autojump
   ./install.py
+  cd -
 fi
 
 #nvm
@@ -97,8 +106,12 @@ Something I suggest for better experiance:
 
 + nerd-fonts (fira-code)
 + translate-shell
-+ ripgrep
-+ batcat
-+ fdfind
-+ git-filter-repo
++ ripgrep for grep
++ lsd for ls
++ batcat for cat
++ fdfind for find
++ dust for du
++ gtop for top
++ gping for ping
++ git-filter-repo for git filter-branch
 
