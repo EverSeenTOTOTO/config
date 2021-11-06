@@ -5,6 +5,9 @@ ZSH_THEME="fino-time"
 plugins=(git emoji extract docker-compose fd history zsh-autosuggestions zsh-syntax-highlighting)
 
 unset file;
+
+setopt +o nomatch
+
 source $HOME/.bash_profile;
 source $ZSH/oh-my-zsh.sh;
 

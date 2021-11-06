@@ -3,9 +3,11 @@ alias cls='clear'
 alias mkdir='mkdir -p';
 alias fd=fdfind
 alias bat=batcat
+alias faf="fzf --preview 'batcat --style=numbers --color=always --line-range :500 {}'"
 
 alias ..='cd ..'
 alias ...='cd ../..'
+alias ....="cd ../../.."
 
 alias path='echo -e ${PATH//:/\\n}'
 alias venv="source ~/venv/bin/activate"

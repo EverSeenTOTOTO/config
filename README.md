@@ -70,7 +70,7 @@ done
 5. `cargo` tools
 
 ```bash
-echo `now installing mordern linux commands with cargo...`
+echo 'now installing mordern linux commands with cargo...'
 if ! command -v cargo > /dev/null 2>&1; then
   cargo install --locked ripgrep lsd bat fdfind dust gping 
 endif
@@ -106,12 +106,12 @@ Something I suggest for better experiance:
 
 + nerd-fonts (fira-code)
 + translate-shell
-+ ripgrep for grep
-+ lsd for ls
-+ batcat for cat
-+ fdfind for find
-+ dust for du
-+ gtop for top
-+ gping for ping
++ ripgrep for `grep`
++ lsd for `ls`
++ batcat for `cat`
++ fdfind for `find`
++ dust for `du`
++ gtop for `top`
++ gping for `ping`
 + git-filter-repo for git filter-branch
 
