@@ -9,11 +9,14 @@
 
 ```bash
 ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
+# for nvim
 cp ~/.vim/coc-settings.json ~/.config/nvim/
 ```
 
 
 2. Install oh-my-zsh
+
+> Require `zsh` to have been installed.
 
 ```bash
 if ! command -v zsh > /dev/null 2>&1; then
@@ -53,7 +56,14 @@ if [[ ! -d $TMUX_PLUG/vim-tmux-navigator ]]; then
 fi
 ```
 
-4. Install npm globals
+4. Install `fzf`
+
+```bash
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+```
+
+5. Install npm globals
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
@@ -67,16 +77,18 @@ do
 done
 ```
 
-5. `cargo` tools
+6. `cargo` tools
+
+> See the last part of this document.
 
 ```bash
-echo 'now installing mordern linux commands with cargo...'
 if ! command -v cargo > /dev/null 2>&1; then
+  echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fdfind dust gping 
 endif
 ```
 
-6. Extra steps
+7. Extra steps
 
 ```bash
 # autojump

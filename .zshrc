@@ -14,3 +14,5 @@ source $ZSH/oh-my-zsh.sh;
 [[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
 
 autoload -U compinit && compinit -u
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

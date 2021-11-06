@@ -88,7 +88,6 @@ let g:coc_global_extensions = [
       \'coc-git',
       \'coc-html',
       \'coc-json',
-      \'coc-lists',
       \'coc-markdownlint',
       \'coc-pairs',
       \'coc-python',
@@ -175,17 +174,5 @@ command! FZFLines call fzf#run({
 \   'down':    '60%'
 \})
 
-function! s:fzf_neighbouring_files()
-  let current_file =expand("%")
-  let cwd = fnamemodify(current_file, ':p:h')
-  let command = 'ag -g "" -f ' . cwd . ' --depth 0'
-
-  call fzf#run({
-        \ 'source': command,
-        \ 'sink':   'e',
-        \ 'options': '-m -x +s',
-        \ 'window':  'enew' })
-endfunction
-
-command! FZFNeigh call s:fzf_neighbouring_files()
-
+nnoremap <C-f> :FZF<cr>
+nnoremap <C-s> :FZFLines<cr>
