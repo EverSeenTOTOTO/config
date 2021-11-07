@@ -41,10 +41,6 @@ Plug 'christoomey/vim-tmux-navigator'
 " explorer icons
 Plug 'ryanoasis/vim-devicons'
 
-" snippet
-" Track the engine.
-Plug 'SirVer/ultisnips'
-
 " coc.nvim
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 

@@ -150,7 +150,7 @@ endif
 " theme
 set background=dark        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
-colorscheme one
+colorscheme iceberg
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
