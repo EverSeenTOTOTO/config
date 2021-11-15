@@ -1,5 +1,5 @@
 " mark on leave
-autocmd BufLeave * mark l
+autocmd BufLeave * mark L
 
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline

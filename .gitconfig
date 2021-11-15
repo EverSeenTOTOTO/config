@@ -28,6 +28,7 @@
   branches = branch --all
   remotes = remote --verbose
   po = push origin
+  p1 = push 1dev
   pu = push upstream
   ck = checkout
   cp = cherry-pick

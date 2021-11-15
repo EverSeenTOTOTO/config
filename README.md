@@ -59,8 +59,10 @@ fi
 4. Install `fzf`
 
 ```bash
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+if [[ ! -d ~/.fzf ]]; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+fi
 ```
 
 5. Install npm globals
@@ -85,7 +87,7 @@ done
 if ! command -v cargo > /dev/null 2>&1; then
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fdfind dust gping 
-endif
+fi
 ```
 
 7. Extra steps
