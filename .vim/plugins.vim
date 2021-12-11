@@ -14,21 +14,17 @@ Plug 'rafi/awesome-vim-colorschemes'
 Plug 'gosukiwi/vim-atom-dark'
 Plug 'rhysd/vim-color-spring-night'
 
-
 " status bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " EasyMotion
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 
 " fzf
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-
-" comment
-Plug 'tpope/vim-commentary'
-
+"
 " VimSurround
 Plug 'tpope/vim-surround'
 

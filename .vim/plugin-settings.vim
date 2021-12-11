@@ -1,16 +1,9 @@
-" easymotion config
-let g:EasyMotion_smartcase = 1
-" keep cursor colum when JK motion
-"let g:EasyMotion_startofline = 0 
-map <leader>s <Plug>(easymotion-j)
-map <leader>w <Plug>(easymotion-k)
-nmap <leader>z <Plug>(easymotion-overwin-f2)
-
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
 " coc-nvim
+let g:coc_disable_uncaught_error = 1
 hi CocCursorRange guibg=#b16286 guifg=#ebdbb2
 
 " use <tab> for trigger completion and navigate to the next complete item
@@ -33,34 +26,25 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR
 nmap <leader>d <Plug>(coc-definition)
 nmap <leader>t <Plug>(coc-type-definition)
 nmap <leader>i <Plug>(coc-implementation)
-nmap <leader>r <Plug>(coc-references)
+nmap <leader>h :call CocAction('definitionHover')<CR>
+nmap <leader>r <Plug>(coc-refactor)
 nmap <leader>f  <Plug>(coc-fix-current)
 nmap <leader>n <Plug>(coc-rename)
 nmap <leader>. <Plug>(coc-command-repeat)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>gr <Plug>(coc-refactor)
-nmap <leader>ga  <Plug>(coc-codeaction)
-nmap <leader>gf  <Plug>(coc-format-selected)
-xmap <leader>gf  <Plug>(coc-format-selected)
+nmap <leader>a  <Plug>(coc-codeaction)
 nmap <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <leader>] <Plug>(coc-diagnostic-next)
-nmap <leader>gm :CocCommand tsserver.organizeImports<CR>
-nmap <leader>l :CocList<space>
-nmap <leader>y :CocList -A --normal yank<CR>
+nmap <leader>gr <Plug>(coc-references)
+nmap <leader>gm :call CocAction('organizeImport')<CR>
+nmap <leader>l :CocList -N<space>
+nmap <leader>y :CocList -A yank<CR>
 nmap <leader>c :CocCommand<space>
+nnoremap <C-s> :CocSearch -n --hidden -g !*.{git,lock,min.js,map} --smart-case -e<space>
 
+nmap <silent> <C-p> <Plug>(coc-range-select-backward)
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
 nmap <silent> <C-n> <Plug>(coc-cursors-word)*
 xmap <silent> <C-n> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)gn
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType javascript,typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
 
 xmap if <Plug>(coc-funcobj-i)
 omap if <Plug>(coc-funcobj-i)
@@ -92,8 +76,10 @@ let g:coc_global_extensions = [
       \'coc-yank'
       \]
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
+" autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd User CocJumpPlaceholder call
+				\ CocActionAsync('showSignatureHelp')
+	
 " open Coc Explorer
 nnoremap <C-t> :CocCommand explorer
     \ --toggle
@@ -106,14 +92,10 @@ nnoremap <silent> <leader>v :call fzf#run({
 \   'right': winwidth('.') / 2,
 \   'sink':  'vertical botright split' })<CR>
 
-nnoremap <silent> <leader>C :call fzf#run({
-\   'source':
-\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-\   'sink':    'colo',
-\   'options': '+m',
-\   'left':    30
-\ })<CR>
+nnoremap <silent> <leader>V :call fzf#run({
+\   'dir': '~',
+\   'right': winwidth('.') / 2,
+\   'sink':  'vertical botright split' })<CR>
 
 function! s:buflist()
   redir => ls
@@ -169,4 +151,5 @@ command! FZFLines call fzf#run({
 \})
 
 nnoremap <C-f> :FZF<cr>
-nnoremap <C-s> :FZFLines<cr>
+nnoremap <space><space> :History:<cr>
+nnoremap <space>/ :History/<cr>
