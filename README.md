@@ -86,7 +86,7 @@ done
 ```bash
 if ! command -v cargo > /dev/null 2>&1; then
   echo 'install mordern linux commands with cargo...'
-  cargo install --locked ripgrep lsd bat fdfind dust gping 
+  cargo install --locked ripgrep lsd bat fd-find du-dust gping 
 fi
 ```
 

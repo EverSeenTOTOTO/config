@@ -77,12 +77,14 @@ let g:coc_global_extensions = [
       \'coc-emoji',
       \'coc-eslint',
       \'coc-git',
+      \'coc-go',
       \'coc-html',
       \'coc-json',
+      \'coc-lua',
       \'coc-markdownlint',
       \'coc-pairs',
       \'coc-python',
-      \'coc-stylelint',
+      \'coc-stylelintplus',
       \'coc-tabnine',
       \'coc-tsserver',
       \'coc-vetur',
@@ -103,6 +105,7 @@ nnoremap <C-t> :CocCommand explorer
 nnoremap <silent> <leader>v :call fzf#run({
 \   'right': winwidth('.') / 2,
 \   'sink':  'vertical botright split' })<CR>
+
 nnoremap <silent> <leader>C :call fzf#run({
 \   'source':
 \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
