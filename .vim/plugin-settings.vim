@@ -68,7 +68,7 @@ let g:coc_global_extensions = [
       \'coc-markdownlint',
       \'coc-pairs',
       \'coc-python',
-      \'coc-stylelintplus',
+      \'coc-stylelint',
       \'coc-tabnine',
       \'coc-tsserver',
       \'coc-vetur',

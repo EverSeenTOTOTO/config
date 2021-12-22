@@ -37,11 +37,6 @@
 	},
   "explorer.icon.enableNerdfont": true,
   "explorer.icon.source": "vim-devicons",
-  "css.validate": false,
-  "less.validate": false,
-  "scss.validate": false,
-  "wxss.validate": false,
-  "stylelintplus.autoFixOnSave": true,
   "markdownlint.config": {
     "default": true,
     "line_length": false
