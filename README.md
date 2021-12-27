@@ -24,7 +24,7 @@ if ! command -v zsh > /dev/null 2>&1; then
 fi
 
 install_zsh_plugins() {
-  ZSH_PLUG=$\{ZSH_CUSTOM:-~/.oh-my-zsh/custom\}/plugin
+  ZSH_PLUG=$\{ZSH_CUSTOM:-~/.oh-my-zsh/custom\}/plugins
   for plug in $@
   do
     if [[ ! -d $ZSH_PLUG/$plug ]]
@@ -85,6 +85,7 @@ done
 
 ```bash
 if ! command -v cargo > /dev/null 2>&1; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fd-find du-dust gping 
 fi
