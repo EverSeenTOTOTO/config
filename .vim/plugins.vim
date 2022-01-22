@@ -21,6 +21,9 @@ Plug 'vim-airline/vim-airline-themes'
 " EasyMotion
 " Plug 'easymotion/vim-easymotion'
 
+" show Register
+Plug 'junegunn/vim-peekaboo'
+
 " fzf
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }

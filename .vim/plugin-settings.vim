@@ -39,7 +39,6 @@ nmap <leader>gm :call CocAction('organizeImport')<CR>
 nmap <leader>l :CocList -N<space>
 nmap <leader>y :CocList -A yank<CR>
 nmap <leader>c :CocCommand<space>
-nnoremap <C-s> :CocSearch -n --hidden -g !*.{git,lock,min.js,map} --smart-case -e<space>
 
 nmap <silent> <C-p> <Plug>(coc-range-select-backward)
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
@@ -72,20 +71,18 @@ let g:coc_global_extensions = [
       \'coc-tabnine',
       \'coc-tsserver',
       \'coc-vetur',
-      \'coc-yaml',
-      \'coc-yank'
+      \'coc-yaml'
       \]
 " Highlight the symbol and its references when holding the cursor.
 " autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd User CocJumpPlaceholder call
 				\ CocActionAsync('showSignatureHelp')
+" scroll on float
+nnoremap <nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
+nnoremap <nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
+inoremap <nowait><expr> <C-d> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <nowait><expr> <C-u> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
 	
-" open Coc Explorer
-nnoremap <C-t> :CocCommand explorer
-    \ --toggle
-    \ --sources=file+
-    \ <CR>
-
 " fzf
 " Open files in vertical horizontal split
 nnoremap <silent> <leader>v :call fzf#run({
@@ -151,5 +148,6 @@ command! FZFLines call fzf#run({
 \})
 
 nnoremap <C-f> :FZF<cr>
+nnoremap <C-s> :FZFLines<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>

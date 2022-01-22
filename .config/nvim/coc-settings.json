@@ -1,6 +1,6 @@
 {
-  "javascript.referencesCodeLens.enable": false,
   "typescript.referencesCodeLens.enable": false,
+  "javascript.referencesCodeLens.enable": false,
   "suggest.maxCompleteItemCount": 20,
   "suggest.minTriggerInputLength": 2,
   "diagnostic.messageDelay": 300,
