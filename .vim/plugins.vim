@@ -7,12 +7,10 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " 主题和颜色
-Plug 'rakr/vim-one'
-Plug 'frenzyexists/aquarium-vim', { 'branch': 'develop' }
 Plug 'cocopon/iceberg.vim'
-Plug 'rafi/awesome-vim-colorschemes'
-Plug 'gosukiwi/vim-atom-dark'
-Plug 'rhysd/vim-color-spring-night'
+
+" treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " status bar
 Plug 'vim-airline/vim-airline'

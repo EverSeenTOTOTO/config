@@ -26,7 +26,7 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR
 nmap <leader>d <Plug>(coc-definition)
 nmap <leader>t <Plug>(coc-type-definition)
 nmap <leader>i <Plug>(coc-implementation)
-nmap <leader>h :call CocAction('definitionHover')<CR>
+nmap <leader>h :call CocActionAsync('definitionHover')<CR>
 nmap <leader>r <Plug>(coc-refactor)
 nmap <leader>f  <Plug>(coc-fix-current)
 nmap <leader>n <Plug>(coc-rename)
@@ -35,7 +35,7 @@ nmap <leader>a  <Plug>(coc-codeaction)
 nmap <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <leader>] <Plug>(coc-diagnostic-next)
 nmap <leader>gr <Plug>(coc-references)
-nmap <leader>gm :call CocAction('organizeImport')<CR>
+nmap <leader>gm :call CocActionAsync('organizeImport')<CR>
 nmap <leader>l :CocList -N<space>
 nmap <leader>y :CocList -A yank<CR>
 nmap <leader>c :CocCommand<space>
@@ -77,77 +77,31 @@ let g:coc_global_extensions = [
 " autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd User CocJumpPlaceholder call
 				\ CocActionAsync('showSignatureHelp')
+
 " scroll on float
 nnoremap <nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
 nnoremap <nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
 inoremap <nowait><expr> <C-d> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
 inoremap <nowait><expr> <C-u> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-	
+
 " fzf
 " Open files in vertical horizontal split
 nnoremap <silent> <leader>v :call fzf#run({
 \   'right': winwidth('.') / 2,
 \   'sink':  'vertical botright split' })<CR>
 
-nnoremap <silent> <leader>V :call fzf#run({
-\   'dir': '~',
-\   'right': winwidth('.') / 2,
-\   'sink':  'vertical botright split' })<CR>
-
-function! s:buflist()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --hidden --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
-function! s:bufopen(e)
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
-nnoremap <silent> <leader><cr> :call fzf#run({
-\   'source':  reverse(<sid>buflist()),
-\   'sink':    function('<sid>bufopen'),
-\   'options': '+m',
-\   'down':    len(<sid>buflist()) + 2
-\ })<CR>
-
-command! FZFMru call fzf#run({
-\ 'source':  reverse(s:all_files()),
-\ 'sink':    'edit',
-\ 'options': '-m -x +s',
-\ 'down':    '40%' })
-
-function! s:all_files()
-  return extend(
-  \ filter(copy(v:oldfiles),
-  \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
-  \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
-endfunction
-
-function! s:line_handler(l)
-  let keys = split(a:l, ':\t')
-  exec 'buf' keys[0]
-  exec keys[1]
-  normal! ^zz
-endfunction
-
-function! s:buffer_lines()
-  let res = []
-  for b in filter(range(1, bufnr('$')), 'buflisted(v:val)')
-    call extend(res, map(getbufline(b,0,"$"), 'b . ":\t" . (v:key + 1) . ":\t" . v:val '))
-  endfor
-  return res
-endfunction
-
-command! FZFLines call fzf#run({
-\   'source':  <sid>buffer_lines(),
-\   'sink':    function('<sid>line_handler'),
-\   'options': '--extended --nth=3..',
-\   'down':    '60%'
-\})
-
-nnoremap <C-f> :FZF<cr>
-nnoremap <C-s> :FZFLines<cr>
+nnoremap <C-f> :Files<cr>
+nnoremap <C-s> :RG<space>
+nnoremap <C-m> :Marks<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>

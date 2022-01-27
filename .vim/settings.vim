@@ -133,7 +133,7 @@ set hidden
 set cmdheight=2
 
 " 主题背景
-if (has("nvim"))
+if has("nvim")
   "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 else 
@@ -143,7 +143,8 @@ else
   execute "set <M-l>=\el"
   execute "set <M-h>=\eh"
 endif
-if (has("termguicolors"))
+
+if has("termguicolors")
   set termguicolors
 endif
 
