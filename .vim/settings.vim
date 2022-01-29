@@ -1,8 +1,8 @@
 " mark on leave
-autocmd BufLeave * mark L
+au BufLeave * mark L
 
-autocmd InsertLeave,WinEnter * set cursorline
-autocmd InsertEnter,WinLeave * set nocursorline
+au InsertLeave,WinEnter * set cursorline
+au InsertEnter,WinLeave * set nocursorline
 
 " undo
 if has("persistent_undo")
@@ -34,20 +34,6 @@ set grepprg=rg\ --vimgrep\ --smart-case\ --follow
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
-let $LANG='en'
-set langmenu=en
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-
-" Turn on the Wild menu
-set wildmenu
-set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=.git\*,.hg\*,.svn\*
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-endif
-
 "Always show current position
 set ruler
 
@@ -59,6 +45,7 @@ set whichwrap+=<,>,h,l
 " set ignorecase
 " search smart case
 set smartcase
+
 " 高亮搜索结果
 set hlsearch
 " Makes search act like search in modern browsers
@@ -79,7 +66,7 @@ set t_vb=
 set tm=500
 " Properly disable sound on errors on MacVim
 if has("gui_macvim")
-    autocmd GUIEnter * set vb t_vb=
+    au GUIEnter * set vb t_vb=
 endif
 
 " Add a bit extra margin to the left
@@ -98,6 +85,7 @@ if has("gui_running")
     set t_Co=256
     set guitablabel=%M\ %t
 endif
+
 " utf8编码
 set encoding=utf8
 " unix 文件类型
@@ -108,7 +96,7 @@ set nowb
 set noswapfile
 " tab使用空格
 set expandtab
-" Be smart when using tabs ;)
+" Be smart when using tabs
 set smarttab
 " 1 tab == 2 spaces
 set shiftwidth=2
@@ -132,7 +120,6 @@ set hidden
 " Give more space for displaying messages.
 set cmdheight=2
 
-" 主题背景
 if has("nvim")
   "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -149,7 +136,7 @@ if has("termguicolors")
 endif
 
 " theme
-set background=dark        " for the light version
+set background=light        " for the light version
 let g:one_allow_italics = 1 " I love italic for comments
 colorscheme iceberg
 
@@ -177,7 +164,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 filetype plugin on
 filetype indent on
 
-if has("autocmd")
-  autocmd BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
+if has("au")
+  au BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 endif
 

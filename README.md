@@ -10,7 +10,6 @@
 ```bash
 ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
 # for nvim
-cp ~/.vim/coc-settings.json ~/.config/nvim/
 ```
 
 

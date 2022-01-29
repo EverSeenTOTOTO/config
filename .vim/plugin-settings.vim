@@ -45,15 +45,6 @@ nmap <silent> <C-c> <Plug>(coc-cursors-position)
 nmap <silent> <C-n> <Plug>(coc-cursors-word)*
 xmap <silent> <C-n> y/\V<C-r>=escape(@",'/\')<CR><CR>gN<Plug>(coc-cursors-range)gn
 
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-
 " global extensions
 let g:coc_global_extensions = [
       \'coc-css',
@@ -73,9 +64,8 @@ let g:coc_global_extensions = [
       \'coc-vetur',
       \'coc-yaml'
       \]
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-autocmd User CocJumpPlaceholder call
+
+au User CocJumpPlaceholder call
 				\ CocActionAsync('showSignatureHelp')
 
 " scroll on float
@@ -90,18 +80,9 @@ nnoremap <silent> <leader>v :call fzf#run({
 \   'right': winwidth('.') / 2,
 \   'sink':  'vertical botright split' })<CR>
 
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --hidden --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-endfunction
-
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
 nnoremap <C-f> :Files<cr>
 nnoremap <C-s> :RG<space>
-nnoremap <C-m> :Marks<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>

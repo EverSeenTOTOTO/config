@@ -1,13 +1,10 @@
 inoremap vv <esc>
 let mapleader = ";"
-map <space><leader> @
+map <leader><leader> @
 map <space> :
 
 " 行号
 nnoremap <F2> :set nu! nu?<CR>
-
-" 全选
-map <C-a> maggVG
 
 " 防止缩进取消选择
 vnoremap < <gv

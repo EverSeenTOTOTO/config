@@ -2,7 +2,7 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  au VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 call plug#begin('~/.vim/plugged')
 
@@ -11,13 +11,12 @@ Plug 'cocopon/iceberg.vim'
 
 " treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/playground'
 
 " status bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
-" EasyMotion
-" Plug 'easymotion/vim-easymotion'
 
 " show Register
 Plug 'junegunn/vim-peekaboo'
