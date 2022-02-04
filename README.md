@@ -9,7 +9,6 @@
 
 ```bash
 ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
-# for nvim
 ```
 
 
@@ -68,7 +67,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs np bash-language-server neovim standard-version gtop
+for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs bash-language-server neovim standard-version commitizen gtop
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then
@@ -119,7 +118,6 @@ fi
 Something I suggest for better experiance:
 
 + nerd-fonts (fira-code)
-+ translate-shell
 + ripgrep for `grep`
 + lsd for `ls`
 + batcat for `cat`
