@@ -58,8 +58,8 @@ let g:coc_global_extensions = [
       \'coc-markdownlint',
       \'coc-pairs',
       \'coc-python',
+      \'coc-rls',
       \'coc-stylelint',
-      \'coc-tabnine',
       \'coc-tsserver',
       \'coc-vetur',
       \'coc-yaml'
@@ -87,15 +87,17 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
   vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
 endif
+
 " fzf
 " Open files in vertical horizontal split
 nnoremap <silent> <leader>v :call fzf#run({
 \   'right': winwidth('.') / 2,
 \   'sink':  'vertical botright split' })<CR>
 
-command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 
 nnoremap <C-f> :Files<cr>
-nnoremap <C-s> :RG<space>
+nnoremap <C-s> :BLines<cr>
+nnoremap <C-m> :Marks<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>

@@ -100,7 +100,10 @@ set expandtab
 set smarttab
 " 1 tab == 2 spaces
 set shiftwidth=2
+set softtabstop=2
 set tabstop=2
+
+au Filetype cpp,markdown,rust,go,py setl ts=4 sw=4 sts=4
 
 " 超过500个字符折行
 set lbr
@@ -164,7 +167,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 filetype plugin on
 filetype indent on
 
-if has("au")
+if has("autocmd")
   au BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 endif
 

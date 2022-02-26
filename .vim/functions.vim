@@ -17,9 +17,8 @@ fun! AutoSetFileHead()
         call setline(1, "\#!/usr/bin/env zx")
     endif
 
-    normal G
-    normal o
-    normal o
+    norm Go
+    norm o
 endfunc
 
 fun! RipgrepFzf(query, fullscreen)

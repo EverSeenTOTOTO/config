@@ -84,6 +84,7 @@ done
 ```bash
 if ! command -v cargo > /dev/null 2>&1; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  rustup component add clippy
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fd-find du-dust gping 
 fi

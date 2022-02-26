@@ -52,11 +52,23 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " leader + /的时候取消高亮
 nmap <leader>/ :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 
-" leader + tl切换tab last
-let g:lasttab = 1
-nmap <leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
+" visual select search
+fun! s:GetSelectedText()
+  let l:old_reg = getreg('"')
+  let l:old_regtype = getregtype('"')
+  norm gvy
+  let l:ret = getreg('"')
+  call setreg('"', l:old_reg, l:old_regtype)
+  exe "norm \<Esc>"
+  return l:ret
+endfunc
+
+vnoremap <silent> * :call setreg("/",
+    \ substitute(<SID>GetSelectedText(),
+    \ '\_s\+',
+    \ '\\_s\\+', 'g')
+    \ )<Cr>n
 
 " copy
-vnoremap y "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
+vnoremap <C-c> "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
 
