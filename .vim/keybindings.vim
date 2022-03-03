@@ -1,5 +1,5 @@
 inoremap vv <esc>
-let mapleader = ";"
+let mapleader = ","
 map <leader><leader> @
 map <space> :
 

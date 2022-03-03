@@ -11,7 +11,6 @@
 ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
 ```
 
-
 2. Install oh-my-zsh
 
 > Require `zsh` to have been installed.
