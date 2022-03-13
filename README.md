@@ -16,25 +16,32 @@ ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
 > Require `zsh` to have been installed.
 
 ```bash
-if ! command -v zsh > /dev/null 2>&1; then
- sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# install oh-my-zsh
+if [[ ! -e ~/.oh-my-zsh/oh-my-zsh.sh ]]; then
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-install_zsh_plugins() {
+install_omz_plugins() {
   ZSH_PLUG=$\{ZSH_CUSTOM:-~/.oh-my-zsh/custom\}/plugins
   for plug in $@
   do
-    if [[ ! -d $ZSH_PLUG/$plug ]]
+    if [[ ! -e $ZSH_PLUG/$plug ]]
     then
       git clone https://github.com/zsh-users/$plug $ZSH_PLUG/$plug --depth 1
     fi
   done
 }
 
-install_zsh_plugins zsh-autosuggestions zsh-syntax-highlighting
+# omz plugins
+install_omz_plugins zsh-autosuggestions zsh-syntax-highlighting
+
+# zsh theme p10k
+if [[ ! -e $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k ]]; then
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k
+fi
 ```
 
-3. Install tmux
+3. Install tmux plugins
 
 ```bash
 install_tmux_plugs() {
@@ -42,13 +49,13 @@ install_tmux_plugs() {
   for plug in $@
   do
     echo -e "install tpm plugin $plug"
-    if [[ ! -d $TMUX_PLUG/$plug ]]; then
+    if [[ ! -e $TMUX_PLUG/$plug ]]; then
       git clone https://github.com/tmux-plugins/$plug $TMUX_PLUG/$plug --depth 1
     fi
   done
 }
 install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu
-if [[ ! -d $TMUX_PLUG/vim-tmux-navigator ]]; then
+if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
   git clone https://github.com/christoomey/vim-tmux-navigator.git $TMUX_PLUG/vim-tmux-navigator --depth 1
 fi
 ```
@@ -56,7 +63,7 @@ fi
 4. Install `fzf`
 
 ```bash
-if [[ ! -d ~/.fzf ]]; then
+if [[ ! -e ~/.fzf ]]; then
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install
 fi
@@ -78,46 +85,74 @@ done
 
 6. `cargo` tools
 
-> See the last part of this document.
+Install rust and some mordern command line tools writen in rust.
 
 ```bash
 if ! command -v cargo > /dev/null 2>&1; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
+  source $HOME/.cargo/env
   rustup component add clippy
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fd-find du-dust gping 
 fi
 ```
 
-7. Extra steps
+7. extra tools
 
 ```bash
-# autojump
-read -p "Do U want to install autojump?" -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-  echo "installing autojump"
-  git clone git://github.com/wting/autojump.git autojump --depth 1
-  cd autojump
-  ./install.py
-  cd -
+# pyenv
+if [[ ! -e ~/.pyenv ]]; then
+    read -p "Do U want to install autojump?" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+        cd ~/.pyenv 
+        src/configure 
+        make -C src
+        cd -
+    fi
 fi
 
-#nvm
-read -p "Do U want to install nvm?" -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-  cd ~
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-  cd -
+# autojump
+if [[ ! -e ~/.autojump ]]; then
+    read -p "Do U want to install autojump?" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "installing autojump"
+      git clone git://github.com/wting/autojump.git /tmp/autojump --depth 1
+      cd /tmp/autojump
+      ./install.py
+      cd -
+    fi
+fi
+
+# nvm
+if [[ ! -e ~/.nvm ]]; then
+    read -p "Do U want to install nvm?" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      cd ~
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+      cd -
+    fi
+fi
+```
+
+8. `FiraCode` (use `nerd fonts` patched version)
+
+```bash
+if [[ ! -e ~/.nerd-fonts ]]; then
+    git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts
+    cd ~/.nerd-fonts 
+    ./install.sh FiraCode
+    cd -
 fi
 ```
 
 Something I suggest for better experiance:
 
-+ nerd-fonts (fira-code)
 + ripgrep for `grep`
 + lsd for `ls`
 + batcat for `cat`
