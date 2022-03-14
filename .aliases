@@ -1,12 +1,17 @@
 alias df='df -h'
 alias cls='clear'
-alias mkdir='mkdir -p';
+alias mkdir='mkdir -pv'
+alias chmod='chmod -v'
+alias cp='cp -v'
+alias mv='mv -v'
+alias rm='rm -v'
+alias ln='ln -v'
 alias fd=fdfind
 alias ls=lsd
 alias ping=gping
 alias top=gtop
 alias du=dust
-alias grep=rg
+alias grep=rg -p
 alias faf="fzf --preview 'batcat --style=numbers --color=always --line-range :500 {}'"
 
 alias ..='cd ..'
