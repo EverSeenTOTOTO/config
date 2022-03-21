@@ -60,13 +60,16 @@ let g:coc_global_extensions = [
       \'coc-python',
       \'coc-rls',
       \'coc-stylelint',
+      \'coc-svelte',
       \'coc-tsserver',
       \'coc-vetur',
+      \'coc-word',
       \'coc-yaml'
       \]
 
 au User CocJumpPlaceholder call
 				\ CocActionAsync('showSignatureHelp')
+au VimEnter * call coc#rpc#notify('runCommand', ['poem.show'])
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -101,3 +104,4 @@ nnoremap <C-s> :BLines<cr>
 nnoremap <C-m> :Marks<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>
+

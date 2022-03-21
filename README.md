@@ -8,7 +8,7 @@
 1. Copy dot files
 
 ```bash
-ls -A | grep '^\.' | grep -Ev '^\.(git|ssh)$'|  xargs -I % bash -c "cp -r % ~/"
+ls -A | grep '^\.' | grep -Ev '^\.(git|ssh|rootvimrc)$'|  xargs -I % bash -c "cp -r % ~/"
 ```
 
 2. Install oh-my-zsh
@@ -73,7 +73,7 @@ fi
 
 ```bash
 npm_global=\`npm ls -g --depth 0\`
-for dep in dockerfile-language-server-nodejs pm2 yarn git-split-diffs bash-language-server neovim standard-version commitizen gtop
+for dep in dockerfile-language-server-nodejs pm2 yarn bash-language-server neovim commitizen gtop
 do
   if [[ -z $(echo $npm_global | grep $dep) ]]
   then

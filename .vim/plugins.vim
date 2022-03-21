@@ -30,14 +30,11 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " VimSurround
 Plug 'tpope/vim-surround'
 
-" EditorCOnfig
+" EditorConfig
 Plug 'editorconfig/editorconfig-vim'
 
 " tmux
 Plug 'christoomey/vim-tmux-navigator'
-
-" explorer icons
-Plug 'ryanoasis/vim-devicons'
 
 " coc.nvim
 Plug 'neoclide/coc.nvim', {'branch': 'release'}

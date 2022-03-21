@@ -70,5 +70,5 @@ vnoremap <silent> * :call setreg("/",
     \ )<Cr>n
 
 " copy
-vnoremap <C-c> "yy <Bar> :call system('xclip -i -sel c', @y)<CR>
+vnoremap <C-c> "yy <Bar> :call system('xclip -sel c -i', @y)<CR>
 

@@ -37,8 +37,6 @@
 		"typeParameter": "\uf728",
 		"default": "\uf29c"
 	},
-  "explorer.icon.enableNerdfont": true,
-  "explorer.icon.source": "vim-devicons",
   "markdownlint.config": {
     "default": true,
     "line_length": false
