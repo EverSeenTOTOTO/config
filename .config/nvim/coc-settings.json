@@ -6,6 +6,7 @@
   "diagnostic.messageDelay": 300,
   "codeLens.enable": true,
   "eslint.autoFixOnSave": true,
+  "markdownlint.onChange": false,
   "coc.preferences.enableMessageDialog": true,
   "coc.preferences.formatOnSaveFiletypes": [],
   "coc.preferences.silentAutoupdate": true,

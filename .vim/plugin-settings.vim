@@ -26,18 +26,17 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR
 nmap <leader>d <Plug>(coc-definition)
 nmap <leader>t <Plug>(coc-type-definition)
 nmap <leader>i <Plug>(coc-implementation)
-nmap <leader>h :call CocActionAsync('definitionHover')<CR>
 nmap <leader>r <Plug>(coc-refactor)
-nmap <leader>f  <Plug>(coc-fix-current)
 nmap <leader>n <Plug>(coc-rename)
 nmap <leader>. <Plug>(coc-command-repeat)
 nmap <leader>a  <Plug>(coc-codeaction)
 nmap <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <leader>] <Plug>(coc-diagnostic-next)
+nmap <leader>h :call CocActionAsync('definitionHover')<CR>
 nmap <leader>gr <Plug>(coc-references)
 nmap <leader>gm :call CocActionAsync('organizeImport')<CR>
+nmap <leader>o :CocList -N outline<CR>
 nmap <leader>l :CocList -N<space>
-nmap <leader>y :CocList -A yank<CR>
 nmap <leader>c :CocCommand<space>
 
 nmap <silent> <C-p> <Plug>(coc-range-select-backward)
@@ -64,12 +63,13 @@ let g:coc_global_extensions = [
       \'coc-tsserver',
       \'coc-vetur',
       \'coc-word',
-      \'coc-yaml'
+      \'coc-yaml',
+      \'@everseen/coc-poem',
       \]
 
 au User CocJumpPlaceholder call
 				\ CocActionAsync('showSignatureHelp')
-au VimEnter * call coc#rpc#notify('runCommand', ['poem.show'])
+au VimEnter * call coc#rpc#notify('runCommand', ['poem.boot'])
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.

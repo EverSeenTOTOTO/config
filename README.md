@@ -1,6 +1,7 @@
 # my dotfiles and configs
 
 > After clone this repo, you can use [zx](https://github.com/google/zx/blob/main/docs/markdown.md) to setup.
+>
 > ```bash
 > zx README.md
 > ```
@@ -8,7 +9,7 @@
 1. Copy dot files
 
 ```bash
-ls -A | grep '^\.' | grep -Ev '^\.(git|ssh|rootvimrc)$'|  xargs -I % bash -c "cp -r % ~/"
+ls -A | grep '^\.' | grep -Ev '^\.(git|md|ssh|rootvimrc)$'|  xargs -I % bash -c "cp -r % ~/"
 ```
 
 2. Install oh-my-zsh
@@ -102,7 +103,7 @@ fi
 ```bash
 # pyenv
 if [[ ! -e ~/.pyenv ]]; then
-    read -p "Do U want to install autojump?" -n 1 -r
+    read -p "Do U want to install pyenv?" -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         git clone https://github.com/pyenv/pyenv.git ~/.pyenv
@@ -110,20 +111,6 @@ if [[ ! -e ~/.pyenv ]]; then
         src/configure 
         make -C src
         cd -
-    fi
-fi
-
-# autojump
-if [[ ! -e ~/.autojump ]]; then
-    read -p "Do U want to install autojump?" -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-      echo "installing autojump"
-      git clone git://github.com/wting/autojump.git /tmp/autojump --depth 1
-      cd /tmp/autojump
-      ./install.py
-      cd -
     fi
 fi
 

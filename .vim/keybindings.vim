@@ -70,5 +70,7 @@ vnoremap <silent> * :call setreg("/",
     \ )<Cr>n
 
 " copy
-vnoremap <C-c> "yy <Bar> :call system('xclip -sel c -i', @y)<CR>
+vnoremap <C-c> "yy <Bar> :call system('xclip -sel c -i', @y)<CR>gv
+" 复制之后鼠标位置不动
+vnoremap y mVy'Vgv
 

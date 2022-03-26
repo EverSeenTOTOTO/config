@@ -169,3 +169,4 @@ filetype indent on
 
 au BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
 
+set shm+=I
