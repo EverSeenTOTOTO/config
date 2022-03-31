@@ -1,9 +1,6 @@
 " mark on leave
 au BufLeave * mark L
 
-au InsertLeave,WinEnter * set cursorline
-au InsertEnter,WinLeave * set nocursorline
-
 " undo
 if has("persistent_undo")
    let target_path = expand('~/.undodir')
@@ -62,12 +59,7 @@ set mat=2
 " 静音
 set noerrorbells
 set novisualbell
-set t_vb=
 set tm=500
-" Properly disable sound on errors on MacVim
-if has("gui_macvim")
-    au GUIEnter * set vb t_vb=
-endif
 
 " Add a bit extra margin to the left
 set foldcolumn=1
@@ -140,14 +132,13 @@ endif
 
 " theme
 set background=dark
-let g:one_allow_italics = 1 " I love italic for comments
 colorscheme iceberg
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
 set updatetime=300
 " Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
+set shm+=cI
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
@@ -168,5 +159,3 @@ filetype plugin on
 filetype indent on
 
 au BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
-
-set shm+=I

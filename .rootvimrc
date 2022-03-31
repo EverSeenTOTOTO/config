@@ -1,9 +1,6 @@
 " mark on leave
 au BufLeave * mark L
 
-au InsertLeave,WinEnter * set cursorline
-au InsertEnter,WinLeave * set nocursorline
-
 " undo
 if has("persistent_undo")
    let target_path = expand('~/.undodir')
@@ -62,12 +59,7 @@ set mat=2
 " 静音
 set noerrorbells
 set novisualbell
-set t_vb=
 set tm=500
-" Properly disable sound on errors on MacVim
-if has("gui_macvim")
-    au GUIEnter * set vb t_vb=
-endif
 
 " Add a bit extra margin to the left
 set foldcolumn=1
@@ -144,7 +136,7 @@ set background=dark
 " delays and poor user experience.
 set updatetime=300
 " Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
+set shm+=cI
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
@@ -165,8 +157,6 @@ filetype plugin on
 filetype indent on
 
 au BufNewFile *.sh,*.py,*.mjs :call AutoSetFileHead()
-
-set shm+=I
 
 inoremap vv <esc>
 let mapleader = ","
@@ -189,9 +179,6 @@ map d<up> :wincmd k<cr>:wincmd c<cr>:wincmd p<cr>
 map d<down> :wincmd j<cr>:wincmd c<cr>:wincmd p<cr>
 map d<left> :wincmd h<cr>:wincmd c<cr>:wincmd p<cr>
 map d<right> :wincmd l<cr>:wincmd c<cr>:wincmd p<cr>
-
-" :W -> sudo save
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 " 折行
 nnoremap k gk
@@ -240,7 +227,7 @@ vnoremap <silent> * :call setreg("/",
     \ )<Cr>n
 
 " copy
-vnoremap <C-c> "yy <Bar> :call system('xclip -sel c -i', @y)<CR>gv
-" 复制之后鼠标位置不动
-vnoremap y mVy'Vgv
-
+" 复制之后鼠标位置不动并保持选区
+vnoremap y mV"yy <Bar> :call system('xclip -sel c -i', @y)<CR>'Vgv
+" visual下退出visual，无论是v/V/C-v
+vnoremap v <esc>

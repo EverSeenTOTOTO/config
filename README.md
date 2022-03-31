@@ -9,7 +9,7 @@
 1. Copy dot files
 
 ```bash
-ls -A | grep '^\.' | grep -Ev '^\.(git|md|ssh|rootvimrc)$'|  xargs -I % bash -c "cp -r % ~/"
+ls -A | /usr/bin/grep '^\.' | /usr/bin/grep -vE '^\.(git|ssh|rootvimrc)$' | /usr/bin/grep -vE '\.md$' |  xargs -I % bash -c "cp -r % ~/"
 ```
 
 2. Install oh-my-zsh
@@ -55,7 +55,7 @@ install_tmux_plugs() {
     fi
   done
 }
-install_tmux_plugs tpm tmux-resurrect tmux-battery tmux-cpu
+install_tmux_plugs tpm tmux-resurrect
 if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
   git clone https://github.com/christoomey/vim-tmux-navigator.git $TMUX_PLUG/vim-tmux-navigator --depth 1
 fi

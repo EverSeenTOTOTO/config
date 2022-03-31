@@ -20,9 +20,6 @@ map d<down> :wincmd j<cr>:wincmd c<cr>:wincmd p<cr>
 map d<left> :wincmd h<cr>:wincmd c<cr>:wincmd p<cr>
 map d<right> :wincmd l<cr>:wincmd c<cr>:wincmd p<cr>
 
-" :W -> sudo save
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
-
 " 折行
 nnoremap k gk
 nnoremap gk k
@@ -70,7 +67,8 @@ vnoremap <silent> * :call setreg("/",
     \ )<Cr>n
 
 " copy
-vnoremap <C-c> "yy <Bar> :call system('xclip -sel c -i', @y)<CR>gv
-" 复制之后鼠标位置不动
-vnoremap y mVy'Vgv
+" 复制之后鼠标位置不动并保持选区
+vnoremap y mV"yy <Bar> :call system('xclip -sel c -i', @y)<CR>'Vgv
+" visual下退出visual，无论是v/V/C-v
+vnoremap v <esc>
 

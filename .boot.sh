@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # script on system start up
+set -euo pipefail;
 
 logfile=.cache/boot.log
 
@@ -12,6 +13,7 @@ pushd ./repos/tusk/
 pm2 start -n tusk yarn -- start
 popd
 
+echo "----------------------------------------------------" >> $logfile;
 date >> $logfile;
 rsync ./pdf/ $TSS:~/ftp/pdf -zrv --delete --progress --exclude=".*" >> $logfile 2<&1;
 

@@ -30,8 +30,8 @@ nmap <leader>r <Plug>(coc-refactor)
 nmap <leader>n <Plug>(coc-rename)
 nmap <leader>. <Plug>(coc-command-repeat)
 nmap <leader>a  <Plug>(coc-codeaction)
-nmap <leader>[ <Plug>(coc-diagnostic-prev)
-nmap <leader>] <Plug>(coc-diagnostic-next)
+nmap <leader>[ md<Plug>(coc-diagnostic-prev)
+nmap <leader>] md<Plug>(coc-diagnostic-next)
 nmap <leader>h :call CocActionAsync('definitionHover')<CR>
 nmap <leader>gr <Plug>(coc-references)
 nmap <leader>gm :call CocActionAsync('organizeImport')<CR>
@@ -82,6 +82,7 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
+" scroll in hover panel
 if has('nvim-0.4.0') || has('patch-8.2.0750')
   nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
   nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
@@ -101,7 +102,6 @@ command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 
 nnoremap <C-f> :Files<cr>
 nnoremap <C-s> :BLines<cr>
-nnoremap <C-m> :Marks<cr>
 nnoremap <space><space> :History:<cr>
 nnoremap <space>/ :History/<cr>
 
