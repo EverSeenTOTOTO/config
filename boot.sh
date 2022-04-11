@@ -5,9 +5,9 @@ set -euo pipefail;
 
 logfile=.cache/boot.log
 
-pm2 start -n dler "./.config/clash/clash-linux-386" -- -f ./.config/clash/.dler.yml;
+pm2 start -n dler "./.config/clash/clash-linux-386" -- -f ./.config/clash/config.yml;
 pm2 start -n doc "pen" -- -p4000 -r ~/repos/doc;
-pm2 start -n pdf "pen" -- -p5000 -r ~/pdf -t pdf -t md;
+# pm2 start -n pdf "pen" -- -p5000 -r ~/pdf -t pdf -t md;
 
 pushd ./repos/tusk/
 pm2 start -n tusk yarn -- start
