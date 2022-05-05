@@ -149,3 +149,13 @@ Something I suggest for better experiance:
 + gping for `ping`
 + git-filter-repo for git filter-branch
 
+9. `NvChad`
+
+> Note: I'm using my forked version.
+
+```bash 
+if [[ ! -e ~/.config/nvim ]]; then
+  git cln git@github.com:EverSeenTOTOTO/NvChad.git ~/.config/nvim --depth 1
+  nvim +'hi NormalFloat guibg=#1e222a' +PackerSync
+fi
+```

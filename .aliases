@@ -1,3 +1,4 @@
+alias t="tree"
 alias df='df -h'
 alias cls='clear'
 alias mkdir='mkdir -pv'
