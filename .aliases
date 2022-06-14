@@ -1,4 +1,4 @@
-alias t="tree"
+alias t='tree'
 alias df='df -h'
 alias cls='clear'
 alias mkdir='mkdir -pv'
@@ -12,11 +12,11 @@ alias ls=lsd
 alias ping=gping
 alias top=gtop
 alias du=dust
-alias grep=rg -p
+alias grep='rg -p'
 alias faf="fzf --preview 'batcat --style=numbers --color=always --line-range :500 {}'"
 
 alias ..='cd ..'
 alias ...='cd ../..'
-alias ....="cd ../../.."
+alias ....='cd ../../..'
 
 alias path='echo -e ${PATH//:/\\n}'

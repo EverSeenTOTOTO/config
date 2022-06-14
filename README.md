@@ -1,4 +1,4 @@
-# my dotfiles and configs
+# My dotfiles and configs
 
 > After clone this repo, you can use [zx](https://github.com/google/zx/blob/main/docs/markdown.md) to setup.
 >
@@ -59,7 +59,7 @@ if [[ ! -e ~/.fzf ]]; then
 fi
 ```
 
-## pyenv
+## Install pyenv
 
 ```bash
 # pyenv
@@ -76,7 +76,7 @@ if [[ ! -e ~/.pyenv ]]; then
 fi
 ```
 
-## nvm
+## Install nvm
 
 ```
 # nvm
@@ -96,7 +96,7 @@ fi
 
 ```bash
 NPM_GLOBALS=\`npm ls -g --depth 0\`
-for dep in pm2 yarn gtop vls typescript bash-language-server typescript-language-server vscode-langservers-extracted stylelint-lsp svelte-language-server vim-language-server
+for dep in pm2 yarn gtop vls typescript bash-language-server vscode-langservers-extracted stylelint-lsp svelte-language-server vim-language-server
 do
   if [[ -z $(echo $NPM_GLOBALS | grep $dep) ]]
   then
@@ -121,7 +121,7 @@ done
 # pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 ```
 
-## `cargo` tools
+## Install `cargo` tools
 
 Install rust and some mordern command line tools writen in rust.
 
@@ -135,12 +135,14 @@ if ! command -v cargo > /dev/null 2>&1; then
 fi
 
 # rust-analyzer
-curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - ~/.cargo/bin/rust-analyzer
-chmod +x ~/.cargo/bin/rust-analyzer
+if ! command -v rust-analyzer > /dev/null 2>&1; then
+  curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - ~/.cargo/bin/rust-analyzer
+  chmod +x ~/.cargo/bin/rust-analyzer
+fi
 ```
 
 
-## `FiraCode` (use `nerd fonts` patched version)
+## Install `FiraCode` (use `nerd fonts` patched version)
 
 ```bash
 if [[ ! -e ~/.nerd-fonts ]]; then
@@ -148,14 +150,5 @@ if [[ ! -e ~/.nerd-fonts ]]; then
     cd ~/.nerd-fonts 
     ./install.sh FiraCode
     cd -
-fi
-```
-
-## `NvChad` (use my forked version)
-
-```bash 
-if [[ ! -e ~/.config/nvim ]]; then
-  git cln git@github.com:EverSeenTOTOTO/NvChad.git ~/.config/nvim --depth 1
-  nvim +'hi NormalFloat guibg=#1e222a' +PackerSync
 fi
 ```
