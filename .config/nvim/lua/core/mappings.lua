@@ -73,7 +73,6 @@ map("i", "<C-e>", "<End>")
 map("i", "<C-l>", "<Right>")
 map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
-map("i", "<C-a>", "<ESC>^i")
 
 -- navigation between windows
 vim.g.tmux_navigator_no_mappings = 1
