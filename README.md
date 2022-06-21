@@ -50,7 +50,7 @@ if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
 fi
 ```
 
-## Install `fzf`
+## Install fzf
 
 ```bash
 if [[ ! -e ~/.fzf ]]; then
@@ -121,7 +121,7 @@ done
 # pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 ```
 
-## Install `cargo` tools
+## Install cargo tools
 
 Install rust and some mordern command line tools writen in rust.
 
@@ -142,7 +142,7 @@ fi
 ```
 
 
-## Install `FiraCode` (use `nerd fonts` patched version)
+## Install FiraCode (use `nerd fonts` patched version)
 
 ```bash
 if [[ ! -e ~/.nerd-fonts ]]; then
