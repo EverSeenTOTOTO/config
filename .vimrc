@@ -12,8 +12,7 @@ if has("persistent_undo")
 endif
 
 au FocusGained,BufEnter * checktime
-au Filetype cpp,markdown,rust,go,python setl ts=4 sw=4 sts=4
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au Filetype markdown,python setl ts=4 sw=4 sts=4
 
 set nocompatible
 set history=500
@@ -142,7 +141,13 @@ imap <M-k> <esc>mz:m-2<cr>`zi
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-nmap <leader>/ :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+vnoremap p p:let @+=@0<CR>
 
-vnoremap y mV"yy <Bar> :call system('xclip -sel c -i', @y)<CR>'Vgv
-vnoremap v <esc>
+imap <C-h> <Left>
+imap <C-e> <End>
+imap <C-l> <Right>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-f> <esc>ea
+imap <C-b> <esc>bi
+imap <C-o> <esc>O

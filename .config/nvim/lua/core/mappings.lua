@@ -65,7 +65,7 @@ map("v", "<C-c>", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip
 map("v", "p", "p:let @+=@0<CR>")
 
 -- use ESC to turn off search highlighting
-map("n", "<Esc>", "<cmd> :noh <CR>")
+map("n", "<Esc>", "<cmd>:noh<CR>")
 
 -- move cursor within insert mode
 map("i", "<C-h>", "<Left>")
@@ -73,6 +73,9 @@ map("i", "<C-e>", "<End>")
 map("i", "<C-l>", "<Right>")
 map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
+map("i", "<C-f>", "<esc>ea")
+map("i", "<C-b>", "<esc>bi")
+map("i", "<C-o>", "<esc>O")
 
 -- navigation between windows
 vim.g.tmux_navigator_no_mappings = 1

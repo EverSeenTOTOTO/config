@@ -54,7 +54,7 @@ local options = {
 
       -- Source
       vim_item.menu = ({
-        copilot = "[Copilot]",
+        -- copilot = "[Copilot]",
         nvim_lsp = "[LSP]",
         luasnip = "[LuaSnip]",
         buffer = "[Buffer]",
