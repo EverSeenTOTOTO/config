@@ -39,6 +39,10 @@ autocmd("BufWritePre", {
 autocmd("BufWritePre", {
   pattern = "*.tsx,*.ts,*.jsx,*.js,*.vue",
   callback = function()
-    vim.cmd ":EslintFixAll"
+    for _, client in pairs(vim.lsp.buf_get_clients(0)) do
+      if client.name == 'eslint' then
+        vim.cmd ":EslintFixAll"
+      end
+    end
   end
 })

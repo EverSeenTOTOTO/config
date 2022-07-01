@@ -43,7 +43,7 @@ if status_ok then
       "operation_type",
     },
     show_trailing_blankline_indent = false,
-    use_treesitter = true,
+    use_treesitter = false,
     char = "▏",
     context_char = "▏",
     show_current_context = true,

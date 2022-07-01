@@ -85,14 +85,6 @@ local plugins = {
     end,
   },
 
-  ["nvim-treesitter/nvim-treesitter"] = {
-    event = { "BufRead", "BufNewFile" },
-    run = ":TSUpdate",
-    config = function()
-      require "plugins.configs.treesitter"
-    end,
-  },
-
   -- LSP
   ["neovim/nvim-lspconfig"] = {
     module = "lspconfig",

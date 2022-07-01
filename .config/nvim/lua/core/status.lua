@@ -86,11 +86,6 @@ function M.provider.lsp_client_names()
   end
 end
 
-function M.provider.treesitter_status()
-  local ts = vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()]
-  return (ts and next(ts)) and " 綠TS" or ""
-end
-
 function M.provider.spacer(n)
   return string.rep(" ", n or 1)
 end
