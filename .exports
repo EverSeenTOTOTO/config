@@ -22,12 +22,19 @@ export PYTHONIOENCODING='UTF-8';
 # Increase Bash history size. Allow 32³ entries; the default is 500.
 export HISTSIZE='32768';
 export HISTFILESIZE="${HISTSIZE}";
-# Omit duplicates and commands that begin with a space from history.
-export HISTCONTROL='ignoreboth';
+# Make the command-line history ignore duplicate command lines.
+export HISTCONTROL=erasedups:ignoredups
+# Make the command-line history show dates and times.
+export HISTTIMEFORMAT="%F %T "
 
-# Prefer US English and use UTF-8.
-export LANG='en_US.UTF-8';
-export LC_ALL='en_US.UTF-8';
+# Support non-ASCII characters in terminal.
+# Note: use LC_ALL='C' if you want sort to behave in expected way.
+export LC_ALL='en_US.UTF-8'
+export LANG='en_US.UTF-8'
+export LANGUAGE='en_US.UTF-8'
+
+# Suppress OS X warning to change default shell to zsh.
+export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # flutter
 export PUB_HOSTED_URL=https://pub.flutter-io.cn

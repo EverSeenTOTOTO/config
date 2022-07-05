@@ -96,7 +96,7 @@ fi
 
 ```bash
 NPM_GLOBALS=\`npm ls -g --depth 0\`
-for dep in pm2 yarn gtop vls typescript bash-language-server vscode-langservers-extracted stylelint-lsp svelte-language-server vim-language-server
+for dep in pm2 yarn vls typescript bash-language-server vscode-langservers-extracted stylelint-lsp svelte-language-server vim-language-server
 do
   if [[ -z $(echo $NPM_GLOBALS | grep $dep) ]]
   then
@@ -131,7 +131,7 @@ if ! command -v cargo > /dev/null 2>&1; then
   source $HOME/.cargo/env
   rustup component add rust-src clippy
   echo 'install mordern linux commands with cargo...'
-  cargo install --locked ripgrep lsd bat fd-find du-dust gping 
+  cargo install --locked ripgrep lsd bat fd-find du-dust
 fi
 
 # rust-analyzer

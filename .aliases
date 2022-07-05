@@ -3,17 +3,15 @@ alias df='df -h'
 alias cls='clear'
 alias mkdir='mkdir -pv'
 alias chmod='chmod -v'
-alias cp='cp -v'
-alias mv='mv -v'
-alias rm='rm -v'
-alias ln='ln -v'
+alias cp='cp -vi'
+alias mv='mv -vi'
+alias rm='rm -vi'
+alias ln='ln -vi'
 alias fd=fdfind
 alias ls=lsd
-alias ping=gping
-alias top=gtop
 alias du=dust
 alias grep='rg -p'
-alias faf="fzf --preview 'batcat --style=numbers --color=always --line-range :500 {}'"
+alias less='less --quit-at-eof --no-init --tabs=4 --RAW-CONTROL-CHARS'
 
 alias ..='cd ..'
 alias ...='cd ../..'

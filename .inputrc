@@ -1,0 +1,10 @@
+# tab completions
+set show-all-if-ambiguous on
+set completion-ignore-case on
+
+# disable "display all possibilities prompt when too many items"
+set completion-query-items 9999
+set page-completions off
+
+# disable alert bell
+set bell-style none
