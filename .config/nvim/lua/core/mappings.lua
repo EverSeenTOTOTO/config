@@ -172,4 +172,6 @@ M.telescope = function()
   map("n", "//", "<cmd> :Telescope search_history <CR>")
 end
 
+map("n", "<leader>z", "$zf%")
+
 return M

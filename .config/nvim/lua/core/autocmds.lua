@@ -10,6 +10,7 @@ autocmd("BufEnter", {
 
 -- Open a file from its last left off position
 autocmd("BufReadPost", {
+  pattern = "*.*",
   callback = function()
     if not vim.fn.expand("%:p"):match ".git" and vim.fn.line "'\"" > 1 and vim.fn.line "'\"" <= vim.fn.line "$" then
       vim.cmd "normal! g'\""
@@ -31,6 +32,7 @@ autocmd("Filetype", {
 
 -- Auto format on write
 autocmd("BufWritePre", {
+  pattern = "*.*",
   callback = function()
     vim.lsp.buf.format()
   end,
@@ -44,5 +46,19 @@ autocmd("BufWritePre", {
         vim.cmd ":EslintFixAll"
       end
     end
+  end
+})
+
+-- auto save and load fold
+autocmd("BufWinLeave", {
+  pattern = "*.*",
+  callback = function()
+    vim.cmd ":mkview!"
+  end
+})
+autocmd("BufWinEnter", {
+  pattern = "*.*",
+  callback = function()
+    vim.cmd ":silent loadview"
   end
 })
