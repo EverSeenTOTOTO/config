@@ -5,8 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export ZSH="$HOME/.oh-my-zsh"
-
 # ZSH_THEME="fino-time"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -14,9 +12,8 @@ plugins=(git emoji extract docker-compose fd history zsh-autosuggestions zsh-syn
 
 unset file;
 
-source $ZSH/oh-my-zsh.sh;
-
 source ~/.profile;
+source $ZSH/oh-my-zsh.sh;
 
 autoload -U compinit && compinit -u
 

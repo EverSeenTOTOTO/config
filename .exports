@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 
 export EDITOR='vim';
-export NVM_DIR="$HOME/.nvm";
 export ZSH="$HOME/.oh-my-zsh";
 export HISTCONTROL=ignorespace
 export HISTIGNORE='pwd:exit:fg:bg:top:clear:history:ls:uptime:df:clear:cls'
+
+# nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+
+# riscv-gnu-toolchain
+export RISCV=/opt/riscv
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+
+export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$PATH"
 
 # puppeteer
 export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox;
