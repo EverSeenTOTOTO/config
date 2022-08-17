@@ -141,7 +141,6 @@ if ! command -v rust-analyzer > /dev/null 2>&1; then
 fi
 ```
 
-
 ## Install FiraCode (use `nerd fonts` patched version)
 
 ```bash

@@ -50,15 +50,15 @@ autocmd("BufWritePre", {
 })
 
 -- auto save and load fold
-autocmd("BufWinLeave", {
-  pattern = "*.*",
-  callback = function()
-    vim.cmd ":mkview!"
-  end
-})
-autocmd("BufWinEnter", {
-  pattern = "*.*",
-  callback = function()
-    vim.cmd ":silent loadview"
-  end
-})
+-- autocmd("BufWinLeave", {
+--   pattern = "*.*",
+--   callback = function()
+--     vim.cmd ":mkview!"
+--   end
+-- })
+-- autocmd("BufWinEnter", {
+--   pattern = "*.*",
+--   callback = function()
+--     vim.cmd ":silent loadview"
+--   end
+-- })

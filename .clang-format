@@ -5,12 +5,12 @@ AlignConsecutiveDeclarations: 'true'
 AlignEscapedNewlines: Left
 AlignOperands: 'true'
 AlignTrailingComments: 'true'
-AllowShortBlocksOnASingleLine: 'true'
+AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortLambdasOnASingleLine: Inline
-AllowShortLoopsOnASingleLine: 'true'
+AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: 'Yes'
 BinPackArguments: 'true'
@@ -18,7 +18,7 @@ BinPackParameters: 'true'
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeTernaryOperators: 'true'
 BreakStringLiterals: 'false'
-ColumnLimit: '99'
+ColumnLimit: '999'
 Cpp11BracedListStyle: 'true'
 IndentWidth: '2'
 MaxEmptyLinesToKeep: '1'
