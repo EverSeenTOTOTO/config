@@ -74,9 +74,6 @@ local plugins = {
     end,
   },
 
-  -- Better buffer closing
-  ["famiu/bufdelete.nvim"] = { cmd = { "Bdelete", "Bwipeout" } },
-
   -- code highlighting
   ["norcalli/nvim-colorizer.lua"] = {
     event = "BufRead",

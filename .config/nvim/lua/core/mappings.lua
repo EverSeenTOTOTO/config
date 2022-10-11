@@ -128,7 +128,8 @@ local M = {}
 M.bufferline = function()
   map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
   map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-  map("n", "<leader>q", ":Bdelete<cr>")
+  map("n", "<leader>q", ":bdelete<cr>")
+  map("n", "<leader>x", ":bwipeout<cr>")
 end
 
 M.lspconfig = function()

@@ -32,7 +32,7 @@ autocmd("Filetype", {
 
 -- Auto format on write
 autocmd("BufWritePre", {
-  pattern = "*.*",
+  pattern = "*.json,*.html",
   callback = function()
     vim.lsp.buf.format()
   end,

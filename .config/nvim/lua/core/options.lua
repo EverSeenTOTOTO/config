@@ -4,16 +4,13 @@ local g = vim.g
 -- disable providers
 g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
+g.loaded_node_provider = 0
 g.loaded_python3_provider = 0
-
--- use filetype.lua instead of filetype.vim
-g.did_load_filetypes = 0
-g.do_filetype_lua = 1
 
 opt.confirm = true
 opt.laststatus = 3 -- global statusline
 opt.title = true
-opt.clipboard = "unnamedplus"
+-- opt.clipboard = "unnamedplus"
 opt.cmdheight = 1
 opt.cul = true -- cursor line
 opt.lazyredraw = true

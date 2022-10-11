@@ -10,13 +10,13 @@ unset file;
 # nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-# autojump
-[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
-
 # pyenv
-eval "$(pyenv init --path)"
+# eval "$(pyenv init --path)"
 
 # Set Windows codepage to 65001 (UTF-8).
 if [[ "$OSTYPE" == "msys" ]]; then
     chcp.com 65001
 fi
+
+# z
+. $HOME/.config/z.sh

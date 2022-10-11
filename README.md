@@ -8,11 +8,17 @@
 
 ## Copy dot files
 
-```bash
-ls -A | /usr/bin/grep '^\.' | /usr/bin/grep -vE '^\.(git|ssh)$' | /usr/bin/grep -vE '\.md$' |  xargs -I % bash -c "cp -r % ~/"
+```js
+const files = fs.readdirSync('.');
+
+for (const file of files) {
+    if (!/^(\.git|\.ssh|README\.md(\.mjs)?)$/.test(file)) {
+        await $`cp -r ${file} ~/`;
+    }
+}
 ```
 
-## Install oh-my-zsh (require `zsh` to be installed)
+## Install `omz` (require `zsh` to be installed)
 
 ```bash
 # install oh-my-zsh
@@ -40,7 +46,7 @@ if [[ ! -e $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k ]]; the
 fi
 ```
 
-## Install tmux plugins
+## Install `tmux` plugins
 
 ```bash
 TMUX_PLUG=~/.tmux/plugins
@@ -50,7 +56,7 @@ if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
 fi
 ```
 
-## Install fzf
+## Install `fzf`
 
 ```bash
 if [[ ! -e ~/.fzf ]]; then
@@ -59,85 +65,68 @@ if [[ ! -e ~/.fzf ]]; then
 fi
 ```
 
-## Install pyenv
+## Install `z` command
 
 ```bash
-# pyenv
-if [[ ! -e ~/.pyenv ]]; then
-    read -p "Do U want to install pyenv?" -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        git clone https://github.com/pyenv/pyenv.git ~/.pyenv --depth 1
-        cd ~/.pyenv 
-        src/configure 
-        make -C src
-        cd -
-    fi
+if [[ ! -e ~/.config/z.sh ]]; then
+    wget https://raw.githubusercontent.com/rupa/z/master/z.sh -P ~/.config
 fi
 ```
 
-## Install nvm
+## Install `nvm`
 
-```
-# nvm
-if [[ ! -e ~/.nvm ]]; then
-    read -p "Do U want to install nvm?" -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-      cd ~
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-      cd -
-    fi
-fi
-```
+```js
+within(async () => {
+  $.prefix += 'export NVM_DIR=$HOME/.nvm; source $NVM_DIR/nvm.sh; ';
+  $`nvm -v`.catch(async () => {
+    const answer = await question("nvm not found, need to install?");
 
-## Install npm globals
-
-```bash
-NPM_GLOBALS=\`npm ls -g --depth 0\`
-for dep in pm2 yarn vls typescript bash-language-server vscode-langservers-extracted stylelint-lsp svelte-language-server vim-language-server
-do
-  if [[ -z $(echo $NPM_GLOBALS | grep $dep) ]]
-  then
-    echo "npm global install $dep"
-    npm i -g $dep
-  fi
-done
+    if (/^y$/i.test(answer)) {
+      await cd(process.env.HOME);
+      await $`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash`;
+    }
+  });
+})
 ```
 
-## Install pip packages
+## Install `npm` globals
 
-```bash
-PIP_PKGS=\`pip list\`
-for pkg in cmake-language-server
-do 
-  if [[ -z $(echo $PIP_PKGS | grep $pkg) ]]
-  then
-    echo "pip install $pkg"
-    pip install $pkg
-  fi 
-done
-# pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+```js
+const data = await $`npm ls -g --depth 0`
+const installed = data.stdout.split("\n").map(pkg => pkg.trim());
+const required = [
+  "pm2",
+  "yarn",
+  "vls",
+  "typescript",
+  "typescript-language-server",
+  "vscode-langservers-extracted",
+  "stylelint-lsp",
+  "commitizen",
+  "@everseen/pen"
+].map(pkg => new RegExp(pkg));
+
+for (const pkg of required) {
+  if (installed.some(name => pkg.test(name))) {
+    await echo(`already installed ${chalk.green(pkg.source)}`);
+  } else {
+    await echo(`installing npm global pkg: ${chalk.yellow(pkg.source)}`);
+    await $`npm i -g ${pkg.source}`;
+  }
+}
 ```
 
-## Install cargo tools
+## Install `cargo` tools
 
 Install rust and some mordern command line tools writen in rust.
 
 ```bash
 if ! command -v cargo > /dev/null 2>&1; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
-  source $HOME/.cargo/env
+  source ~/.cargo/env
   rustup component add rust-src clippy
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fd-find du-dust
-fi
-
-# rust-analyzer
-if ! command -v rust-analyzer > /dev/null 2>&1; then
-  curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - ~/.cargo/bin/rust-analyzer
-  chmod +x ~/.cargo/bin/rust-analyzer
 fi
 ```
 
