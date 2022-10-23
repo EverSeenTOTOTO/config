@@ -7,11 +7,12 @@ alias cp='cp -vi'
 alias mv='mv -vi'
 alias rm='rm -vi'
 alias ln='ln -vi'
-alias fd=fdfind
-alias ls=lsd
-alias du=dust
+alias fd='fdfind'
+alias ls='lsd'
+alias du='dust'
 alias grep='rg -p'
 alias less='less --quit-at-eof --no-init --tabs=4 --RAW-CONTROL-CHARS'
+alias vim='nvim'
 
 alias ..='cd ..'
 alias ...='cd ../..'
