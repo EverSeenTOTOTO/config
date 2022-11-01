@@ -1,10 +1,23 @@
 local autocmd = vim.api.nvim_create_autocmd
 
--- regard svelte file as html
-autocmd("BufEnter", {
-  pattern = "*.svelte",
+autocmd("BufRead,BufNewFile", {
+  pattern = "*.env.*",
   callback = function()
-    vim.cmd "setl filetype=html"
+    vim.cmd "setfiletype sh"
+  end
+})
+
+autocmd("BufRead,BufNewFile", {
+  pattern = "*.s",
+  callback = function()
+    vim.cmd "setfiletype asm"
+  end
+})
+
+autocmd("BufRead,BufNewFile", {
+  pattern = "*.wiki",
+  callback = function()
+    vim.cmd "setfiletype markdown"
   end,
 })
 
@@ -32,7 +45,7 @@ autocmd("Filetype", {
 
 -- Auto format on write
 autocmd("BufWritePre", {
-  pattern = "*.json,*.html",
+  pattern = "*.h,*.c,*.hpp,*.cpp,*.html",
   callback = function()
     vim.lsp.buf.format()
   end,
@@ -48,17 +61,3 @@ autocmd("BufWritePre", {
     end
   end
 })
-
--- auto save and load fold
--- autocmd("BufWinLeave", {
---   pattern = "*.*",
---   callback = function()
---     vim.cmd ":mkview!"
---   end
--- })
--- autocmd("BufWinEnter", {
---   pattern = "*.*",
---   callback = function()
---     vim.cmd ":silent loadview"
---   end
--- })

@@ -24,6 +24,7 @@ end
 
 local cmp_window = require "cmp.utils.window"
 local luasnip = require "luasnip"
+local icons = require("plugins.configs.lspkind_icons").cmp_kind
 
 function cmp_window:has_scrollbar()
   return false
@@ -47,7 +48,6 @@ local options = {
   formatting = {
     format = function(entry, vim_item)
       --icon
-      local icons = require "plugins.configs.lspkind_icons"
       local kind = icons[vim_item.kind]
 
       vim_item.kind = string.format("%s %s", kind.icon, kind.name)
@@ -114,9 +114,9 @@ local options = {
     -- { name = "copilot" },
     { name = "nvim_lsp", },
     { name = "luasnip", },
-    { name = "buffer", },
+    { name = "buffer", max_item_count = 5, keyword_length = 5 },
     { name = "nvim_lua", },
-    { name = "path", },
+    { name = "path", max_item_count = 5 },
     { name = "emoji", },
     { name = "latex_symbols", },
   },

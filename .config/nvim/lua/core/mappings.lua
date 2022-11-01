@@ -59,7 +59,7 @@ map("n", "<M-k>", "mz:m-2<cr>`z")
 map("v", "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z")
 
 -- copy
-map("v", "<C-c>", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>'v")
+map("v", "y", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>'v")
 
 -- Don't copy the replaced text after pasting in visual mode
 map("v", "p", "p:let @+=@0<CR>")
@@ -68,8 +68,9 @@ map("v", "p", "p:let @+=@0<CR>")
 map("n", "<Esc>", "<cmd>:noh<CR>")
 
 -- move cursor within insert mode
-map("i", "<C-h>", "<Left>")
+map("i", "<C-a>", "<Home>")
 map("i", "<C-e>", "<End>")
+map("i", "<C-h>", "<Left>")
 map("i", "<C-l>", "<Right>")
 map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
@@ -99,23 +100,7 @@ local packer_cmd = function(callback)
 end
 
 -- snapshot stuff
-user_cmd("PackerSnapshot", function(info)
-  require "plugins"
-  require("packer").snapshot(info.args)
-end, { nargs = "+" })
-
-user_cmd("PackerSnapshotDelete", function(info)
-  require "plugins"
-  require("packer.snapshot").delete(info.args)
-end, { nargs = "+" })
-
-user_cmd("PackerSnapshotRollback", function(info)
-  require "plugins"
-  require("packer").rollback(info.args)
-end, { nargs = "+" })
-
 user_cmd("PackerClean", packer_cmd "clean", {})
-user_cmd("PackerCompile", packer_cmd "compile", {})
 user_cmd("PackerInstall", packer_cmd "install", {})
 user_cmd("PackerStatus", packer_cmd "status", {})
 user_cmd("PackerSync", packer_cmd "sync", {})
@@ -129,7 +114,7 @@ M.bufferline = function()
   map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
   map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
   map("n", "<leader>q", ":bdelete<cr>")
-  map("n", "<leader>x", ":bwipeout<cr>")
+  map("n", "<leader>x", ":bdelete<cr>")
 end
 
 M.lspconfig = function()
@@ -174,5 +159,7 @@ M.telescope = function()
 end
 
 map("n", "<leader>z", "$zf%")
+map("n", "<leader>m", "<cmd> :make start ;read <CR>")
+map("n", "<leader>b", "<cmd> :make build ;read <CR>")
 
 return M

@@ -163,6 +163,9 @@ local plugins = {
     after = "nvim-cmp",
   },
 
+  -- remember last edit position
+  ["vladdoster/remember.nvim"] = {},
+
   -- Github copilot
   -- ["zbirenbaum/copilot.lua"] = {
   --   event = { "VimEnter" },

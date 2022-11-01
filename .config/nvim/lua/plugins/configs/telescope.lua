@@ -6,6 +6,8 @@ end
 
 telescope.load_extension('notify')
 
+local telescope_actions = require "telescope.actions.set"
+
 local options = {
   defaults = {
     mappings = {
@@ -23,7 +25,7 @@ local options = {
       "--line-number",
       "--column",
     },
-    prompt_prefix = "   ",
+    prompt_prefix = "  ",
     selection_caret = "  ",
     entry_prefix = "  ",
     initial_mode = "insert",
@@ -44,7 +46,57 @@ local options = {
       preview_cutoff = 120,
     },
     file_sorter = require("telescope.sorters").get_fuzzy_file,
-    file_ignore_patterns = { "node_modules" },
+    file_ignore_patterns = {
+      "%.lock",
+      "__pycache__/*",
+      "%.sqlite3",
+      "%.ipynb",
+      "node_modules/*",
+      "%.jpg",
+      "%.jpeg",
+      "%.png",
+      "%.svg",
+      "%.otf",
+      "%.ttf",
+      ".git/",
+      "%.webp",
+      ".dart_tool/",
+      ".github/",
+      ".gradle/",
+      ".idea/",
+      ".settings/",
+      ".vscode/",
+      "__pycache__/",
+      "build/",
+      "env/",
+      "gradle/",
+      "node_modules/",
+      "target/",
+      "%.pdb",
+      "%.dll",
+      "%.class",
+      "%.exe",
+      "%.cache",
+      "%.ico",
+      "%.pdf",
+      "%.dylib",
+      "%.jar",
+      "%.docx",
+      "%.met",
+      "smalljre_*/*",
+      ".vale/",
+      "%.burp",
+      "%.mp4",
+      "%.mkv",
+      "%.rar",
+      "%.zip",
+      "%.7z",
+      "%.tar",
+      "%.bz2",
+      "%.epub",
+      "%.flac",
+      "%.tar.gz",
+    },
     generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
     path_display = { "truncate" },
     winblend = 0,
@@ -56,8 +108,30 @@ local options = {
     file_previewer = require("telescope.previewers").vim_buffer_cat.new,
     grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
     qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-    -- Developer configurations: Not meant for general override
     buffer_previewer_maker = require("telescope.previewers").buffer_previewer_maker,
+  },
+  pickers = {
+    git_files = {
+      hidden = true,
+      show_untracked = true,
+      layout_strategy = "horizontal",
+    },
+    live_grep = {
+      only_sort_text = true,
+      layout_strategy = "horizontal",
+    },
+    find_files = {
+      layout_strategy = "horizontal",
+      attach_mappings = function(_)
+        telescope_actions.select:enhance {
+          post = function()
+            vim.cmd ":normal! zx"
+          end,
+        }
+        return true
+      end,
+      find_command = { "fd", "--type=file", "--hidden" },
+    }
   },
   extensions = {},
 }

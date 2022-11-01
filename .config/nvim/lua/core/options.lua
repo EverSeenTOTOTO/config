@@ -10,12 +10,12 @@ g.loaded_python3_provider = 0
 opt.confirm = true
 opt.laststatus = 3 -- global statusline
 opt.title = true
--- opt.clipboard = "unnamedplus"
+opt.clipboard = "unnamedplus"
 opt.cmdheight = 1
 opt.cul = true -- cursor line
 opt.lazyredraw = true
 
-opt.completeopt = "menuone,noselect"
+opt.completeopt = "menu,menu,menuone,noselect"
 opt.copyindent = true
 opt.cursorline = true
 
@@ -30,8 +30,39 @@ opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.showmode = false
 
--- disable tilde on end of buffer: https://github.com/neovim/neovim/pull/8546#issuecomment-643643758
-opt.fillchars = { eob = " " }
+opt.fillchars = {
+  fold = " ",
+  eob = " ", -- suppress ~ at EndOfBuffer
+  diff = "╱", -- alternatives = ⣿ ░ ─
+  msgsep = "‾",
+  foldopen = "▾",
+  foldsep = "│",
+  foldclose = "▸",
+  horiz = "━",
+  horizup = "┻",
+  horizdown = "┳",
+  vert = "┃",
+  vertleft = "┫",
+  vertright = "┣",
+  verthoriz = "╋",
+}
+
+opt.wildignore = {
+  "*.aux,*.out,*.toc",
+  "*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class",
+  -- media
+  "*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp",
+  "*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm",
+  "*.eot,*.otf,*.ttf,*.woff",
+  "*.doc,*.pdf",
+  -- archives
+  "*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz",
+  -- temp/system
+  "*.*~,*~ ",
+  "*.swp,.lock,.DS_Store,._*,tags.lock",
+  -- version control
+  ".git,.svn",
+}
 
 opt.hidden = true
 opt.ignorecase = true
@@ -45,7 +76,40 @@ opt.relativenumber = false
 opt.ruler = false
 
 -- disable nvim intro
-opt.shortmess:append "sI"
+opt.shortmess = {
+  t = true, -- truncate file messages at start
+  A = true, -- ignore annoying swap file messages
+  o = true, -- file-read message overwrites previous
+  O = true, -- file-read message overwrites previous
+  T = true, -- truncate non-file messages in middle
+  f = true, -- (file x of x) instead of just (x of x
+  F = true, -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
+  s = true,
+  c = true,
+  W = true, -- Don't show [w] or written when writing
+}
+opt.formatoptions = {
+  ["1"] = true,
+  ["2"] = true, -- Use indent from 2nd line of a paragraph
+  q = true, -- continue comments with gq"
+  c = true, -- Auto-wrap comments using textwidth
+  r = true, -- Continue comments when pressing Enter
+  n = true, -- Recognize numbered lists
+  t = false, -- autowrap lines using text width value
+  j = true, -- remove a comment leader when joining lines.
+  -- Only break if the line was not longer than 'textwidth' when the insert
+  -- started and only at a white character that has been entered during the
+  -- current insert command.
+  l = true,
+  v = true,
+}
+opt.listchars = {
+  eol = nil,
+  tab = "│ ",
+  extends = "›", -- Alternatives: … »
+  precedes = "‹", -- Alternatives: … «
+  trail = "•", -- BULLET (U+2022, UTF-8: E2 80 A2)
+}
 
 opt.signcolumn = "yes"
 opt.splitbelow = true

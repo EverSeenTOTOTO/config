@@ -3,44 +3,86 @@ if not present then
   return
 end
 
+local g_ok, bufferline_groups = pcall(require, "bufferline.groups")
+if not g_ok then
+  bufferline_groups = {
+    builtin = {
+      pinned = {
+        name = "pinned",
+        with = function(_ico)
+        end,
+      },
+      ungroupued = { name = "ungrouped" },
+    },
+  }
+end
 local colors = require "core.colors"
+local kind = require "plugins.configs.lspkind_icons"
 
 local options = {
   options = {
-    offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
-    buffer_close_icon = "",
-    modified_icon = "",
-    close_icon = "",
-    show_close_icon = true,
-    left_trunc_marker = "",
-    right_trunc_marker = "",
-    max_name_length = 14,
-    max_prefix_length = 13,
-    tab_size = 20,
-    show_tab_indicators = true,
-    enforce_regular_tabs = false,
-    view = "multiwindow",
-    show_buffer_close_icons = true,
-    separator_style = "thin",
     always_show_bufferline = true,
+    buffer_close_icon = "",
     diagnostics = "nvim_lsp",
-    custom_filter = function(buf_number)
-      -- Func to filter out our managed/persistent split terms
-      local present_type, type = pcall(function()
-        return vim.api.nvim_buf_get_var(buf_number, "term_type")
-      end)
-
-      if present_type then
-        if type == "vert" then
-          return false
-        elseif type == "hori" then
-          return false
-        end
-        return true
-      end
-
-      return true
-    end,
+    diagnostics_update_in_insert = false,
+    enforce_regular_tabs = false,
+    hover = { enabled = true, reveal = { "close" } },
+    left_trunc_marker = "",
+    max_name_length = 18,
+    max_prefix_length = 15,
+    modified_icon = "",
+    offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+    right_trunc_marker = "",
+    separator_style = "thin",
+    show_buffer_close_icons = true,
+    show_close_icon = false,
+    show_tab_indicators = true,
+    tab_size = 18,
+    view = "multiwindow",
+    groups = {
+      options = {
+        toggle_hidden_on_enter = true,
+      },
+      items = {
+        bufferline_groups.builtin.pinned:with { icon = "" },
+        bufferline_groups.builtin.ungrouped,
+        {
+          highlight = { sp = "#51AFEF" },
+          name = "tests",
+          icon = kind.icons.test,
+          matcher = function(buf)
+            local name = buf.filename
+            return name:match "spec" or name:match "test"
+          end,
+        },
+        {
+          highlight = { sp = "#C678DD" },
+          name = "docs",
+          matcher = function(buf)
+            for _, ext in ipairs { "md", "txt", "org", "norg", "wiki" } do
+              if ext == vim.fn.fnamemodify(buf.path, ":e") then
+                return true
+              end
+            end
+          end,
+        },
+        {
+          highlight = { sp = "#F6A878" },
+          name = "config",
+          matcher = function(buf)
+            local filename = buf.filename
+            if filename == nil then
+              return false
+            end
+            return filename:match "go.mod"
+              or filename:match "go.sum"
+              or filename:match "Cargo.toml"
+              or filename:match "manage.py"
+              or filename:match "Makefile"
+          end,
+        },
+      },
+    },
   },
 
   highlights = {
