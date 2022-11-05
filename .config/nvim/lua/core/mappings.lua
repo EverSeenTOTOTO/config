@@ -119,7 +119,7 @@ end
 
 M.lspconfig = function()
   map("n", "<leader>f", function()
-    vim.lsp.buf.formatting()
+    vim.lsp.buf.format()
   end)
 
   map("n", "<leader>h", function()
@@ -149,6 +149,7 @@ M.telescope = function()
   map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
   map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
   map("n", "<leader>s", "<cmd> :Telescope lsp_document_symbols <CR>")
+  map("n", "<leader>w", "<cmd> :Telescope lsp_workspace_symbols <CR>")
   map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
   map("n", "<C-b>", "<cmd> :Telescope oldfiles <CR>")
   map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")

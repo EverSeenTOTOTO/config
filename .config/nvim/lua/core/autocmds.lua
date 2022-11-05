@@ -15,6 +15,13 @@ autocmd("BufRead,BufNewFile", {
 })
 
 autocmd("BufRead,BufNewFile", {
+  pattern = "*.svelte",
+  callback = function()
+    vim.cmd "setfiletype html"
+  end
+})
+
+autocmd("BufRead,BufNewFile", {
   pattern = "*.wiki",
   callback = function()
     vim.cmd "setfiletype markdown"
@@ -40,14 +47,6 @@ autocmd("Filetype", {
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
     vim.opt_local.softtabstop = 4
-  end,
-})
-
--- Auto format on write
-autocmd("BufWritePre", {
-  pattern = "*.h,*.c,*.hpp,*.cpp,*.html",
-  callback = function()
-    vim.lsp.buf.format()
   end,
 })
 

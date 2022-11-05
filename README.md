@@ -124,9 +124,11 @@ Install rust and some mordern command line tools writen in rust.
 if ! command -v cargo > /dev/null 2>&1; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
   source ~/.cargo/env
-  rustup component add rust-src clippy
+  rustup component add rust-src clippy rust-analyzer
   echo 'install mordern linux commands with cargo...'
   cargo install --locked ripgrep lsd bat fd-find du-dust
+  # see https://rust-analyzer.github.io/manual.html#rustup
+  ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
 fi
 ```
 
