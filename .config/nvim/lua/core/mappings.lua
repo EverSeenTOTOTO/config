@@ -1,7 +1,19 @@
-local utils = require "core.utils"
+local map = function(mode, keys, command, opt)
+  local options = { silent = true }
 
-local map = utils.map
-local user_cmd = vim.api.nvim_create_user_command
+  if opt then
+    options = vim.tbl_extend("force", options, opt)
+  end
+
+  if type(keys) == "table" then
+    for _, keymap in ipairs(keys) do
+      M.map(mode, keymap, command, options)
+    end
+    return
+  end
+
+  vim.keymap.set(mode, keys, command, options)
+end
 
 -- MAPPINGS
 
@@ -9,7 +21,8 @@ local user_cmd = vim.api.nvim_create_user_command
 vim.g.mapleader = ","
 
 map("", "<leader><leader>", "@")
-map("", "<space>", ":")
+map("", "<space>", ":", { silent = false })
+map({ "n", "i" }, "vv", "<esc>")
 
 -- 行号
 map("n", "<F2>", ":se nu! nu?<CR>")
@@ -42,10 +55,8 @@ map("n", "#", "#zz")
 map("n", "g*", "g*zz")
 
 -- HL
-map("v", "H", "g^")
-map("v", "L", "g$")
-map("n", "H", "g^")
-map("n", "L", "g$")
+map({ "v", "n" }, "H", "g^")
+map({ "v", "n" }, "L", "g$")
 
 -- redo
 map("n", "U", "<C-r>")
@@ -69,13 +80,13 @@ map("n", "<Esc>", "<cmd>:noh<CR>")
 
 -- move cursor within insert mode
 map("i", "<C-a>", "<Home>")
+map("i", "<C-b>", "<esc>bi")
 map("i", "<C-e>", "<End>")
+map("i", "<C-f>", "<esc>ea")
 map("i", "<C-h>", "<Left>")
-map("i", "<C-l>", "<Right>")
 map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
-map("i", "<C-f>", "<esc>ea")
-map("i", "<C-b>", "<esc>bi")
+map("i", "<C-l>", "<Right>")
 map("i", "<C-o>", "<esc>O")
 
 -- navigation between windows
@@ -89,22 +100,6 @@ map("n", "<C-l>", ":TmuxNavigateRight<cr>")
 -- terminal
 map("n", "<C-t>", ":term<cr>")
 map("t", "vv", "<C-\\><C-n>")
-
--- Add Packer commands because we are not loading it at startup
-
-local packer_cmd = function(callback)
-  return function()
-    require "plugins"
-    require("packer")[callback]()
-  end
-end
-
--- snapshot stuff
-user_cmd("PackerClean", packer_cmd "clean", {})
-user_cmd("PackerInstall", packer_cmd "install", {})
-user_cmd("PackerStatus", packer_cmd "status", {})
-user_cmd("PackerSync", packer_cmd "sync", {})
-user_cmd("PackerUpdate", packer_cmd "update", {})
 
 local M = {}
 
@@ -144,23 +139,21 @@ M.lspconfig = function()
 end
 
 M.telescope = function()
+  map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
+  map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
+  map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
   map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
-  map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
+  map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
   map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
   map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
   map("n", "<leader>s", "<cmd> :Telescope lsp_document_symbols <CR>")
+  map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
   map("n", "<leader>w", "<cmd> :Telescope lsp_workspace_symbols <CR>")
-  map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
-  map("n", "<C-b>", "<cmd> :Telescope oldfiles <CR>")
-  map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
-  map("n", "<C-s>", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
-  map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
   map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
-  map("n", "//", "<cmd> :Telescope search_history <CR>")
 end
 
-map("n", "<leader>z", "$zf%")
-map("n", "<leader>m", "<cmd> :make start ;read <CR>")
 map("n", "<leader>b", "<cmd> :make build ;read <CR>")
+map("n", "<leader>m", "<cmd> :make start ;read <CR>")
+map("n", "<leader>z", "$zf%")
 
 return M

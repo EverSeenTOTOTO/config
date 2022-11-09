@@ -1,11 +1,4 @@
 local opt = vim.opt
-local g = vim.g
-
--- disable providers
-g.loaded_perl_provider = 0
-g.loaded_ruby_provider = 0
-g.loaded_node_provider = 0
-g.loaded_python3_provider = 0
 
 opt.confirm = true
 opt.laststatus = 3 -- global statusline
@@ -103,7 +96,10 @@ opt.formatoptions = {
   l = true,
   v = true,
 }
+
+opt.list = true
 opt.listchars = {
+  space = nil,
   eol = nil,
   tab = "│ ",
   extends = "›", -- Alternatives: … »
@@ -138,6 +134,11 @@ end
 
 vim.cmd "colorscheme iceberg"
 
+-- override colors
+vim.cmd [[highlight Cursor guibg=#c6c8d1 guifg=#161821 gui=nocombine]]
+vim.cmd [[highlight CursorLine guibg=#323642 gui=nocombine]]
+vim.cmd [[highlight Whitespace guifg=#6b7089 gui=nocombine]]
+
 -- disable some builtin vim plugins
 
 local default_plugins = {
@@ -163,10 +164,16 @@ local default_plugins = {
 }
 
 for _, plugin in pairs(default_plugins) do
-  g["loaded_" .. plugin] = 1
+  vim.g["loaded_" .. plugin] = 1
 end
 
 vim.schedule(function()
   vim.opt.shadafile = vim.fn.expand "$HOME" .. "/.local/share/nvim/shada/main.shada"
   vim.cmd [[ silent! rsh ]]
 end)
+
+-- disable providers
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0

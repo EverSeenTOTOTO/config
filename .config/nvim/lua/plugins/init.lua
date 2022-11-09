@@ -25,7 +25,7 @@ local plugins = {
   ["feline-nvim/feline.nvim"] = {
     after = "nvim-web-devicons",
     config = function()
-      require "plugins.configs.statusline"
+      require "plugins.configs.feline"
     end,
   },
 
@@ -39,14 +39,6 @@ local plugins = {
 
     config = function()
       require "plugins.configs.bufferline"
-    end,
-  },
-
-  -- speed up indent detection
-  ["Darazaki/indent-o-matic"] = {
-    event = "BufReadPost",
-    config = function()
-      require "plugins.configs.indent-o-matic"
     end,
   },
 
@@ -66,15 +58,7 @@ local plugins = {
     end,
   },
 
-  -- Cursorhold fix
-  ["antoinemadec/FixCursorHold.nvim"] = {
-    event = { "BufRead", "BufNewFile" },
-    config = function()
-      vim.g.cursorhold_updatetime = 100
-    end,
-  },
-
-  -- code highlighting
+  -- highlight colors
   ["norcalli/nvim-colorizer.lua"] = {
     event = "BufRead",
     config = function()
@@ -86,7 +70,9 @@ local plugins = {
   ["neovim/nvim-lspconfig"] = {
     module = "lspconfig",
     setup = function()
-      require("core.utils").packer_lazy_load "nvim-lspconfig"
+      vim.defer_fn(function()
+        require("packer").loader('nvim-lspconfig')
+      end, 0)
     end,
     config = function()
       require "plugins.configs.lspconfig"
@@ -98,22 +84,6 @@ local plugins = {
     after = "nvim-lspconfig",
     config = function()
       require "plugins.configs.lsp_signature"
-    end,
-  },
-
-  -- % match syntax words
-  ["andymass/vim-matchup"] = {
-    opt = true,
-    setup = function()
-      require("core.utils").packer_lazy_load "vim-matchup"
-    end,
-  },
-
-  -- smooth esc
-  ["max397574/better-escape.nvim"] = {
-    event = "InsertCharPre",
-    config = function()
-      require "plugins.configs.better-escape"
     end,
   },
 

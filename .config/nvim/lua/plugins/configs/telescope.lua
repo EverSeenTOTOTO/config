@@ -4,8 +4,6 @@ if not present then
   return
 end
 
-telescope.load_extension('notify')
-
 local telescope_actions = require "telescope.actions.set"
 
 local options = {

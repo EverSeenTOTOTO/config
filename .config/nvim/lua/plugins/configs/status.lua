@@ -46,19 +46,25 @@ function M.hl.fg(hlgroup, base)
 end
 
 function M.hl.mode(base)
-  local lualine_avail, lualine = pcall(require, "lualine.themes." .. (vim.g.colors_name or "default_theme"))
   return function()
-    local lualine_opts = lualine_avail and lualine[M.modes[vim.fn.mode()][2]:lower()]
     return M.hl.group(
       "Feline" .. M.modes[vim.fn.mode()][2],
       vim.tbl_deep_extend(
         "force",
-        lualine_opts and type(lualine_opts.a) == "table" and lualine_opts.a
-        or { fg = C.bg_1, bg = M.modes[vim.fn.mode()][3] },
+        { fg = C.bg_1, bg = M.modes[vim.fn.mode()][3] },
         base or {}
       )
     )
   end
+end
+
+function M.get_background() 
+  return vim.cmd "echo &background"
+end
+
+function M.provider.mode()
+  local current_text = ' '..M.modes[vim.fn.mode()][1]..' '
+  return current_text
 end
 
 function M.provider.lsp_progress()
@@ -88,15 +94,6 @@ end
 
 function M.provider.spacer(n)
   return string.rep(" ", n or 1)
-end
-
-function M.conditional.git_available()
-  return vim.b.gitsigns_head ~= nil
-end
-
-function M.conditional.git_changed()
-  local git_status = vim.b.gitsigns_status_dict
-  return git_status and (git_status.added or 0) + (git_status.removed or 0) + (git_status.changed or 0) > 0
 end
 
 function M.conditional.has_filetype()

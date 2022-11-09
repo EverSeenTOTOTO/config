@@ -8,6 +8,7 @@ local core_modules = {
   "core.options",
   "core.autocmds",
   "core.mappings",
+  "core.usercmds"
 }
 
 for _, module in ipairs(core_modules) do

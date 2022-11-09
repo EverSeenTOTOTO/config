@@ -4,9 +4,42 @@ if not present then
   return
 end
 
-local M = {}
+local signs = {
+  { name = "DiagnosticSignError", text = "" },
+  { name = "DiagnosticSignWarn", text = "" },
+  { name = "DiagnosticSignHint", text = "" },
+  { name = "DiagnosticSignInfo", text = "" },
+}
+for _, sign in ipairs(signs) do
+  vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
+end
 
-require "plugins.configs.lsp_handlers"
+vim.diagnostic.config {
+  virtual_text = {
+    prefix = "",
+  },
+  signs = { active = signs },
+  underline = true,
+  update_in_insert = true,
+  severity_sort = true,
+  float = {
+    focusable = false,
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+}
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = "single",
+})
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  border = "single",
+})
+
+local M = {}
 
 function M.on_attach(client, bufnr)
   client.server_capabilities.document_formatting = false
@@ -47,7 +80,7 @@ local setupLSP = function(name, opts)
 
   local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
   if status_ok then
-    capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+    capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
   end
 
   local options = {
@@ -69,9 +102,6 @@ setupLSP "clangd"
 
 -- cmake
 setupLSP "cmake"
-
--- css
-setupLSP "cssls"
 
 -- eslint
 setupLSP "eslint"
@@ -123,9 +153,6 @@ setupLSP("stylelint_lsp", {
     }
   }
 })
-
--- svelte
-setupLSP "svelte"
 
 -- tsserver
 setupLSP "tsserver"

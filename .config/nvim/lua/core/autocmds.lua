@@ -1,5 +1,30 @@
 local autocmd = vim.api.nvim_create_autocmd
 
+local left = 0
+
+autocmd("FocusLost", {
+  callback = function()
+    left = os.clock()
+  end
+})
+
+autocmd("FocusGained", {
+  callback = function()
+    local elapsed = os.clock() - left
+
+    if elapsed > 300 then -- > 5min
+      vim.notify.notify(
+        string.format("现在是%s，你离开了 %d 分钟。", os.date("%H时%M分", os.time()),  elapsed / 60),
+        "info",
+        {
+          title = "欢迎回来",
+        }
+      )
+    end
+    left = 0
+  end
+})
+
 autocmd("BufRead,BufNewFile", {
   pattern = "*.env.*",
   callback = function()
