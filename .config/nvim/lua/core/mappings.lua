@@ -7,7 +7,7 @@ local map = function(mode, keys, command, opt)
 
 	if type(keys) == "table" then
 		for _, keymap in ipairs(keys) do
-			M.map(mode, keymap, command, options)
+			vim.keymap.set(mode, keymap, command, options)
 		end
 		return
 	end
@@ -152,7 +152,6 @@ M.telescope = function()
 	map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 end
 
-map("n", "<leader>b", "<cmd> :make build ;read <CR>")
 map("n", "<leader>m", "<cmd> :make start ;read <CR>")
 map("n", "<leader>z", "$zf%")
 

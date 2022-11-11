@@ -133,7 +133,7 @@ which('lua')
 
     cd(Lua);
 
-    await $`make posix && sudo make install`;
+    await $`make linux && sudo make install`;
 
 })
 

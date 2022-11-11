@@ -14,25 +14,25 @@ endif
 au FocusGained,BufEnter * checktime
 au Filetype markdown,python setl ts=4 sw=4 sts=4
 
-set nocompatible
-set history=500
 set autoread
-set grepprg=rg\ --vimgrep\ --smart-case\ --follow
-set so=7
-set ruler
 set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
-set smartcase
+set foldcolumn=1
+set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+set history=500
 set hlsearch
 set incsearch
 set lazyredraw
 set magic
-set showmatch
 set mat=2
+set nocompatible
 set noerrorbells
 set novisualbell
+set ruler
+set showmatch
+set smartcase
+set so=7
 set tm=500
-set foldcolumn=1
+set whichwrap+=<,>,h,l
 
 syntax enable
 
@@ -48,42 +48,42 @@ if has("gui_running")
 endif
 
 set encoding=utf8
-set ffs=unix,dos,mac
-set nobackup
-set nowb
-set noswapfile
 set expandtab
-set smarttab
+set ffs=unix,dos,mac
+set lbr
+set nobackup
+set noswapfile
+set nowb
 set shiftwidth=2
+set si "Smart indent
+set smarttab
 set softtabstop=2
 set tabstop=2
-
-set lbr
 set tw=500
-set si "Smart indent
 set wrap "Wrap lines
+
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
 catch
 endtry
 
-set hidden
 set cmdheight=2
-
 set completeopt=popup,preview,menuone
+set hidden
+
+execute "set <M-h>=\eh"
 execute "set <M-j>=\ej"
 execute "set <M-k>=\ek"
 execute "set <M-l>=\el"
-execute "set <M-h>=\eh"
 
 if has("termguicolors")
   set termguicolors
 endif
 
 set background=dark
-set updatetime=300
 set shm+=cI
+set updatetime=300
 
 if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
@@ -143,11 +143,15 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 vnoremap p p:let @+=@0<CR>
 
-imap <C-h> <Left>
+imap <C-a> <Home>
+imap <C-b> <esc>bi
 imap <C-e> <End>
-imap <C-l> <Right>
+imap <C-f> <esc>ea
+imap <C-h> <Left>
 imap <C-j> <Down>
 imap <C-k> <Up>
-imap <C-f> <esc>ea
-imap <C-b> <esc>bi
+imap <C-l> <Right>
 imap <C-o> <esc>O
+
+nmap <leader>m :make start ;read<cr>
+nmap <leader>z $zf%
