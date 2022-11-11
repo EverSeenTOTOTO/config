@@ -12,13 +12,13 @@
 const files = fs.readdirSync('.');
 
 for (const file of files) {
-    if (!/^(\.git|\.ssh|README\.md(\.mjs)?)$/.test(file)) {
+    if (!/^(\.git|\.ssh|\.bak|README\.md(\.mjs)?)$/.test(file)) {
         await $`cp -r ${file} ~/`;
     }
 }
 ```
 
-## Install `omz` (require `zsh` to be installed)
+## Install `omz` (require zsh to be installed)
 
 ```bash
 # install oh-my-zsh
@@ -46,7 +46,7 @@ if [[ ! -e $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k ]]; the
 fi
 ```
 
-## Install `tmux` plugins
+## Install tmux plugins
 
 ```bash
 TMUX_PLUG=~/.tmux/plugins
@@ -56,7 +56,7 @@ if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
 fi
 ```
 
-## Install `fzf`
+## Install fzf
 
 ```bash
 if [[ ! -e ~/.fzf ]]; then
@@ -73,7 +73,7 @@ if [[ ! -e ~/.config/z.sh ]]; then
 fi
 ```
 
-## Install `nvm`
+## Install nvm
 
 ```js
 within(async () => {
@@ -89,7 +89,7 @@ within(async () => {
 })
 ```
 
-## Install `npm` globals
+## Install npm globals
 
 ```js
 const data = await $`npm ls -g --depth 0`
@@ -116,6 +116,43 @@ for (const pkg of required) {
 }
 ```
 
+## Install Lua 5.1
+
+```js
+const Lua = "lua-5.1.5";
+const LuaRocks = "luarocks-3.9.1";
+
+// install lua
+which('lua')
+  .then(() => echo(`already installed ${chalk.cyan(Lua)}`))
+  .catch(async () => {
+    echo(`${chalk.cyan(Lua)} is not found, downloading...`);
+
+    await $`wget https://www.lua.org/ftp/${Lua}.tar.gz`;
+    await $`tar -xvf ${Lua}.tar.gz`;
+
+    cd(Lua);
+
+    await $`make posix && sudo make install`;
+
+})
+
+// install luarocks
+which("luarocks")
+  .then(() => echo(`already installed ${chalk.cyan(LuaRocks)}`))
+  .catch(async () => {
+    echo(`${chalk.cyan(LuaRocks)} is not found, downloading...`);
+
+    await $`wget https://luarocks.org/releases/${LuaRocks}.tar.gz`;
+    await $`tar -xvf ${LuaRocks}.tar.gz`;
+
+    cd(LuaRocks);
+
+    await $`./configure && make && sudo make install`;
+    await $`sudo luarocks install luaunit`; // a unit test framework
+})
+```
+
 ## Install `cargo` tools
 
 Install rust and some mordern command line tools writen in rust.
@@ -126,7 +163,7 @@ if ! command -v cargo > /dev/null 2>&1; then
   source ~/.cargo/env
   rustup component add rust-src clippy rust-analyzer
   echo 'install mordern linux commands with cargo...'
-  cargo install --locked ripgrep lsd bat fd-find du-dust
+  cargo install --locked ripgrep lsd bat fd-find du-dust stylua
   # see https://rust-analyzer.github.io/manual.html#rustup
   ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
 fi
