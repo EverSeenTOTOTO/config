@@ -177,3 +177,11 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 vim.g.loaded_python3_provider = 0
+
+-- neovide
+if vim.g.neovide then
+	vim.cmd([[ set guifont=Fira\ Code\ Nerd\ Font:h14 ]])
+	vim.g.neovide_scale_factor = 1.0
+	vim.g.neovide_transparency = 0.8
+	vim.g.neovide_cursor_vfx_mode = "sonicboom"
+end

@@ -12,7 +12,7 @@ alias ls='lsd'
 alias du='dust'
 alias grep='rg -p'
 alias less='less --quit-at-eof --no-init --tabs=4 --RAW-CONTROL-CHARS'
-alias vim='nvim'
+alias nv='neovide'
 
 alias ..='cd ..'
 alias ...='cd ../..'
