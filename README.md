@@ -169,6 +169,22 @@ if ! command -v cargo > /dev/null 2>&1; then
 fi
 ```
 
+## Install wabt and wasmtime
+
+```bash
+if [[ ! -e ~/.wasmtime ]]; then
+  curl https://wasmtime.dev/install.sh -sSf | bash
+  git clone --recursive https://github.com/WebAssembly/wabt 
+  cd wabt
+  git submodule update --init
+  mkdir build
+  cd build
+  cmake ..
+  cmake --build .
+  mv ./* ~/.wasmtime/bin
+fi
+```
+
 ## Install FiraCode (use `nerd fonts` patched version)
 
 ```bash
@@ -176,6 +192,5 @@ if [[ ! -e ~/.nerd-fonts ]]; then
     git clone https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts --depth 1
     cd ~/.nerd-fonts 
     ./install.sh FiraCode
-    cd -
 fi
 ```
