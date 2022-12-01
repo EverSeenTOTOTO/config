@@ -13,6 +13,7 @@ alias du='dust'
 alias grep='rg -p'
 alias less='less --quit-at-eof --no-init --tabs=4 --RAW-CONTROL-CHARS'
 alias nv='neovide'
+alias ssh='ssh -q'
 
 alias ..='cd ..'
 alias ...='cd ../..'

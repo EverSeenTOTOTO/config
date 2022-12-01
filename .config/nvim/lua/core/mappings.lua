@@ -20,7 +20,7 @@ end
 -- Leader
 vim.g.mapleader = ","
 
-map("", "<leader><leader>", "@")
+map("", "<leader><leader>", "%")
 map("", "<space>", ":", { silent = false })
 map({ "n", "i" }, "vv", "<esc>")
 
@@ -142,6 +142,7 @@ M.telescope = function()
 	map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
 	map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
 	map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
+	map("n", "<C-b>", "<cmd> :Telescope buffers <CR>")
 	map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
 	map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
 	map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")

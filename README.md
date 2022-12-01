@@ -163,7 +163,7 @@ if ! command -v cargo > /dev/null 2>&1; then
   rustup component add rust-src clippy rust-analyzer
 
   echo 'install mordern linux commands with cargo...'
-  cargo install --locked ripgrep lsd bat fd-find du-dust stylua cargo-nextest
+  cargo install --locked ripgrep lsd bat fd-find du-dust stylua cargo-nextest cargo-expand
 
   # see https://rust-analyzer.github.io/manual.html#rustup
   ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
