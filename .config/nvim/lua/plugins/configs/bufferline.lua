@@ -3,20 +3,6 @@ if not present then
 	return
 end
 
-local g_ok, bufferline_groups = pcall(require, "bufferline.groups")
-if not g_ok then
-	bufferline_groups = {
-		builtin = {
-			pinned = {
-				name = "pinned",
-				with = function(_ico) end,
-			},
-			ungroupued = { name = "ungrouped" },
-		},
-	}
-end
-local kind = require("plugins.configs.lspkind_icons")
-
 local options = {
 	options = {
 		always_show_bufferline = true,

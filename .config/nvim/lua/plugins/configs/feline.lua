@@ -43,6 +43,7 @@ if status_ok then
 						enabled = conditional.bar_width(),
 						icon = "   ",
 					},
+					{ provider = provider.encoding() },
 					{ provider = provider.spacer(2) },
 					{ provider = "position" },
 					{ provider = provider.spacer(2) },

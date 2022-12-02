@@ -101,6 +101,10 @@ map("n", "<C-l>", ":TmuxNavigateRight<cr>")
 map("n", "<C-t>", ":term<cr>")
 map("t", "vv", "<C-\\><C-n>")
 
+if vim.api.nvim_command_output("echo has('unix')") == 1 then
+	map("n", "gx", ':execute "!xdg-open" expand(\'%:p:h\') . "/" . expand("<cfile>") " &"<cr>end')
+end
+
 local M = {}
 
 -- below are all plugin related mappings

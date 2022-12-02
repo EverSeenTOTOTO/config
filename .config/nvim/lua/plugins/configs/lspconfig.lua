@@ -41,7 +41,7 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
 
 local M = {}
 
-function M.on_attach(client, bufnr)
+function M.on_attach(client)
 	client.server_capabilities.document_formatting = false
 	client.server_capabilities.document_range_formatting = false
 
@@ -93,9 +93,6 @@ local setupLSP = function(name, opts)
 
 	lspconfig[name].setup(options)
 end
-
--- bash
-setupLSP("bashls")
 
 -- cpp
 setupLSP("clangd")
@@ -162,8 +159,5 @@ setupLSP("tsserver")
 
 -- vue
 setupLSP("vuels")
-
--- vim
-setupLSP("vimls")
 
 return M

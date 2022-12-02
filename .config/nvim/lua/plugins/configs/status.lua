@@ -63,6 +63,12 @@ function M.provider.mode()
 	return current_text
 end
 
+function M.provider.encoding()
+	local encoding = vim.api.nvim_command_output(":set encoding?")
+
+	return string.gsub(encoding, "%w+=(%w+)", "%1")
+end
+
 function M.provider.lsp_progress()
 	local Lsp = vim.lsp.util.get_progress_messages()[1]
 	return Lsp

@@ -22,13 +22,8 @@ local function border(hl_name)
 	}
 end
 
-local cmp_window = require("cmp.utils.window")
 local luasnip = require("luasnip")
-local icons = require("plugins.configs.lspkind_icons").cmp_kind
-
-function cmp_window:has_scrollbar()
-	return false
-end
+local lspkind = require("lspkind")
 
 local options = {
 	snippet = {
@@ -45,28 +40,32 @@ local options = {
 			border = border("CmpDocBorder"),
 		},
 	},
+	enabled = function()
+		-- disable completion in comments
+		local context = require("cmp.config.context")
+		-- keep command mode completion enabled when cursor is in a comment
+		if vim.api.nvim_get_mode().mode == "c" then
+			return true
+		else
+			return not context.in_syntax_group("Comment")
+		end
+	end,
 	formatting = {
-		format = function(entry, vim_item)
-			--icon
-			local kind = icons[vim_item.kind]
+		formatting = {
+			format = function(entry, vim_item)
+				if vim.tbl_contains({ "path" }, entry.source.name) then
+					local icon, hl_group = require("nvim-web-devicons").get_icon(entry:get_completion_item().label)
 
-			vim_item.kind = string.format("%s %s", kind.icon, kind.name)
+					if icon then
+						vim_item.kind = icon
+						vim_item.kind_hl_group = hl_group
+						return vim_item
+					end
+				end
 
-			-- Source
-			vim_item.menu = ({
-				-- copilot = "[Copilot]",
-				nvim_lsp = "[LSP]",
-				luasnip = "[LuaSnip]",
-				buffer = "[Buffer]",
-				nvim_lua = "[Lua]",
-				path = "[Path]",
-				cmdline = "[Cmdline]",
-				emoji = "[Emoji]",
-				latex_symbols = "[LaTeX]",
-			})[entry.source.name]
-
-			return vim_item
-		end,
+				return lspkind.cmp_format({ with_text = false })(entry, vim_item)
+			end,
+		},
 	},
 	mapping = {
 		["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -131,7 +130,7 @@ cmp.setup.cmdline(":", {
 		{ name = "cmdline" },
 	}),
 })
-cmp.setup.cmdline("/", {
+cmp.setup.cmdline({ "/", "?" }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = {
 		{ name = "buffer" },

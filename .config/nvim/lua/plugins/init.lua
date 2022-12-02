@@ -21,6 +21,9 @@ local plugins = {
 		end,
 	},
 
+	-- lspkind pictogram
+	["onsails/lspkind.nvim"] = {},
+
 	-- statusline
 	["feline-nvim/feline.nvim"] = {
 		after = "nvim-web-devicons",
