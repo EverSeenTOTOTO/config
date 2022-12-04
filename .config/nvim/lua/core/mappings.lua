@@ -1,18 +1,18 @@
 local map = function(mode, keys, command, opt)
-	local options = { silent = true }
+  local options = { silent = true }
 
-	if opt then
-		options = vim.tbl_extend("force", options, opt)
-	end
+  if opt then
+    options = vim.tbl_extend("force", options, opt)
+  end
 
-	if type(keys) == "table" then
-		for _, keymap in ipairs(keys) do
-			vim.keymap.set(mode, keymap, command, options)
-		end
-		return
-	end
+  if type(keys) == "table" then
+    for _, keymap in ipairs(keys) do
+      vim.keymap.set(mode, keymap, command, options)
+    end
+    return
+  end
 
-	vim.keymap.set(mode, keys, command, options)
+  vim.keymap.set(mode, keys, command, options)
 end
 
 -- MAPPINGS
@@ -89,6 +89,13 @@ map("i", "<C-k>", "<Up>")
 map("i", "<C-l>", "<Right>")
 map("i", "<C-o>", "<esc>O")
 
+map({ "i", "s" }, "<C-n>", function()
+  require('luasnip').jump(1)
+end)
+map({ "i", "s" }, "<C-p>", function()
+  require('luasnip').jump(-1)
+end)
+
 -- navigation between windows
 vim.g.tmux_navigator_no_mappings = 1
 
@@ -102,7 +109,7 @@ map("n", "<C-t>", ":term<cr>")
 map("t", "vv", "<C-\\><C-n>")
 
 if vim.api.nvim_command_output("echo has('unix')") == 1 then
-	map("n", "gx", ':execute "!xdg-open" expand(\'%:p:h\') . "/" . expand("<cfile>") " &"<cr>end')
+  map("n", "gx", ':execute "!xdg-open" expand(\'%:p:h\') . "/" . expand("<cfile>") " &"<cr>end')
 end
 
 local M = {}
@@ -110,51 +117,52 @@ local M = {}
 -- below are all plugin related mappings
 
 M.bufferline = function()
-	map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
-	map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-	map("n", "<leader>q", ":bdelete<cr>")
-	map("n", "<leader>x", ":bdelete<cr>")
+  map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
+  map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
+  map("n", "<leader>q", ":bdelete<cr>")
+  map("n", "<leader>x", ":bdelete<cr>")
 end
 
 M.lspconfig = function()
-	map("n", "<leader>f", function()
-		vim.lsp.buf.format()
-	end)
+  map("n", "<leader>f", function()
+    vim.lsp.buf.format()
+  end)
 
-	map("n", "<leader>h", function()
-		vim.lsp.buf.hover()
-	end)
+  map("n", "<leader>h", function()
+    vim.lsp.buf.hover()
+    vim.lsp.buf.hover() -- call twice to jump to float window
+  end)
 
-	map("n", "<leader>n", function()
-		vim.lsp.buf.rename()
-	end)
+  map("n", "<leader>n", function()
+    vim.lsp.buf.rename()
+  end)
 
-	map("n", "<leader>a", function()
-		vim.lsp.buf.code_action()
-	end)
+  map("n", "<leader>a", function()
+    vim.lsp.buf.code_action()
+  end)
 
-	map("n", "<leader>[", function()
-		vim.diagnostic.goto_prev()
-	end)
+  map("n", "<leader>[", function()
+    vim.diagnostic.goto_prev()
+  end)
 
-	map("n", "<leader>]", function()
-		vim.diagnostic.goto_next()
-	end)
+  map("n", "<leader>]", function()
+    vim.diagnostic.goto_next()
+  end)
 end
 
 M.telescope = function()
-	map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
-	map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
-	map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
-	map("n", "<C-b>", "<cmd> :Telescope buffers <CR>")
-	map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
-	map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
-	map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
-	map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
-	map("n", "<leader>s", "<cmd> :Telescope lsp_document_symbols <CR>")
-	map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
-	map("n", "<leader>w", "<cmd> :Telescope lsp_workspace_symbols <CR>")
-	map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
+  map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
+  map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
+  map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
+  map("n", "<C-b>", "<cmd> :Telescope buffers <CR>")
+  map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
+  map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
+  map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
+  map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
+  map("n", "<leader>s", "<cmd> :Telescope lsp_document_symbols <CR>")
+  map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
+  map("n", "<leader>w", "<cmd> :Telescope lsp_workspace_symbols <CR>")
+  map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 end
 
 map("n", "<leader>m", "<cmd> :make start ;read <CR>")

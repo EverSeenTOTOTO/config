@@ -1,0 +1,121 @@
+{
+  "main": {
+    "prefix": "main",
+    "body": ["public static void main(String[] args) {", "\t$0", "}"],
+    "description": "Public static main method"
+  },
+  "class": {
+    "prefix": "class",
+    "body": ["public class ${TM_FILENAME_BASE} {", "\t$0", "}"],
+    "description": "Public class"
+  },
+  "sysout": {
+    "prefix": "p",
+    "body": ["System.out.println($0);"],
+    "description": "Print to standard out"
+  },
+  "fori": {
+    "prefix": "fori",
+    "body": [
+      "for (${1:int} ${2:i} = ${3:0}; $2 < ${4:max}; $2++) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Indexed for loop"
+  },
+  "foreach": {
+    "prefix": "foreach",
+    "body": ["for (${1:type} ${2:var} : ${3:iterable}) {", "\t$0", "}"],
+    "description": "Enhanced for loop"
+  },
+  "Public constructor": {
+    "prefix": "ctor",
+    "body": ["public ${1:${TM_FILENAME_BASE}}($2) {", "\t${0:super();}", "}"],
+    "description": "Public constructor"
+  },
+  "if": {
+    "prefix": "if",
+    "body": ["if (${1:condition}) {", "\t$0", "}"],
+    "description": "if statement"
+  },
+  "ifelse": {
+    "prefix": "ifelse",
+    "body": ["if (${1:condition}) {", "\t$2", "} else {", "\t$0", "}"],
+    "description": "if/else statement"
+  },
+  "trycatch": {
+    "prefix": "try",
+    "body": [
+      "try {",
+      "\t$1",
+      "} catch (${2:Exception} ${3:e}) {",
+      "\t$4//${0:TODO}: handle exception",
+      "}"
+    ],
+    "description": "try/catch block"
+  },
+  "tryresources": {
+    "prefix": "trye",
+    "body": [
+      "try ($1) {",
+      "\t$2",
+      "} catch (${3:Exception} ${4:e}) {",
+      "\t$5//${0:TODO}: handle exception",
+      "}"
+    ]
+  },
+  "Switch Statement": {
+    "prefix": "switch",
+    "body": [
+      "switch (${1:key}) {",
+      "\tcase ${2:value}:",
+      "\t\t$0",
+      "\t\tbreak;",
+      "",
+      "\tdefault:",
+      "\t\tbreak;",
+      "}"
+    ],
+    "description": "Switch Statement"
+  },
+  "While Statement": {
+    "prefix": "while",
+    "body": ["while (${1:condition}) {", "\t$0", "}"],
+    "description": "While Statement"
+  },
+  "Do-While Statement": {
+    "prefix": "do",
+    "body": ["do {", "\t$0", "} while (${1:condition});"],
+    "description": "Do-While Statement"
+  },
+  "newObject": {
+    "prefix": "new",
+    "body": ["${1:Object} ${2:foo} = new ${1:Object}();"],
+    "description": "Create new Object"
+  },
+  "Public field": {
+    "prefix": "public",
+    "body": ["public ${1:String} ${2:name};"],
+    "description": "Public field"
+  },
+  "Private field": {
+    "prefix": "private",
+    "body": ["private ${1:String} ${2:name};"],
+    "description": "Private field"
+  },
+  "Protected field": {
+    "prefix": "protected",
+    "body": ["protected ${1:String} ${2:name};"],
+    "description": "Protected field"
+  },
+  "package": {
+    "prefix": "pkg",
+    "body": ["package ${1:PackageName}"],
+    "description": "Package statement"
+  },
+  "import": {
+    "prefix": "imp",
+    "body": ["import ${1:PackageName}"],
+    "description": "Import statement"
+  }
+}
