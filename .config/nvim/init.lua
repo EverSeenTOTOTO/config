@@ -5,10 +5,10 @@ if present then
 end
 
 local core_modules = {
+	"plugins",
 	"core.options",
 	"core.autocmds",
 	"core.mappings",
-	"core.usercmds",
 }
 
 for _, module in ipairs(core_modules) do

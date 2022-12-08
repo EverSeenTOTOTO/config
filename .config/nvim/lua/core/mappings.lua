@@ -116,56 +116,52 @@ local M = {}
 
 -- below are all plugin related mappings
 
+-- lsp
+
+map("n", "<leader>f", function()
+  vim.lsp.buf.format()
+end)
+
+map("n", "<leader>h", function()
+  vim.lsp.buf.hover()
+  vim.lsp.buf.hover() -- call twice to jump to float window
+end)
+
+map("n", "<leader>n", function()
+  vim.lsp.buf.rename()
+end)
+
+map("n", "<leader>a", function()
+  vim.lsp.buf.code_action()
+end)
+
+map("n", "<leader>[", function()
+  vim.diagnostic.goto_prev()
+end)
+
+map("n", "<leader>]", function()
+  vim.diagnostic.goto_next()
+end)
+
 M.bufferline = function()
   map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
   map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-  map("n", "<leader>q", ":bdelete<cr>")
+  map("n", "<leader>q", ":bp|bd #<cr>")
   map("n", "<leader>x", ":bdelete<cr>")
-end
-
-M.lspconfig = function()
-  map("n", "<leader>f", function()
-    vim.lsp.buf.format()
-  end)
-
-  map("n", "<leader>h", function()
-    vim.lsp.buf.hover()
-    vim.lsp.buf.hover() -- call twice to jump to float window
-  end)
-
-  map("n", "<leader>n", function()
-    vim.lsp.buf.rename()
-  end)
-
-  map("n", "<leader>a", function()
-    vim.lsp.buf.code_action()
-  end)
-
-  map("n", "<leader>[", function()
-    vim.diagnostic.goto_prev()
-  end)
-
-  map("n", "<leader>]", function()
-    vim.diagnostic.goto_next()
-  end)
 end
 
 M.telescope = function()
   map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
+  map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
   map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
   map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
-  map("n", "<C-b>", "<cmd> :Telescope buffers <CR>")
   map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
-  map("n", "<leader>g", "<cmd> :Telescope live_grep<CR>")
   map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
   map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
-  map("n", "<leader>s", "<cmd> :Telescope lsp_document_symbols <CR>")
   map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
-  map("n", "<leader>w", "<cmd> :Telescope lsp_workspace_symbols <CR>")
-  map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 end
 
-map("n", "<leader>m", "<cmd> :make start ;read <CR>")
+map("n", "<space><space>", "<cmd> :BufferLinePick <CR>")
 map("n", "<leader>z", "$zf%")
 
 return M

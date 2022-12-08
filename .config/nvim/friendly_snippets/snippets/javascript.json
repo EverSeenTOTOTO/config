@@ -185,10 +185,9 @@
     "body": "set ${1:property} (${2:value}) {\n\t${0}\n}"
   },
   "For Loop": {
-    "prefix": "for",
+    "prefix": "fori",
     "body": [
-      "for (let ${1:index} = 0; ${1:index} < ${2:array}.length; ${1:index}++) {",
-      "\tconst ${3:element} = ${2:array}[${1:index}];",
+      "for (let ${1:i} = 0; ${1:i} < ${2:array}; ++${1:i}) {",
       "\t$0",
       "}"
     ],
