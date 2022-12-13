@@ -17,27 +17,11 @@
         "path": "./snippets/global.json"
       },
       {
-        "language": "c",
-        "path": "./snippets/c.json"
-      },
-      {
-        "language": "cpp",
-        "path": "./snippets/cpp.json"
-      },
-      {
         "language": [
           "gitcommit",
           "NeogitCommitMessage"
         ],
         "path": "./snippets/gitcommit.json"
-      },
-      {
-        "language": "lua",
-        "path": "./snippets/lua.json"
-      },
-      {
-        "language": "rust",
-        "path": "./snippets/rust.json"
       },
       {
         "language": [
@@ -55,10 +39,6 @@
         "path": "./snippets/markdown.json"
       },
       {
-        "language": "java",
-        "path": "./snippets/java.json"
-      },
-      {
         "language": [
           "html",
           "jade",
@@ -70,38 +50,12 @@
         "path": "./snippets/html.json"
       },
       {
-        "language": [
-          "javascript",
-          "typescript",
-          "javascriptreact",
-          "typescriptreact",
-          "vue",
-          "svelte"
-        ],
-        "path": "./snippets/javascript.json"
-      },
-      {
-        "language": [
-          "typescript",
-          "typescriptreact"
-        ],
-        "path": "./snippets/typescript.json"
-      },
-      {
-        "language": "javascriptreact",
-        "path": "./snippets/react.json"
-      },
-      {
         "language": "vue",
         "path": "./snippets/vue/html.json"
       },
       {
         "language": "vue",
         "path": "./snippets/vue/vue.json"
-      },
-      {
-        "language": "make",
-        "path": "./snippets/make.json"
       }
     ]
   }

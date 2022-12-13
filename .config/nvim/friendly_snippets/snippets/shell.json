@@ -77,14 +77,6 @@
       "A case command first expands word, and tries to match it against each pattern in turn."
     ]
   },
-  "break": {
-    "prefix": "break",
-    "body": "break ${0}",
-    "description": [
-      "The break command tells Bash to leave the loop straight away.\n",
-      "Enter the break or break (n) where n=number of loops."
-    ]
-  },
   "expr": {
     "prefix": "expr",
     "body": "expr ${0:1 + 1}",

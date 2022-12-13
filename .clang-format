@@ -18,7 +18,7 @@ BinPackParameters: 'true'
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeTernaryOperators: 'true'
 BreakStringLiterals: 'false'
-ColumnLimit: '999'
+ColumnLimit: '100'
 Cpp11BracedListStyle: 'true'
 IndentWidth: '2'
 MaxEmptyLinesToKeep: '1'
