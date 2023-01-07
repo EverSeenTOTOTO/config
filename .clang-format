@@ -1,4 +1,5 @@
 BasedOnStyle: Google
+AlignArrayOfStructures: Left
 AlignConsecutiveMacros: 'true'
 AlignConsecutiveAssignments: 'true'
 AlignConsecutiveDeclarations: 'true'
