@@ -16,6 +16,5 @@ within(async () => {
   // await cd('repos/tusk');
   // await $`pm2 start -n tusk yarn -- start`;
 
-  await $`rsync ./pdf/ $TSS:~/ftp/pdf -zrv --delete --progress --exclude=".*" 2<&1 | tee ${LogFile}`
-  await $`rsync ./pdf/ root@$BDW:~/ftp/pdf -e "ssh -p 27266" -zrv --progress --exclude=".*" 2<&1 | tee ${LogFile}`
+  await $`rsync ./pdf/ $TSS:~/ftp/pdf -zrv --progress --exclude=".*" 2<&1 | tee ${LogFile}`;
 })

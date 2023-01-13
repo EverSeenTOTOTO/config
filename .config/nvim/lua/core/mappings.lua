@@ -146,8 +146,7 @@ end)
 M.bufferline = function()
   map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
   map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-  map("n", "<leader>q", ":bp|bd #<cr>")
-  map("n", "<leader>x", ":bdelete<cr>")
+  map("n", "<leader>q", ":bp|bd #<CR>")
 end
 
 M.telescope = function()
@@ -155,13 +154,13 @@ M.telescope = function()
   map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
   map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
   map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
+  map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
   map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
   map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
   map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
   map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
 end
 
-map("n", "<space><space>", "<cmd> :BufferLinePick <CR>")
 map("n", "<leader>z", "$zf%")
 
 return M
