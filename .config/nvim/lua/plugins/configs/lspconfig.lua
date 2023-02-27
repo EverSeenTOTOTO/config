@@ -96,7 +96,7 @@ setupLSP("html")
 setupLSP("jsonls")
 
 -- lua
-setupLSP("sumneko_lua", {
+setupLSP("lua_ls", {
   settings = {
     Lua = {
       runtime = {

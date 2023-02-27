@@ -13,8 +13,5 @@ within(async () => {
   await $`pm2 start -n fcitx5 "fcitx5"`;
   await $`pm2 start -n hidden "v2ray" -- run --config .config/v2ray/config-hidden.json`;
 
-  // await cd('repos/tusk');
-  // await $`pm2 start -n tusk yarn -- start`;
-
   await $`rsync ./pdf/ $TSS:~/ftp/pdf -zrv --progress --exclude=".*" 2<&1 | tee ${LogFile}`;
 })
