@@ -33,6 +33,7 @@ set smartcase
 set so=7
 set tm=500
 set whichwrap+=<,>,h,l
+set clipboard=unnamedplus
 
 syntax enable
 

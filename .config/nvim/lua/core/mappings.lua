@@ -62,12 +62,21 @@ map({ "v", "n" }, "L", "g$")
 map("n", "U", "<C-r>")
 
 -- Alt + jk move lines
-map("n", "<M-j>", "mz:m+<cr>`z")
-map("i", "<M-j>", "<esc>mz:m+<cr>`zi")
-map("v", "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z")
-map("i", "<M-k>", "<esc>mz:m-2<cr>`zi")
-map("n", "<M-k>", "mz:m-2<cr>`z")
-map("v", "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z")
+if vim.fn.has('mac') then
+  map("n", "∆", "mz:m+<cr>`z")
+  map("i", "∆", "<esc>mz:m+<cr>`zi")
+  map("v", "∆", ":m'>+<cr>`<my`>mzgv`yo`z")
+  map("i", "˚", "<esc>mz:m-2<cr>`zi")
+  map("n", "˚", "mz:m-2<cr>`z")
+  map("v", "˚", ":m'<-2<cr>`>my`<mzgv`yo`z")
+else
+  map("n", "<M-j>", "mz:m+<cr>`z")
+  map("i", "<M-j>", "<esc>mz:m+<cr>`zi")
+  map("v", "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z")
+  map("i", "<M-k>", "<esc>mz:m-2<cr>`zi")
+  map("n", "<M-k>", "mz:m-2<cr>`z")
+  map("v", "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z")
+end
 
 -- copy
 map("v", "y", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>'v")
