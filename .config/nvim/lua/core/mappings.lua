@@ -79,7 +79,12 @@ else
 end
 
 -- copy
-map("v", "y", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>'v")
+if vim.fn.has('mac') then
+  map("v", "y",
+    "mvy:call system('pbcopy && tmux set-buffer \"$(reattach-to-user-namespace pbpaste)\"', @\")<CR>`v")
+else
+  map("v", "y", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>`v")
+end
 
 -- Don't copy the replaced text after pasting in visual mode
 map("v", "p", "p:let @+=@0<CR>")

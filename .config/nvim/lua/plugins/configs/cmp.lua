@@ -1,8 +1,6 @@
 local present, cmp = pcall(require, "cmp")
 
-if not present then
-  return
-end
+if not present then return end
 
 local function has_words_before()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -141,12 +139,11 @@ local options = {
   },
   sources = {
     -- { name = "copilot" },
-    { name = "cmp_tabnine" },
-    { name = "nvim_lsp" },
-    { name = "luasnip", max_item_count = 3 },
-    { name = "buffer", max_item_count = 5, keyword_length = 5 },
-    { name = "nvim_lua" },
-    { name = "path", max_item_count = 5 },
+    { name = "cmp_tabnine",  group_index = 1,    max_item_count = 3 },
+    { name = "nvim_lsp",     group_index = 1 },
+    { name = "luasnip",      max_item_count = 3, group_index = 2 },
+    { name = "buffer",       max_item_count = 5, group_index = 3 },
+    { name = "path",         group_index = 3 },
     { name = "emoji" },
     { name = "latex_symbols" },
   },
