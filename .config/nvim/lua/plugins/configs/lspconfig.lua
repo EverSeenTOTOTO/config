@@ -1,14 +1,12 @@
 local present, lspconfig = pcall(require, "lspconfig")
 
-if not present then
-  return
-end
+if not present then return end
 
 local signs = {
   { name = "DiagnosticSignError", text = "" },
-  { name = "DiagnosticSignWarn", text = "" },
-  { name = "DiagnosticSignHint", text = "" },
-  { name = "DiagnosticSignInfo", text = "" },
+  { name = "DiagnosticSignWarn",  text = "" },
+  { name = "DiagnosticSignHint",  text = "" },
+  { name = "DiagnosticSignInfo",  text = "" },
 }
 for _, sign in ipairs(signs) do
   vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
@@ -39,40 +37,10 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
   border = "single",
 })
 
-local M = {}
-
-function M.on_attach(client)
-  client.server_capabilities.document_formatting = false
-  client.server_capabilities.document_range_formatting = false
-
-  if client.server_capabilities.document_highlight then
-    vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
-    vim.api.nvim_create_autocmd("CursorHold", {
-      group = "lsp_document_highlight",
-      pattern = "<buffer>",
-      callback = vim.lsp.buf.document_highlight,
-    })
-    vim.api.nvim_create_autocmd("CursorMoved", {
-      group = "lsp_document_highlight",
-      pattern = "<buffer>",
-      callback = vim.lsp.buf.clear_references,
-    })
-  end
-end
-
 -- LSP
-local setupLSP = function(name, opts)
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
+local setup = function(name, opts)
+  local options = {}
 
-  local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-  if status_ok then
-    capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-  end
-
-  local options = {
-    on_attach = M.on_attach,
-    capabilities = capabilities,
-  }
   if opts then
     options = vim.tbl_extend("force", options, opts)
   end
@@ -81,22 +49,22 @@ local setupLSP = function(name, opts)
 end
 
 -- cpp
-setupLSP("clangd")
+setup("clangd")
 
 -- cmake
-setupLSP("cmake")
+setup("cmake")
 
 -- eslint
-setupLSP("eslint")
+setup("eslint")
 
 -- html
-setupLSP("html")
+setup("html")
 
 -- json
-setupLSP("jsonls")
+setup("jsonls")
 
 -- lua
-setupLSP("lua_ls", {
+setup("lua_ls", {
   settings = {
     Lua = {
       runtime = {
@@ -117,8 +85,10 @@ setupLSP("lua_ls", {
   },
 })
 
+-- rust
+
 -- stylelint
-setupLSP("stylelint_lsp", {
+setup("stylelint_lsp", {
   filetypes = { "css", "less", "scss", "sugarss", "vue", "wxss" },
   settings = {
     stylelintplus = {
@@ -128,9 +98,6 @@ setupLSP("stylelint_lsp", {
 })
 
 -- tsserver
-setupLSP("tsserver")
 
 -- vue
-setupLSP("vuels")
-
-return M
+setup("vuels")

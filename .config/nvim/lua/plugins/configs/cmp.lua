@@ -84,7 +84,7 @@ local options = {
     end,
   },
   sorting = {
-    priority_weight = 2,
+    priority_weight = 1,
     comparators = {
       require('cmp_tabnine.compare'),
       compare.offset,
@@ -100,8 +100,8 @@ local options = {
   mapping = {
     ["<C-p>"] = cmp.mapping.select_prev_item(),
     ["<C-n>"] = cmp.mapping.select_next_item(),
-    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-u>"] = cmp.mapping.scroll_docs(4),
+    ["<C-d>"] = cmp.mapping.scroll_docs(4),
+    ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -142,8 +142,8 @@ local options = {
     { name = "cmp_tabnine",  group_index = 1,    max_item_count = 3 },
     { name = "nvim_lsp",     group_index = 1 },
     { name = "luasnip",      max_item_count = 3, group_index = 2 },
-    { name = "buffer",       max_item_count = 5, group_index = 3 },
-    { name = "path",         group_index = 3 },
+    { name = "buffer",       max_item_count = 3, group_index = 3 },
+    { name = "path",         group_index = 2 },
     { name = "emoji" },
     { name = "latex_symbols" },
   },

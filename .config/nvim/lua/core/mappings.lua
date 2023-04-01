@@ -62,7 +62,7 @@ map({ "v", "n" }, "L", "g$")
 map("n", "U", "<C-r>")
 
 -- Alt + jk move lines
-if vim.fn.has('mac') then
+if vim.fn.has('mac') ~= 0 then
   map("n", "∆", "mz:m+<cr>`z")
   map("i", "∆", "<esc>mz:m+<cr>`zi")
   map("v", "∆", ":m'>+<cr>`<my`>mzgv`yo`z")
@@ -79,7 +79,7 @@ else
 end
 
 -- copy
-if vim.fn.has('mac') then
+if vim.fn.has('mac') ~= 0 then
   map("v", "y",
     "mvy:call system('pbcopy && tmux set-buffer \"$(reattach-to-user-namespace pbpaste)\"', @\")<CR>`v")
 else
@@ -164,6 +164,7 @@ M.bufferline = function()
 end
 
 M.telescope = function()
+  map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
   map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
   map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
   map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")

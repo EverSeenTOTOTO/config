@@ -113,6 +113,28 @@ require("packer").startup(function(use)
     end,
   }
 
+  -- ts
+  use {
+    after = "nvim-lspconfig",
+    "jose-elias-alvarez/typescript.nvim",
+    config = function()
+      require("typescript").setup({})
+    end
+  }
+
+  -- rust
+  use {
+    after = "nvim-lspconfig",
+    'simrat39/rust-tools.nvim',
+    config = function()
+      require('rust-tools').setup({})
+    end
+  }
+
+  -- lisp
+  use { 'gpanders/nvim-parinfer', }
+
+
   -- Completion
   use { "hrsh7th/nvim-cmp",
     config = function()
@@ -214,16 +236,6 @@ require("packer").startup(function(use)
       require "telescope".load_extension("frecency")
     end,
   }
-
-  -- rust
-  use { 'simrat39/rust-tools.nvim',
-    config = function()
-      require('rust-tools').setup {}
-    end,
-  }
-
-  -- lisp
-  use { 'gpanders/nvim-parinfer', }
 
   -- vim plugins
   use { "christoomey/vim-tmux-navigator", }
