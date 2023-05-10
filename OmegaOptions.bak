@@ -1,10 +1,10 @@
 {
   "+auto": {
     "color": "#9d9",
-    "defaultProfileName": "hutao-mixed",
+    "defaultProfileName": "clash",
     "name": "auto",
     "profileType": "SwitchProfile",
-    "revision": "1857b9c4f1a",
+    "revision": "1881b15825e",
     "rules": [
       {
         "condition": {
@@ -33,65 +33,8 @@
           "pattern": "*.everseenflash.com"
         },
         "profileName": "v2ray-hidden"
-      },
-      {
-        "condition": {
-          "conditionType": "HostWildcardCondition",
-          "pattern": "*.leetcode.com"
-        },
-        "profileName": "dler-mixed"
       }
     ]
-  },
-  "+dler-mixed": {
-    "bypassList": [
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "127.0.0.1"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "[::1]"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "localhost"
-      }
-    ],
-    "color": "#fe9",
-    "fallbackProxy": {
-      "host": "localhost",
-      "port": 7890,
-      "scheme": "socks5"
-    },
-    "name": "dler-mixed",
-    "profileType": "FixedProfile",
-    "revision": "1853de4c63b"
-  },
-  "+hutao-mixed": {
-    "bypassList": [
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "127.0.0.1"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "[::1]"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "localhost"
-      }
-    ],
-    "color": "#d497ee",
-    "fallbackProxy": {
-      "host": "localhost",
-      "port": 7891,
-      "scheme": "socks5"
-    },
-    "name": "hutao-mixed",
-    "profileType": "FixedProfile",
-    "revision": "184f4e3f376"
   },
   "+v2ray-hidden": {
     "bypassList": [
@@ -129,5 +72,30 @@
   "-showExternalProfile": true,
   "-showInspectMenu": true,
   "-startupProfileName": "",
-  "schemaVersion": 2
+  "schemaVersion": 2,
+  "+clash": {
+    "bypassList": [
+      {
+        "conditionType": "BypassCondition",
+        "pattern": "127.0.0.1"
+      },
+      {
+        "conditionType": "BypassCondition",
+        "pattern": "[::1]"
+      },
+      {
+        "conditionType": "BypassCondition",
+        "pattern": "localhost"
+      }
+    ],
+    "color": "#fe9",
+    "fallbackProxy": {
+      "host": "localhost",
+      "port": 7890,
+      "scheme": "socks5"
+    },
+    "name": "clash",
+    "profileType": "FixedProfile",
+    "revision": "1853de4c63b"
+  }
 }

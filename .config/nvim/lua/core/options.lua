@@ -1,5 +1,7 @@
 local opt = vim.opt
 
+opt.encoding = 'utf-8'
+opt.backspace = "indent,eol,start"
 opt.clipboard = "unnamedplus"
 opt.cmdheight = 1
 opt.confirm = true
@@ -8,7 +10,7 @@ opt.laststatus = 3 -- global statusline
 opt.lazyredraw = true
 opt.title = true
 
-opt.completeopt = "menu,menu,menuone,noselect"
+opt.completeopt = "menuone,noselect"
 opt.copyindent = true
 opt.cursorline = true
 
@@ -112,7 +114,7 @@ opt.timeoutlen = 400
 opt.undofile = true
 
 -- interval for writing swap file to disk, also used by gitsigns
-opt.updatetime = 250
+opt.updatetime = 300
 opt.swapfile = false
 opt.writebackup = false
 
@@ -131,7 +133,7 @@ end
 vim.cmd("colorscheme iceberg")
 
 -- override colors
-vim.cmd([[highlight Cursor guibg=#c6c8d1 guifg=#161821 gui=nocombine]])
+vim.cmd([[highlight Cursor guibg=#c6c8df guifg=#161821 gui=nocombine]])
 vim.cmd([[highlight CursorLine guibg=#323642 gui=nocombine]])
 vim.cmd([[highlight Whitespace guifg=#6b7089 gui=nocombine]])
 

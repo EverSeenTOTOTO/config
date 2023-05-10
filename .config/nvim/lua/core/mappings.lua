@@ -96,7 +96,6 @@ map("i", "<C-o>", "<esc>O")
 map("n", "<leader>z", "$zf%")
 
 -- terminal
-map("n", "<C-t>", ":term<cr>")
 map("t", "vv", "<C-\\><C-n>")
 
 if vim.api.nvim_command_output("echo has('unix')") == 1 then
@@ -119,16 +118,14 @@ end)
 
 map("n", "<leader>h", function()
   vim.lsp.buf.hover()
-  vim.lsp.buf.hover()   -- call twice to jump to float window
+  vim.lsp.buf.hover() -- call twice to jump to float window
 end)
 
 map("n", "<leader>n", function()
   vim.lsp.buf.rename()
 end)
 
-map("n", "<leader>a", function()
-  vim.lsp.buf.code_action()
-end)
+map("n", "<leader>a", "<cmd>Lspsaga code_action<CR>")
 
 map("n", "<leader>[", function()
   vim.diagnostic.goto_prev()
@@ -147,7 +144,6 @@ map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
 map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
 map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
 map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
-map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
 map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
 map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
@@ -178,3 +174,11 @@ end)
 map('n', '<C-l>', function()
   require("smart-splits").move_cursor_right()
 end)
+map("", "d<up>", ":wincmd k<cr>:wincmd c<cr>:wincmd p<cr>")
+map("", "d<down>", ":wincmd j<cr>:wincmd c<cr>:wincmd p<cr>")
+map("", "d<left>", ":wincmd h<cr>:wincmd c<cr>:wincmd p<cr>")
+map("", "d<right>", ":wincmd l<cr>:wincmd c<cr>:wincmd p<cr>")
+
+-- file explorer
+map('', '<C-t>', "<cmd> :NvimTreeToggle<CR>")
+map("", "<space><space>", "<cmd> :NvimTreeFindFile<CR>")

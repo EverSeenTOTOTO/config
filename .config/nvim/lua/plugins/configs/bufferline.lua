@@ -19,6 +19,17 @@ local options = {
     show_close_icon = false,
     show_tab_indicators = true,
     tab_size = 18,
+    color_icons = true,
+    style_preset = bufferline.style_preset.no_italic,
+    offsets = {
+      {
+        filetype = "NvimTree",
+        text = " File Explorer",
+        text_align = "left",
+        highlight = "Directory",
+        separator = true -- use a "true" to enable the default, or set your own character
+      }
+    }
   },
 }
 

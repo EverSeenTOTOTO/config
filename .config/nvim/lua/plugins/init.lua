@@ -136,7 +136,6 @@ require("packer").startup({
     -- lisp
     use { 'gpanders/nvim-parinfer', }
 
-
     -- Completion
     use { "hrsh7th/nvim-cmp",
       config = function()

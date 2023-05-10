@@ -139,7 +139,7 @@ local options = {
   },
   sources = {
     -- { name = "copilot" },
-    { name = "cmp_tabnine",  group_index = 1,    max_item_count = 3 },
+    { name = "cmp_tabnine",  group_index = 1,    max_item_count = 1 },
     { name = "nvim_lsp",     group_index = 1 },
     { name = "luasnip",      max_item_count = 3, group_index = 2 },
     { name = "buffer",       max_item_count = 3, group_index = 3 },
