@@ -25,7 +25,7 @@ opt.sidescrolloff = 8
 
 opt.fillchars = {
   diff = "╱", -- alternatives = ⣿ ░ ─
-  eob = " ", -- suppress ~ at EndOfBuffer
+  eob = " ",  -- suppress ~ at EndOfBuffer
   fold = " ",
   foldclose = "▸",
   foldopen = "▾",
@@ -80,12 +80,12 @@ opt.shortmess = {
 opt.formatoptions = {
   ["1"] = true,
   ["2"] = true, -- Use indent from 2nd line of a paragraph
-  q = true,    -- continue comments with gq"
-  c = true,    -- Auto-wrap comments using textwidth
-  r = true,    -- Continue comments when pressing Enter
-  n = true,    -- Recognize numbered lists
-  t = false,   -- autowrap lines using text width value
-  j = true,    -- remove a comment leader when joining lines.
+  q = true,     -- continue comments with gq"
+  c = true,     -- Auto-wrap comments using textwidth
+  r = true,     -- Continue comments when pressing Enter
+  n = true,     -- Recognize numbered lists
+  t = false,    -- autowrap lines using text width value
+  j = true,     -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -100,7 +100,7 @@ opt.listchars = {
   tab = "│ ",
   extends = "›", -- Alternatives: … »
   precedes = "‹", -- Alternatives: … «
-  trail = "•", -- BULLET (U+2022, UTF-8: E2 80 A2)
+  trail = "•",  -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 
 opt.signcolumn = "yes"
@@ -173,6 +173,8 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- neovide
 if vim.g.neovide then

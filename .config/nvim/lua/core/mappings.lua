@@ -31,16 +31,6 @@ map("n", "<F2>", ":se nu! nu?<CR>")
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
--- 窗口
-map("", "<up>", ":res +5<CR>")
-map("", "<down>", ":res -5<CR>")
-map("", "<left>", ":vertical resize-5<CR>")
-map("", "<right>", ":vertical resize+5<CR>")
-map("", "d<up>", ":wincmd k<cr>:wincmd c<cr>:wincmd p<cr>")
-map("", "d<down>", ":wincmd j<cr>:wincmd c<cr>:wincmd p<cr>")
-map("", "d<left>", ":wincmd h<cr>:wincmd c<cr>:wincmd p<cr>")
-map("", "d<right>", ":wincmd l<cr>:wincmd c<cr>:wincmd p<cr>")
-
 -- 折行
 map("n", "k", "gk")
 map("n", "gk", "k")
@@ -103,20 +93,7 @@ map("i", "<C-k>", "<Up>")
 map("i", "<C-l>", "<Right>")
 map("i", "<C-o>", "<esc>O")
 
-map({ "i", "s" }, "<C-n>", function()
-  require('luasnip').jump(1)
-end)
-map({ "i", "s" }, "<C-p>", function()
-  require('luasnip').jump(-1)
-end)
-
--- navigation between windows
-vim.g.tmux_navigator_no_mappings = 1
-
-map("n", "<C-h>", ":TmuxNavigateLeft<cr>")
-map("n", "<C-j>", ":TmuxNavigateDown<cr>")
-map("n", "<C-k>", ":TmuxNavigateUp<cr>")
-map("n", "<C-l>", ":TmuxNavigateRight<cr>")
+map("n", "<leader>z", "$zf%")
 
 -- terminal
 map("n", "<C-t>", ":term<cr>")
@@ -126,19 +103,23 @@ if vim.api.nvim_command_output("echo has('unix')") == 1 then
   map("n", "gx", ':execute "!xdg-open" expand(\'%:p:h\') . "/" . expand("<cfile>") " &"<cr>end')
 end
 
-local M = {}
-
--- below are all plugin related mappings
+-- plugin mappings
+-- snip
+map({ "i", "s" }, "<C-n>", function()
+  require('luasnip').jump(1)
+end)
+map({ "i", "s" }, "<C-p>", function()
+  require('luasnip').jump(-1)
+end)
 
 -- lsp
-
 map("n", "<leader>f", function()
   vim.lsp.buf.format()
 end)
 
 map("n", "<leader>h", function()
   vim.lsp.buf.hover()
-  vim.lsp.buf.hover() -- call twice to jump to float window
+  vim.lsp.buf.hover()   -- call twice to jump to float window
 end)
 
 map("n", "<leader>n", function()
@@ -157,25 +138,43 @@ map("n", "<leader>]", function()
   vim.diagnostic.goto_next()
 end)
 
-M.bufferline = function()
-  map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
-  map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-  map("n", "<leader>q", ":bp|bd #<CR>")
-end
+map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
+map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
+map("n", "<leader>q", ":bp|bd #<CR>")
 
-M.telescope = function()
-  map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
-  map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
-  map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
-  map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
-  map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
-  map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
-  map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
-  map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
-  map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
-  map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
-end
+map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
+map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
+map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
+map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
+map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
+map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
+map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
+map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
+map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
+map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
 
-map("n", "<leader>z", "$zf%")
-
-return M
+-- 窗口
+map("", "<up>", function()
+  require("smart-splits").resize_up()
+end)
+map("", "<down>", function()
+  require("smart-splits").resize_down()
+end)
+map("", "<left>", function()
+  require("smart-splits").resize_left()
+end)
+map("", "<right>", function()
+  require("smart-splits").resize_right()
+end)
+map('n', '<C-h>', function()
+  require("smart-splits").move_cursor_left()
+end)
+map('n', '<C-j>', function()
+  require("smart-splits").move_cursor_down()
+end)
+map('n', '<C-k>', function()
+  require("smart-splits").move_cursor_up()
+end)
+map('n', '<C-l>', function()
+  require("smart-splits").move_cursor_right()
+end)

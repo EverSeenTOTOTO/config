@@ -98,6 +98,7 @@ setup("stylelint_lsp", {
 })
 
 -- tsserver
+setup('tsserver')
 
 -- vue
 setup("vuels")
