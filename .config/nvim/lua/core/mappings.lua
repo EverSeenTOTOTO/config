@@ -125,7 +125,9 @@ map("n", "<leader>n", function()
   vim.lsp.buf.rename()
 end)
 
-map("n", "<leader>a", "<cmd>Lspsaga code_action<CR>")
+map("n", "<leader>a", function()
+  vim.lsp.buf.code_action()
+end)
 
 map("n", "<leader>[", function()
   vim.diagnostic.goto_prev()
