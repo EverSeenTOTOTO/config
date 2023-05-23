@@ -12,7 +12,7 @@
 const files = fs.readdirSync('.');
 
 for (const file of files) {
-    if (!/^(\.git|\.ssh|\.bak|README\.md(\.mjs)?)$/.test(file)) {
+    if (!/^(\.git|\.ssh|\.bak|\.json|README\.md(\.mjs)?)$/.test(file)) {
         await $`cp -r ${file} ~/`;
     }
 }

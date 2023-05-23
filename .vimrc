@@ -101,7 +101,7 @@ filetype indent on
 let mapleader = ","
 
 inoremap vv <esc>
-map <leader><leader> @
+map <leader><leader> %
 map <space> :
 
 nnoremap <F2> :set nu! nu?<CR>
@@ -135,12 +135,28 @@ nnoremap H g^
 nnoremap L g$
 nnoremap U <C-r>
 
-nmap <M-j> mz:m+<cr>`z
-imap <M-j> <esc>mz:m+<cr>`zi
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-imap <M-k> <esc>mz:m-2<cr>`zi
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+" Alt + jk move lines
+if has("mac")
+  nmap ∆ mz:m+<cr>`z
+  imap ∆ <esc>mz:m+<cr>`zi
+  vmap ∆ :m'>+<cr>`<my`>mzgv`yo`z
+  imap ˚ <esc>mz:m-2<cr>`zi
+  nmap ˚ mz:m-2<cr>`z
+  vmap ˚ :m'<-2<cr>`>my`<mzgv`yo`z
+else
+  nmap <M-j> mz:m+<cr>`z
+  imap <M-j> <esc>mz:m+<cr>`zi
+  vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+  imap <M-k> <esc>mz:m-2<cr>`zi
+  nmap <M-k> mz:m-2<cr>`z
+  vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+endif
+
+if has("mac")
+  vmap y mvy:call system('pbcopy && tmux set-buffer \"$(reattach-to-user-namespace pbpaste)\"', @\")<CR>`v
+else
+  vmap y mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>`v
+endif
 
 vnoremap p p:let @+=@0<CR>
 
@@ -154,5 +170,5 @@ imap <C-k> <Up>
 imap <C-l> <Right>
 imap <C-o> <esc>O
 
-nmap <leader>m :make start ;read<cr>
 nmap <leader>z $zf%
+nmap <leader>q :bp|bd #<CR>
