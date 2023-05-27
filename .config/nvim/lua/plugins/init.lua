@@ -236,7 +236,11 @@ require("packer").startup({
 
     -- vim plugins
     use { "tpope/vim-surround", }
+
+    -- enhanced dot command
     use { "tpope/vim-repeat", }
+
+    -- extra text objects
     use { "wellle/targets.vim", }
 
     -- iceberg theme

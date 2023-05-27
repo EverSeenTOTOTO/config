@@ -1,13 +1,162 @@
 {
-  "vim.overrideCopy": true,
-  "vim.useSystemClipboard": true,
-  "vim.highlightedyank.enable": true,
-  "vim.visualstar": true,
+  "debug.onTaskErrors": "abort",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.codeLens": false,
+  "editor.fontFamily": "FiraCode Nerd Font,consolas,'monospace', 'Droid Sans Mono', monospace, 'Droid Sans Fallback'",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 18,
+  "editor.formatOnSave": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.semanticHighlighting.enabled": true,
+  "editor.smoothScrolling": true,
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/*.a": true,
+    "**/*.exe": true,
+    "**/*.o": true,
+    "**/*.out": true
+  },
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "git.autofetch": true,
+  "git.ignoreLegacyWarning": true,
+  "git.ignoreMissingGitWarning": true,
+  "terminal.integrated.defaultLocation": "editor",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "args": [
+        "--cd-to-home"
+      ],
+      "path": "D:/Program Files/Git/git-bash.exe"
+    },
+    "Ubuntu (WSL)": null
+  },
   "vim.enableNeovim": true,
-  "vim.vimrc.enable": true,
-  "vim.statusBarColorControl": false,
+  "vim.highlightedyank.enable": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "after": [
+        "<Esc>"
+      ],
+      "before": [
+        "v",
+        "v"
+      ]
+    },
+    {
+      "after": [
+        "<Esc>",
+        "g",
+        "0",
+        "i"
+      ],
+      "before": [
+        "<C-a>"
+      ]
+    },
+    {
+      "after": [
+        "<Esc>",
+        "b",
+        "i"
+      ],
+      "before": [
+        "<C-b>"
+      ]
+    },
+    {
+      "after": [
+        "<Esc>",
+        "g",
+        "$",
+        "i"
+      ],
+      "before": [
+        "<C-e>"
+      ]
+    },
+    {
+      "after": [
+        "<Esc>",
+        "e",
+        "a"
+      ],
+      "before": [
+        "<C-f>"
+      ]
+    },
+    {
+      "after": [
+        "<Left>"
+      ],
+      "before": [
+        "<C-h>"
+      ]
+    },
+    {
+      "after": [
+        "<Right>"
+      ],
+      "before": [
+        "<C-l>"
+      ]
+    },
+    {
+      "after": [
+        "<Down>"
+      ],
+      "before": [
+        "<C-j>"
+      ]
+    },
+    {
+      "after": [
+        "<Up>"
+      ],
+      "before": [
+        "<C-k>"
+      ]
+    },
+    {
+      "after": [
+        "<Esc>",
+        "O"
+      ],
+      "before": [
+        "<C-o>"
+      ]
+    }
+  ],
   "vim.leader": ",",
   "vim.normalModeKeyBindings": [
+    {
+      "after": [
+        "%"
+      ],
+      "before": [
+        "<leader>",
+        "<leader>"
+      ]
+    },
+    {
+      "after": [
+        ":"
+      ],
+      "before": [
+        "<Space>"
+      ]
+    },
     {
       "before": [
         "<leader>",
@@ -138,6 +287,186 @@
       "commands": [
         "workbench.action.navigateBack"
       ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "m"
+      ],
+      "commands": [
+        "editor.action.organizeImports"
+      ]
+    },
+    {
+      "after": [
+        "%"
+      ],
+      "before": [
+        "<leader>",
+        "<leader>"
+      ]
+    },
+    {
+      "after": [
+        "$",
+        "z",
+        "f",
+        "%"
+      ],
+      "before": [
+        "<leader>",
+        "z"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "q"
+      ],
+      "commands": [
+        "workbench.action.closeActiveEditor"
+      ]
+    },
+    {
+      "after": [
+        "n",
+        "z",
+        "z"
+      ],
+      "before": [
+        "n"
+      ]
+    },
+    {
+      "after": [
+        "N",
+        "z",
+        "z"
+      ],
+      "before": [
+        "N"
+      ]
+    },
+    {
+      "after": [
+        "*",
+        "z",
+        "z"
+      ],
+      "before": [
+        "*"
+      ]
+    },
+    {
+      "after": [
+        "#",
+        "z",
+        "z"
+      ],
+      "before": [
+        "#"
+      ]
+    },
+    {
+      "after": [
+        "g",
+        "*",
+        "z",
+        "z"
+      ],
+      "before": [
+        "g",
+        "*"
+      ]
+    },
+    {
+      "after": [
+        "g",
+        "^"
+      ],
+      "before": [
+        "H"
+      ]
+    },
+    {
+      "after": [
+        "g",
+        "$"
+      ],
+      "before": [
+        "L"
+      ]
+    },
+    {
+      "after": [
+        "<C-r>"
+      ],
+      "before": [
+        "U"
+      ]
     }
-  ]
+  ],
+  "vim.overrideCopy": true,
+  "vim.statusBarColorControl": false,
+  "vim.useSystemClipboard": true,
+  "vim.visualModeKeyBindings": [
+    {
+      "before": [
+        "p"
+      ],
+      "command": [
+        ":normal p:let @+=@0<CR>"
+      ]
+    },
+    {
+      "after": [
+        "g",
+        "^"
+      ],
+      "before": [
+        "H"
+      ]
+    },
+    {
+      "after": [
+        "g",
+        "$"
+      ],
+      "before": [
+        "L"
+      ]
+    },
+    {
+      "after": [
+        "<",
+        "g",
+        "v"
+      ],
+      "before": [
+        "<"
+      ]
+    },
+    {
+      "after": [
+        ">",
+        "g",
+        "v"
+      ],
+      "before": [
+        ">"
+      ]
+    },
+    {
+      "after": [
+        "%"
+      ],
+      "before": [
+        "<leader>",
+        "<leader>"
+      ]
+    }
+  ],
+  "vim.visualstar": true,
+  "workbench.activityBar.visible": true,
+  "workbench.sideBar.location": "right"
 }

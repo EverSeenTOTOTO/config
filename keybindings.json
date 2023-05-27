@@ -1,0 +1,162 @@
+[
+  {
+    "command": "editor.action.moveLinesDownAction",
+    "key": "Alt+j"
+  },
+  {
+    "command": "editor.action.moveLinesUpAction",
+    "key": "Alt+k"
+  },
+  {
+    "command": "-workbench.action.showCommands",
+    "key": "ctrl+shift+p"
+  },
+  {
+    "command": "-workbench.action.toggleSidebarVisibility",
+    "key": "ctrl+b"
+  },
+  {
+    "command": "-workbench.action.files.newUntitledFile",
+    "key": "ctrl+n"
+  },
+  {
+    "command": "selectNextSuggestion",
+    "key": "ctrl+n",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "-selectNextSuggestion",
+    "key": "ctrl+down",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "-selectNextSuggestion",
+    "key": "down",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "selectNextCodeAction",
+    "key": "ctrl+n",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "-selectNextCodeAction",
+    "key": "ctrl+down",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "-selectNextCodeAction",
+    "key": "down",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "workbench.action.showCommands",
+    "key": "ctrl+p"
+  },
+  {
+    "command": "selectPrevSuggestion",
+    "key": "ctrl+p",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "-selectPrevSuggestion",
+    "key": "ctrl+up",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "-selectPrevSuggestion",
+    "key": "up",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "selectPrevCodeAction",
+    "key": "ctrl+p",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "-selectPrevCodeAction",
+    "key": "ctrl+up",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "-selectPrevCodeAction",
+    "key": "up",
+    "when": "codeActionMenuVisible"
+  },
+  {
+    "command": "workbench.banner.focusNextAction",
+    "key": "ctrl+n",
+    "when": "bannerFocused"
+  },
+  {
+    "command": "-workbench.banner.focusNextAction",
+    "key": "down",
+    "when": "bannerFocused"
+  },
+  {
+    "command": "workbench.statusBar.focusNext",
+    "key": "ctrl+n",
+    "when": "statusBarFocused"
+  },
+  {
+    "command": "-workbench.statusBar.focusNext",
+    "key": "down",
+    "when": "statusBarFocused"
+  },
+  {
+    "command": "workbench.banner.focusPreviousAction",
+    "key": "ctrl+p",
+    "when": "bannerFocused"
+  },
+  {
+    "command": "-workbench.banner.focusPreviousAction",
+    "key": "up",
+    "when": "bannerFocused"
+  },
+  {
+    "command": "workbench.statusBar.focusPrevious",
+    "key": "ctrl+p",
+    "when": "statusBarFocused"
+  },
+  {
+    "command": "-workbench.statusBar.focusPrevious",
+    "key": "up",
+    "when": "statusBarFocused"
+  },
+  {
+    "command": "-workbench.action.files.save",
+    "key": "ctrl+s"
+  },
+  {
+    "command": "-extension.vim_ctrl+s",
+    "key": "ctrl+s",
+    "when": "editorTextFocus && vim.active && vim.use<C-s> && !inDebugRepl"
+  },
+  {
+    "command": "workbench.action.findInFiles",
+    "key": "ctrl+s"
+  },
+  {
+    "command": "-workbench.action.findInFiles",
+    "key": "ctrl+shift+f"
+  },
+  {
+    "command": "-workbench.action.showAllSymbols",
+    "key": "ctrl+t"
+  },
+  {
+    "command": "-extension.vim_ctrl+t",
+    "key": "ctrl+t",
+    "when": "editorTextFocus && vim.active && vim.use<C-t> && !inDebugRepl"
+  },
+  {
+    "command": "workbench.view.explorer",
+    "key": "ctrl+t",
+    "when": "viewContainer.workbench.view.explorer.enabled"
+  },
+  {
+    "command": "-workbench.view.explorer",
+    "key": "ctrl+shift+e",
+    "when": "viewContainer.workbench.view.explorer.enabled"
+  }
+]
