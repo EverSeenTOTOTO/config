@@ -184,3 +184,6 @@ map("", "d<right>", ":wincmd l<cr>:wincmd c<cr>:wincmd p<cr>")
 -- file explorer
 map('', '<C-t>', "<cmd> :NvimTreeToggle<CR>")
 map("", "<space><space>", "<cmd> :NvimTreeFindFile<CR>")
+
+-- CodeGPT
+map('', '<C-c>', "<cmd> :Chat")
