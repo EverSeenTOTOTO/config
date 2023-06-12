@@ -3,8 +3,6 @@ local present = pcall(require, "packer")
 if not present then
   local packer_path = vim.fn.stdpath("data") .. "/site/pack/packer/opt/packer.nvim"
 
-  print("Cloning packer to " .. packer_path)
-  -- remove the dir before cloning
   vim.fn.delete(packer_path, "rf")
   vim.fn.system({
     "git",
@@ -25,6 +23,9 @@ require("packer").startup({
 
     -- fast boot
     use { "lewis6991/impatient.nvim" }
+
+    -- tui
+    use { "MunifTanjim/nui.nvim" }
 
     -- pkg manager
     use { "wbthomason/packer.nvim",
@@ -165,6 +166,17 @@ require("packer").startup({
       end
     }
 
+    use {
+      "EverSeenTOTOTO/CodeGPT.nvim",
+      requires = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim",
+      },
+      config = function()
+        require("codegpt.config")
+      end
+    }
+
     -- lsp
     use { "hrsh7th/cmp-nvim-lsp",
       after = "nvim-cmp",
@@ -223,7 +235,8 @@ require("packer").startup({
     }
 
     use { 'nvim-telescope/telescope-fzf-native.nvim',
-      run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+      run =
+      'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
     }
 
     use { "nvim-telescope/telescope-frecency.nvim",
