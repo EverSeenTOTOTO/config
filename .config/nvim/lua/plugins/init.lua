@@ -24,9 +24,6 @@ require("packer").startup({
     -- fast boot
     use { "lewis6991/impatient.nvim" }
 
-    -- tui
-    use { "MunifTanjim/nui.nvim" }
-
     -- pkg manager
     use { "wbthomason/packer.nvim",
       event = "VimEnter",
@@ -154,27 +151,6 @@ require("packer").startup({
 
     use { "saadparwaiz1/cmp_luasnip",
       after = "LuaSnip",
-    }
-
-    -- tabnine
-    use { 'tzachar/cmp-tabnine',
-      run = './install.sh',
-      after = "nvim-cmp",
-      requires = 'hrsh7th/nvim-cmp',
-      config = function()
-        require("plugins.configs.tabnine")
-      end
-    }
-
-    use {
-      "EverSeenTOTOTO/CodeGPT.nvim",
-      requires = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim",
-      },
-      config = function()
-        require("codegpt.config")
-      end
     }
 
     -- lsp
