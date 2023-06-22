@@ -1,101 +1,103 @@
-{
-  "+auto": {
-    "color": "#9d9",
-    "defaultProfileName": "clash",
-    "name": "auto",
-    "profileType": "SwitchProfile",
-    "revision": "1881b15825e",
-    "rules": [
-      {
-        "condition": {
-          "conditionType": "HostWildcardCondition",
-          "pattern": "*.cn"
+[
+  {
+    "+auto": {
+      "color": "#9d9",
+      "defaultProfileName": "clash",
+      "name": "auto",
+      "profileType": "SwitchProfile",
+      "revision": "188e265ecba",
+      "rules": [
+        {
+          "condition": {
+            "conditionType": "HostWildcardCondition",
+            "pattern": "*.cn"
+          },
+          "profileName": "direct"
         },
-        "profileName": "direct"
-      },
-      {
-        "condition": {
-          "conditionType": "HostWildcardCondition",
-          "pattern": "*.bilibili.com"
+        {
+          "condition": {
+            "conditionType": "HostWildcardCondition",
+            "pattern": "*.bilibili.com"
+          },
+          "profileName": "direct"
         },
-        "profileName": "direct"
-      },
-      {
-        "condition": {
-          "conditionType": "HostWildcardCondition",
-          "pattern": "*.bilivideo.com"
+        {
+          "condition": {
+            "conditionType": "HostWildcardCondition",
+            "pattern": "*.bilivideo.com"
+          },
+          "profileName": "direct"
         },
-        "profileName": "direct"
-      },
-      {
-        "condition": {
-          "conditionType": "HostWildcardCondition",
-          "pattern": "*.everseenflash.com"
-        },
-        "profileName": "v2ray-hidden"
-      }
-    ]
-  },
-  "+v2ray-hidden": {
-    "bypassList": [
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "127.0.0.1"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "[::1]"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "localhost"
-      }
-    ],
-    "color": "#fe9",
-    "fallbackProxy": {
-      "host": "localhost",
-      "port": 7778,
-      "scheme": "socks5"
+        {
+          "condition": {
+            "conditionType": "HostWildcardCondition",
+            "pattern": "*.everseenflash.com"
+          },
+          "profileName": "direct"
+        }
+      ]
     },
-    "name": "v2ray-hidden",
-    "profileType": "FixedProfile",
-    "revision": "18402f61f70"
-  },
-  "-addConditionsToBottom": false,
-  "-confirmDeletion": true,
-  "-downloadInterval": 1440,
-  "-enableQuickSwitch": false,
-  "-monitorWebRequests": true,
-  "-quickSwitchProfiles": [],
-  "-refreshOnProfileChange": true,
-  "-revertProxyChanges": true,
-  "-showExternalProfile": true,
-  "-showInspectMenu": true,
-  "-startupProfileName": "",
-  "schemaVersion": 2,
-  "+clash": {
-    "bypassList": [
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "127.0.0.1"
+    "+clash": {
+      "bypassList": [
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "127.0.0.1"
+        },
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "[::1]"
+        },
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "localhost"
+        }
+      ],
+      "color": "#fe9",
+      "fallbackProxy": {
+        "host": "localhost",
+        "port": 7890,
+        "scheme": "socks5"
       },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "[::1]"
-      },
-      {
-        "conditionType": "BypassCondition",
-        "pattern": "localhost"
-      }
-    ],
-    "color": "#fe9",
-    "fallbackProxy": {
-      "host": "localhost",
-      "port": 7890,
-      "scheme": "socks5"
+      "name": "clash",
+      "profileType": "FixedProfile",
+      "revision": "1853de4c63b"
     },
-    "name": "clash",
-    "profileType": "FixedProfile",
-    "revision": "1853de4c63b"
+    "+v2ray-hidden": {
+      "bypassList": [
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "127.0.0.1"
+        },
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "[::1]"
+        },
+        {
+          "conditionType": "BypassCondition",
+          "pattern": "localhost"
+        }
+      ],
+      "color": "#fe9",
+      "fallbackProxy": {
+        "host": "localhost",
+        "port": 7778,
+        "scheme": "socks5"
+      },
+      "name": "v2ray-hidden",
+      "profileType": "FixedProfile",
+      "revision": "18402f61f70"
+    },
+    "-addConditionsToBottom": false,
+    "-confirmDeletion": true,
+    "-downloadInterval": 1440,
+    "-enableQuickSwitch": false,
+    "-monitorWebRequests": true,
+    "-quickSwitchProfiles": [],
+    "-refreshOnProfileChange": true,
+    "-revertProxyChanges": true,
+    "-showExternalProfile": true,
+    "-showInspectMenu": true,
+    "-startupProfileName": "",
+    "schemaVersion": 2
   }
-}
+]

@@ -73,20 +73,11 @@ if [[ ! -e ~/.config/z.sh ]]; then
 fi
 ```
 
-## Install nvm
+## Install `nvm`
 
 ```js
-within(async () => {
-  $.prefix += 'export NVM_DIR=$HOME/.nvm; source $NVM_DIR/nvm.sh; ';
-  $`nvm -v`.catch(async () => {
-    const answer = await question("nvm not found, need to install?");
-
-    if (/^y$/i.test(answer)) {
-      await cd(process.env.HOME);
-      await $`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash`;
-    }
-  });
-})
+echo(`installling or updating ${chalk.yellow('nvm')}`);
+await $`wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`;
 ```
 
 ## Install npm globals
@@ -103,17 +94,19 @@ const required = [
   "vscode-langservers-extracted",
   "stylelint-lsp",
   "commitizen",
-  "@everseen/pen"
+  "cz-conventional-changelog"
 ].map(pkg => new RegExp(pkg));
 
 for (const pkg of required) {
   if (installed.some(name => pkg.test(name))) {
-    await echo(`already installed ${chalk.green(pkg.source)}`);
+    echo(`already installed ${chalk.green(pkg.source)}`);
   } else {
-    await echo(`installing npm global pkg: ${chalk.yellow(pkg.source)}`);
+    echo(`installing npm global pkg: ${chalk.yellow(pkg.source)}`);
     await $`npm i -g ${pkg.source}`;
   }
 }
+
+await $`echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc`;
 ```
 
 ## Install Lua 5.1
@@ -123,33 +116,19 @@ const Lua = "lua-5.1.5";
 const LuaRocks = "luarocks-3.9.1";
 
 // install lua
-which('lua')
-  .then(() => echo(`already installed ${chalk.cyan(Lua)}`))
-  .catch(async () => {
-    echo(`${chalk.cyan(Lua)} is not found, downloading...`);
+try {
+  await which('lua');
+  echo(`already installed ${chalk.blue(Lua)}`);
+} catch {
+  echo(`${chalk.cyan(Lua)} is not found, downloading...`);
 
-    await $`wget https://www.lua.org/ftp/${Lua}.tar.gz`;
-    await $`tar -xvf ${Lua}.tar.gz`;
+  await $`wget https://www.lua.org/ftp/${Lua}.tar.gz`;
+  await $`tar -xvf ${Lua}.tar.gz`;
 
-    cd(Lua);
+  cd(Lua);
 
-    await $`make linux && sudo make install`;
-})
-
-// install luarocks
-which("luarocks")
-  .then(() => echo(`already installed ${chalk.cyan(LuaRocks)}`))
-  .catch(async () => {
-    echo(`${chalk.cyan(LuaRocks)} is not found, downloading...`);
-
-    await $`wget https://luarocks.org/releases/${LuaRocks}.tar.gz`;
-    await $`tar -xvf ${LuaRocks}.tar.gz`;
-
-    cd(LuaRocks);
-
-    await $`./configure && make && sudo make install`;
-    await $`sudo luarocks install luaunit`; // a unit test framework
-})
+  await $`make linux && sudo make install`;
+}
 ```
 
 ## Install `cargo` tools
@@ -162,12 +141,21 @@ if ! command -v cargo > /dev/null 2>&1; then
   source ~/.cargo/env
   rustup component add rust-src clippy rust-analyzer
   rustup target add wasm32-unknown-unknown
-
-  echo 'install mordern linux commands with cargo...'
-  cargo install --locked ripgrep lsd bat fd-find du-dust stylua cargo-nextest cargo-expand
-
   # see https://rust-analyzer.github.io/manual.html#rustup
   ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
+fi
+
+echo 'install mordern linux commands with cargo...'
+cargo install --locked ripgrep lsd bat fd-find du-dust stylua cargo-nextest cargo-expand
+```
+
+## Install FiraCode (use `nerd fonts` patched version)
+
+```bash
+if [[ ! -e ~/.nerd-fonts ]]; then
+    git clone https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts --depth 1
+    cd ~/.nerd-fonts 
+    ./install.sh FiraCode
 fi
 ```
 
@@ -184,15 +172,5 @@ if [[ ! -e ~/.wasmtime ]]; then
   cmake ..
   cmake --build .
   mv ./* ~/.wasmtime/bin
-fi
-```
-
-## Install FiraCode (use `nerd fonts` patched version)
-
-```bash
-if [[ ! -e ~/.nerd-fonts ]]; then
-    git clone https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts --depth 1
-    cd ~/.nerd-fonts 
-    ./install.sh FiraCode
 fi
 ```

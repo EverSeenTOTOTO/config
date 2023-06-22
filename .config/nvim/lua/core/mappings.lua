@@ -186,4 +186,4 @@ map('', '<C-t>', "<cmd> :NvimTreeToggle<CR>")
 map("", "<space><space>", "<cmd> :NvimTreeFindFile<CR>")
 
 -- CodeGPT
-map('', '<C-c>', "<cmd> :Chat")
+-- map('', '<C-c>', "<cmd> :Chat")
