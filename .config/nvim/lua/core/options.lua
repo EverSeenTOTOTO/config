@@ -130,8 +130,6 @@ if vim.fn.exists("syntax_on") then
   vim.cmd("syntax reset")
 end
 
-vim.cmd("colorscheme iceberg")
-
 -- override colors
 vim.cmd([[highlight Cursor guibg=#c6c8df guifg=#161821 gui=nocombine]])
 vim.cmd([[highlight CursorLine guibg=#323642 gui=nocombine]])

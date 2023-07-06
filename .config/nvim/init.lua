@@ -5,8 +5,8 @@ if present then
 end
 
 local core_modules = {
-  "plugins",
   "core.options",
+  "plugins",
   "core.autocmds",
   "core.mappings",
   "core.usercmds"
