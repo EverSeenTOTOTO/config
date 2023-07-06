@@ -183,7 +183,14 @@ map("", "d<right>", ":wincmd l<cr>:wincmd c<cr>:wincmd p<cr>")
 
 -- file explorer
 map('', '<C-t>', "<cmd> :NvimTreeToggle<CR>")
-map("", "<space><space>", "<cmd> :NvimTreeFindFile<CR>")
+map("", "<space><space>", function()
+  local view = require("nvim-tree.view")
+  if view.is_visible() then
+    view.close()
+  else
+    vim.cmd(":NvimTreeFindFile")
+  end
+end)
 
 -- CodeGPT
 -- map('', '<C-c>', "<cmd> :Chat")

@@ -23,23 +23,16 @@ end
 local source_mapping = {
   cmp_tabnine = "[TN]",
   copilot = "[Copilot]",
-  luasnip = "[LuaSnip]",
   buffer = "[Buffer]",
   nvim_lsp = "[LSP]",
   path = "[Path]",
   nvim_lua = "[Lua]",
 }
 
-local luasnip = require("luasnip")
 local lspkind = require("lspkind")
 local compare = require('cmp.config.compare')
 
 local options = {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
   preselect = cmp.PreselectMode.None,
   window = {
     completion = {
@@ -109,10 +102,6 @@ local options = {
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.expandable() then
-        luasnip.expand()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
       elseif has_words_before() then
         cmp.complete()
       else
@@ -126,8 +115,6 @@ local options = {
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
       else
         fallback()
       end
@@ -141,7 +128,6 @@ local options = {
     -- { name = "copilot" },
     { name = "cmp_tabnine",  group_index = 1,    max_item_count = 1 },
     { name = "nvim_lsp",     group_index = 1 },
-    { name = "luasnip",      max_item_count = 3, group_index = 2 },
     { name = "buffer",       max_item_count = 3, group_index = 3 },
     { name = "path",         group_index = 2 },
     { name = "emoji" },
