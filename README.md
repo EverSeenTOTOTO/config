@@ -113,7 +113,6 @@ await $`echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc`;
 
 ```js
 const Lua = "lua-5.1.5";
-const LuaRocks = "luarocks-3.9.1";
 
 // install lua
 try {
@@ -128,6 +127,24 @@ try {
   cd(Lua);
 
   await $`make linux && sudo make install`;
+}
+
+// lua-ls
+try {
+  await which('lua-language-server');
+  echo(`already installed ${chalk.blue("lua-ls")}`);
+} catch {
+  echo(`installing ${chalk.blue("lua-ls")}...`);
+  if (os.platform() === 'darwin') {
+    await $`brew install lua-language-server`;
+  } else if (os.platform() === 'linux') {
+    const LUA_LS = "lua-language-server-3.6.23-linux-x64.tar.gz";
+    await $`mkdir ~/lua-ls`;
+    cd("~/lua-ls");
+    await $`wget https://github.com/LuaLS/lua-language-server/releases/download/3.6.23/${LUA_LS}`;
+    await $`tar -xvf ${LUA_LS}`;
+    await $`echo "export PATH=\"$HOME/lua-ls/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$PATH\"" >> ~/.exports.local`;
+  }
 }
 ```
 
@@ -164,8 +181,9 @@ fi
 ```bash
 if [[ ! -e ~/.wasmtime ]]; then
   curl https://wasmtime.dev/install.sh -sSf | bash
-  git clone --recursive https://github.com/WebAssembly/wabt 
-  cd wabt
+  mkdir -p ~/repos/wabt
+  git clone --recursive https://github.com/WebAssembly/wabt ~/repos/wabt
+  cd ~/repos/wabt
   git submodule update --init
   mkdir build
   cd build

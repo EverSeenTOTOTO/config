@@ -103,14 +103,6 @@ if vim.api.nvim_command_output("echo has('unix')") == 1 then
 end
 
 -- plugin mappings
--- snip
-map({ "i", "s" }, "<C-n>", function()
-  require('luasnip').jump(1)
-end)
-map({ "i", "s" }, "<C-p>", function()
-  require('luasnip').jump(-1)
-end)
-
 -- lsp
 map("n", "<leader>f", function()
   vim.lsp.buf.format()
@@ -193,4 +185,4 @@ map("", "<space><space>", function()
 end)
 
 -- CodeGPT
--- map('', '<C-c>', "<cmd> :Chat")
+map('', '<C-c>', "<cmd> :ChatGPT<CR>")

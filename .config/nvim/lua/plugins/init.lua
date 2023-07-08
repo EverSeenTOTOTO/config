@@ -179,20 +179,36 @@ require("lazy").setup({
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
       "kdheepak/cmp-latex-symbols",
+      "L3MON4D3/LuaSnip"
     }
   },
+
+  "L3MON4D3/LuaSnip",
 
   -- autopair
   {
     "windwp/nvim-autopairs",
     config = function()
-      require("nvim-autopairs").setup({})
+      require("plugins.configs.autopairs")
     end,
     event = "InsertEnter"
   },
 
   -- remember last edit position
   { "vladdoster/remember.nvim", },
+
+  {
+    dir = '~/repos/ChatGPT.nvim',
+    event = "VeryLazy",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
+  },
 
   -- vim plugins
   { "tpope/vim-surround", },
@@ -203,13 +219,12 @@ require("lazy").setup({
   -- extra text objects
   { "wellle/targets.vim", },
 
-  -- iceberg theme
   {
-    "cocopon/iceberg.vim",
+    "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd("colorscheme iceberg")
-    end
-  }
+      vim.cmd [[colorscheme tokyonight-moon]]
+    end,
+  },
 })

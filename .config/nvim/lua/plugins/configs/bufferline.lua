@@ -10,6 +10,7 @@ local options = {
     diagnostics = "nvim_lsp",
     diagnostics_update_in_insert = false,
     hover = { enabled = true, reveal = { "close" } },
+    indicator = { style = "icon", icon = "▎" },
     show_buffer_close_icons = true,
     enforce_regular_tabs = false,
     max_name_length = 18,
