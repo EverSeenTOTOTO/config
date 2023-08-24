@@ -41,7 +41,7 @@ require("lazy").setup({
           backend = { "telescope", "nui", "builtin" },
         },
       })
-    end
+    end,
   },
 
   -- fzf
@@ -53,25 +53,23 @@ require("lazy").setup({
     end,
   },
   {
-    'nvim-telescope/telescope-fzf-native.nvim',
+    "nvim-telescope/telescope-fzf-native.nvim",
     build =
-    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+    "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
   },
   "kkharji/sqlite.lua",
   {
     "nvim-telescope/telescope-frecency.nvim",
     config = function()
-      require "telescope".load_extension("frecency")
+      require("telescope").load_extension("frecency")
     end,
   },
 
-
   -- show register content
   {
-    'tversteeg/registers.nvim',
-    lazy = true,
+    "tversteeg/registers.nvim",
     config = function()
-      require('registers').setup()
+      require("registers").setup()
     end,
   },
 
@@ -94,12 +92,12 @@ require("lazy").setup({
 
   -- smart split
   {
-    'mrjones2014/smart-splits.nvim',
+    "mrjones2014/smart-splits.nvim",
   },
 
   -- file explorer
   {
-    'nvim-tree/nvim-tree.lua',
+    "nvim-tree/nvim-tree.lua",
     config = function()
       require("plugins.configs.nvim-tree")
     end,
@@ -139,7 +137,7 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
     dependencies = {
       "ray-x/lsp_signature.nvim",
-      'simrat39/rust-tools.nvim'
+      "simrat39/rust-tools.nvim",
     },
     config = function()
       require("plugins.configs.lspconfig")
@@ -156,14 +154,15 @@ require("lazy").setup({
 
   -- rust
   {
-    'simrat39/rust-tools.nvim',
+    "simrat39/rust-tools.nvim",
+    ft = "rust",
     config = function()
-      require('rust-tools').setup({})
-    end
+      require("rust-tools").setup({})
+    end,
   },
 
   -- lisp
-  { 'gpanders/nvim-parinfer', },
+  { "gpanders/nvim-parinfer" },
 
   -- Completion
   {
@@ -179,52 +178,73 @@ require("lazy").setup({
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
       "kdheepak/cmp-latex-symbols",
-      "L3MON4D3/LuaSnip"
-    }
+      "L3MON4D3/LuaSnip",
+    },
   },
 
   "L3MON4D3/LuaSnip",
 
+  -- copilot
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup({
+        filetypes = {
+          markdown = true
+        },
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
+    end,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup()
+    end
+  },
+
   -- autopair
   {
     "windwp/nvim-autopairs",
+    event = "InsertEnter",
     config = function()
       require("plugins.configs.autopairs")
     end,
-    event = "InsertEnter"
   },
 
   -- remember last edit position
-  { "vladdoster/remember.nvim", },
-
-  {
-    dir = '~/repos/ChatGPT.nvim',
-    event = "VeryLazy",
-    config = function()
-      require("chatgpt").setup()
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    }
-  },
+  { "vladdoster/remember.nvim", lazy = false },
 
   -- vim plugins
-  { "tpope/vim-surround", },
+  "tpope/vim-surround",
 
   -- enhanced dot command
-  { "tpope/vim-repeat", },
+  "tpope/vim-repeat",
+
+  -- editorconfig
+  "editorconfig/editorconfig-vim",
 
   -- extra text objects
-  { "wellle/targets.vim", },
+  "wellle/targets.vim",
 
+  -- Bdelete without destroy our layout
+  "moll/vim-bbye",
+
+  -- theme
   {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd [[colorscheme tokyonight-moon]]
+      vim.cmd([[colorscheme tokyonight-moon]])
     end,
+  },
+
+  -- theme similar to vscode default dark
+  {
+    "lunarvim/darkplus.nvim",
   },
 })

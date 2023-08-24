@@ -3,72 +3,75 @@ local autocmd = vim.api.nvim_create_autocmd
 vim.api.nvim_create_augroup("setfiletype", { clear = true })
 
 autocmd("BufRead,BufNewFile", {
-  pattern = "*.env.*",
-  group = "setfiletype",
-  callback = function()
-    vim.cmd("setfiletype sh")
-  end,
+	pattern = "*.env.*",
+	group = "setfiletype",
+	callback = function()
+		vim.cmd("setfiletype sh")
+	end,
 })
 
 autocmd("BufRead,BufNewFile", {
-  pattern = "*.s",
-  group = "setfiletype",
-  callback = function()
-    vim.cmd("setfiletype asm")
-  end,
+	pattern = "*.s",
+	group = "setfiletype",
+	callback = function()
+		vim.cmd("setfiletype asm")
+	end,
 })
 
 autocmd("BufRead,BufNewFile", {
-  pattern = "*.svelte",
-  group = "setfiletype",
-  callback = function()
-    vim.cmd("setfiletype html")
-  end,
+	pattern = "*.svelte",
+	group = "setfiletype",
+	callback = function()
+		vim.cmd("setfiletype html")
+	end,
 })
 
 autocmd("BufRead,BufNewFile", {
-  pattern = "*.wiki",
-  group = "setfiletype",
-  callback = function()
-    vim.cmd("setfiletype markdown")
-  end,
+	pattern = "*.wiki",
+	group = "setfiletype",
+	callback = function()
+		vim.cmd("setfiletype markdown")
+	end,
 })
 
 -- File extension specific tabbing
 autocmd("Filetype", {
-  pattern = "python",
-  callback = function()
-    vim.opt_local.expandtab = true
-    vim.opt_local.tabstop = 4
-    vim.opt_local.shiftwidth = 4
-    vim.opt_local.softtabstop = 4
-  end,
-})
-
-autocmd("BufWritePre", {
-  pattern = "*.tsx,*.ts,*.jsx,*.js,*.vue",
-  callback = function()
-    for _, client in pairs(vim.lsp.buf_get_clients(0)) do
-      if client.name == "eslint" then
-        vim.cmd(":EslintFixAll")
-      end
-    end
-  end,
+	pattern = "python",
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+	end,
 })
 
 -- automatically create directories
 autocmd("BufWritePre", {
-  pattern = "*",
-  callback = function(ctx)
-    local dir = vim.fn.fnamemodify(ctx.file, ":p:h")
-    vim.fn.mkdir(dir, "p")
-  end
+	pattern = "*",
+	callback = function(ctx)
+		local dir = vim.fn.fnamemodify(ctx.file, ":p:h")
+		vim.fn.mkdir(dir, "p")
+	end,
 })
 
 -- highlight yanked text for 700ms
 autocmd("TextYankPost", {
-  pattern = "*",
-  callback = function()
-    vim.highlight.on_yank { higroup = "IncSearch", timeout = 700 }
-  end
+	pattern = "*",
+	callback = function()
+		if vim.fn.has("mac") then
+			vim.cmd([[call system('pbcopy && tmux set-buffer "$(reattach-to-user-namespace pbpaste)"', @")]])
+		else
+			local type = vim.fn.nvim_command("echo $XDG_SESSION_TYPE")
+
+			if type == "x11" and vim.fn.nvim_command("command -v xclip") ~= "" then
+				-- xclip
+				vim.cmd([[call system('xclip -i -sel c && tmux set-buffer $(xclip -o -sel c)', @")]])
+			elseif type == "wayland" and vim.fn.nvim_command("command -v wayland") ~= "" then
+				-- wl-clipboard
+				vim.cmd([[call system('wl-copy && tmux set-buffer $(wl-paste)', @")]])
+			end
+		end
+
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 700 })
+	end,
 })

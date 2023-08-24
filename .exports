@@ -20,7 +20,10 @@ export PYENV_ROOT="$HOME/.pyenv"
 # wasm
 export WASMTIME_HOME="$HOME/.wasmtime"
 
-export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$PATH"
+# cargo
+export CARGO_HOME="$HOME/.cargo"
+
+export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$CARGO_HOME/bin:$PATH"
 
 # puppeteer
 export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox;

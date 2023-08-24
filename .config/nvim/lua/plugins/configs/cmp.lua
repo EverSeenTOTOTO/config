@@ -1,14 +1,19 @@
 local present, cmp = pcall(require, "cmp")
-if not present then return end
+if not present then
+  return
+end
 
 local snip_status_ok, luasnip = pcall(require, "luasnip")
-if not snip_status_ok then return end
+if not snip_status_ok then
+  return
+end
 
 require("luasnip/loaders/from_vscode").lazy_load()
 
-local function has_words_before()
+local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
 local function border(hl_name)
@@ -59,24 +64,24 @@ local options = {
   },
   formatting = {
     format = function(entry, vim_item)
-      vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = 'symbol' })
-      vim_item.menu = source_mapping[entry.source.name];
+      vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
+      vim_item.menu = source_mapping[entry.source.name]
 
-      if entry.source.name == "cmp_tabnine" or entry.source.name == 'copilot' then
+      if entry.source.name == "cmp_tabnine" or entry.source.name == "copilot" then
         local detail = (entry.completion_item.data or {}).detail
 
         vim_item.kind = ""
 
-        if detail and detail:find('.*%%.*') then
-          vim_item.kind = vim_item.kind .. ' ' .. detail
+        if detail and detail:find(".*%%.*") then
+          vim_item.kind = vim_item.kind .. " " .. detail
         end
 
         if (entry.completion_item.data or {}).multiline then
-          vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
+          vim_item.kind = vim_item.kind .. " " .. "[ML]"
         end
       end
 
-      if entry.source.name == 'path' then
+      if entry.source.name == "path" then
         local icon, hl_group = require("nvim-web-devicons").get_icon(entry:get_completion_item().label)
 
         if icon then
@@ -104,14 +109,12 @@ local options = {
       select = true,
     }),
     ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
+      if cmp.visible() and has_words_before() then
+        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
       elseif luasnip.expandable() then
         luasnip.expand()
       elseif luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
       else
         fallback()
       end
@@ -135,20 +138,24 @@ local options = {
     }),
   },
   sources = {
-    -- { name = "copilot" },
+    { name = "copilot" },
     {
       name = "nvim_lsp",
-      group_index = 1
+      group_index = 1,
+      keyword_length = 1,
     },
-    { name = "luasnip" },
+    {
+      name = "luasnip",
+      keyword_length = 2,
+    },
     {
       name = "buffer",
-      max_item_count = 3,
-      group_index = 3
+      keyword_length = 3,
+      group_index = 3,
     },
     {
       name = "path",
-      group_index = 2
+      group_index = 2,
     },
     { name = "emoji" },
     { name = "latex_symbols" },

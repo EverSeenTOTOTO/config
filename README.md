@@ -12,7 +12,7 @@
 const files = fs.readdirSync('.');
 
 for (const file of files) {
-    if (!/^(\.git|\.ssh|\.bak|\.json|README\.md(\.mjs)?)$/.test(file)) {
+    if (!/(\.git|\.ssh|\.bak|\.json|README\.md(\.mjs)?)$/.test(file)) {
         await $`cp -r ${file} ~/`;
     }
 }
@@ -46,16 +46,6 @@ if [[ ! -e $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k ]]; the
 fi
 ```
 
-## Install tmux plugins
-
-```bash
-TMUX_PLUG=~/.tmux/plugins
-
-if [[ ! -e $TMUX_PLUG/vim-tmux-navigator ]]; then
-  git clone https://github.com/christoomey/vim-tmux-navigator.git $TMUX_PLUG/vim-tmux-navigator --depth 1
-fi
-```
-
 ## Install fzf
 
 ```bash
@@ -77,7 +67,7 @@ fi
 
 ```js
 echo(`installling or updating ${chalk.yellow('nvm')}`);
-await $`wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`;
+// await $`wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`;
 ```
 
 ## Install npm globals
@@ -91,8 +81,11 @@ const required = [
   "vls",
   "typescript",
   "typescript-language-server",
-  "vscode-langservers-extracted",
+  "remark",
+  "remark-language-server",
   "stylelint-lsp",
+  "svelte-language-server",
+  "vscode-langservers-extracted",
   "commitizen",
   "cz-conventional-changelog"
 ].map(pkg => new RegExp(pkg));
@@ -102,7 +95,7 @@ for (const pkg of required) {
     echo(`already installed ${chalk.green(pkg.source)}`);
   } else {
     echo(`installing npm global pkg: ${chalk.yellow(pkg.source)}`);
-    await $`npm i -g ${pkg.source}`;
+    await spinner(() => $`npm i -g ${pkg.source}`)
   }
 }
 
@@ -139,8 +132,15 @@ try {
     await $`brew install lua-language-server`;
   } else if (os.platform() === 'linux') {
     const LUA_LS = "lua-language-server-3.6.23-linux-x64.tar.gz";
-    await $`mkdir ~/lua-ls`;
-    cd("~/lua-ls");
+    const LUA_LS_HOME = path.join(process.env.HOME, 'lua-ls');
+  
+    echo(`install lua-language-server in ${chalk.yellow(LUA_LS_HOME)}...`)
+
+    if (!fs.existsSync(LUA_LS_HOME)) {
+      await $`mkdir ${LUA_LS_HOME}`;
+    }
+  
+    cd(LUA_LS_HOME);
     await $`wget https://github.com/LuaLS/lua-language-server/releases/download/3.6.23/${LUA_LS}`;
     await $`tar -xvf ${LUA_LS}`;
     await $`echo "export PATH=\"$HOME/lua-ls/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$PATH\"" >> ~/.exports.local`;
@@ -159,11 +159,11 @@ if ! command -v cargo > /dev/null 2>&1; then
   rustup component add rust-src clippy rust-analyzer
   rustup target add wasm32-unknown-unknown
   # see https://rust-analyzer.github.io/manual.html#rustup
-  ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
+  # ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
 fi
 
 echo 'install mordern linux commands with cargo...'
-cargo install --locked ripgrep lsd bat fd-find du-dust stylua cargo-nextest cargo-expand
+cargo install ripgrep lsd bat fd-find du-dust stylua cargo-expand
 ```
 
 ## Install FiraCode (use `nerd fonts` patched version)

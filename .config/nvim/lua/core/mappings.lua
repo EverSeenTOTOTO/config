@@ -52,7 +52,7 @@ map({ "v", "n" }, "L", "g$")
 map("n", "U", "<C-r>")
 
 -- Alt + jk move lines
-if vim.fn.has('mac') ~= 0 then
+if vim.fn.has("mac") ~= 0 then
   map("n", "∆", "mz:m+<cr>`z")
   map("i", "∆", "<esc>mz:m+<cr>`zi")
   map("v", "∆", ":m'>+<cr>`<my`>mzgv`yo`z")
@@ -66,14 +66,6 @@ else
   map("i", "<M-k>", "<esc>mz:m-2<cr>`zi")
   map("n", "<M-k>", "mz:m-2<cr>`z")
   map("v", "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z")
-end
-
--- copy
-if vim.fn.has('mac') ~= 0 then
-  map("v", "y",
-    "mvy:call system('pbcopy && tmux set-buffer \"$(reattach-to-user-namespace pbpaste)\"', @\")<CR>`v")
-else
-  map("v", "y", "mvy:call system('xclip -i -sel c && tmux set-buffer \"$(xclip -o -sel c)\"', @\")<CR>`v")
 end
 
 -- Don't copy the replaced text after pasting in visual mode
@@ -128,20 +120,33 @@ end)
 map("n", "<leader>]", function()
   vim.diagnostic.goto_next()
 end)
+map("n", "<leader>m", function()
+  for _, client in ipairs(vim.lsp.buf_get_clients()) do
+    if client.name == "tsserver" then
+      vim.lsp.buf.execute_command({
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = "",
+      })
+      break
+    end
+  end
+end)
 
 map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
 map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-map("n", "<leader>q", ":bp|bd #<CR>")
 
 map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
 map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
 map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
 map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
+map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
 map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
 map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
 map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")
 map("n", "<leader>t", "<cmd> :Telescope lsp_type_definitions <CR>")
+map("n", "<leader>q", "<cmd> :Bdelete<CR>")
 
 -- 窗口
 map("", "<up>", function()
@@ -156,16 +161,16 @@ end)
 map("", "<right>", function()
   require("smart-splits").resize_right()
 end)
-map('n', '<C-h>', function()
+map("n", "<C-h>", function()
   require("smart-splits").move_cursor_left()
 end)
-map('n', '<C-j>', function()
+map("n", "<C-j>", function()
   require("smart-splits").move_cursor_down()
 end)
-map('n', '<C-k>', function()
+map("n", "<C-k>", function()
   require("smart-splits").move_cursor_up()
 end)
-map('n', '<C-l>', function()
+map("n", "<C-l>", function()
   require("smart-splits").move_cursor_right()
 end)
 map("", "d<up>", ":wincmd k<cr>:wincmd c<cr>:wincmd p<cr>")
@@ -174,15 +179,17 @@ map("", "d<left>", ":wincmd h<cr>:wincmd c<cr>:wincmd p<cr>")
 map("", "d<right>", ":wincmd l<cr>:wincmd c<cr>:wincmd p<cr>")
 
 -- file explorer
-map('', '<C-t>', "<cmd> :NvimTreeToggle<CR>")
-map("", "<space><space>", function()
+map("", "<C-t>", function()
   local view = require("nvim-tree.view")
   if view.is_visible() then
-    view.close()
+    vim.cmd(":NvimTreeToggle")
   else
-    vim.cmd(":NvimTreeFindFile")
+    local current_buffer = vim.api.nvim_get_current_buf()
+    local buffer_name = vim.api.nvim_buf_get_name(current_buffer)
+    if buffer_name == "" then
+      vim.cmd(":NvimTreeToggle")
+    else
+      vim.cmd(":NvimTreeFindFile")
+    end
   end
 end)
-
--- CodeGPT
-map('', '<C-c>', "<cmd> :ChatGPT<CR>")
