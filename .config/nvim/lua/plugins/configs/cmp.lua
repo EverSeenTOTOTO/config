@@ -141,7 +141,6 @@ local options = {
     { name = "copilot" },
     {
       name = "nvim_lsp",
-      group_index = 1,
       keyword_length = 1,
     },
     {
@@ -151,11 +150,9 @@ local options = {
     {
       name = "buffer",
       keyword_length = 3,
-      group_index = 3,
     },
     {
       name = "path",
-      group_index = 2,
     },
     { name = "emoji" },
     { name = "latex_symbols" },
