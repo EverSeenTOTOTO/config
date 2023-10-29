@@ -95,9 +95,6 @@ setup("lua_ls", {
 	},
 })
 
--- markdown
-setup("remark_ls")
-
 -- rust
 
 -- stylelint

@@ -81,8 +81,6 @@ const required = [
   "vls",
   "typescript",
   "typescript-language-server",
-  "remark",
-  "remark-language-server",
   "stylelint-lsp",
   "svelte-language-server",
   "vscode-langservers-extracted",
