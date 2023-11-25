@@ -1,7 +1,16 @@
-local present, db = pcall(require, "nvim-tree")
+local present, file_explorer = pcall(require, "nvim-tree")
 
 if not present then
-	return
+  return
 end
 
-db.setup()
+file_explorer.setup({
+  filters = {
+    custom = {
+      "\\.jpg$",
+      "\\.jepg$",
+      "\\.png$",
+      "\\.webp$"
+    }
+  }
+})

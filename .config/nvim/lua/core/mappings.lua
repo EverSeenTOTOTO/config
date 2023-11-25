@@ -137,11 +137,16 @@ map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
 map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
 
 map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
-map("n", "<C-f>", "<cmd> :Telescope find_files find_command=fd,-LH,-tf<CR>")
-map("n", "<C-s>", "<cmd> :Telescope live_grep<CR>")
+map("n", "ss", "<cmd> :Telescope live_grep<CR>")
 map("n", "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")
 map("n", "<space><space>", "<cmd> :Telescope command_history <CR>")
 map("n", "<C-p>", "<cmd> :Telescope commands <CR>")
+map("n", "<C-f>", function()
+  require("telescope.builtin").find_files({
+    find_command = { "fd", '-LH', '-tf' },
+  })
+end)
+
 map("n", "<leader>d", "<cmd> :Telescope lsp_definitions <CR>")
 map("n", "<leader>i", "<cmd> :Telescope lsp_implementations <CR>")
 map("n", "<leader>r", "<cmd> :Telescope lsp_references <CR>")

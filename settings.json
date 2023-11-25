@@ -238,7 +238,8 @@
     },
     {
       "before": [
-        "<C-f>"
+        "f",
+        "f"
       ],
       "commands": [
         "workbench.action.quickOpen"
@@ -467,7 +468,7 @@
       "before": [
         "<C-j>"
       ]
-    },
+    }
   ],
   "vim.overrideCopy": true,
   "vim.statusBarColorControl": false,
