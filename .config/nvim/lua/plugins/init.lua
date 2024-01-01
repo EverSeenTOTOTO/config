@@ -57,7 +57,6 @@ require("lazy").setup({
     build =
     "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
   },
-  "kkharji/sqlite.lua",
   {
     "nvim-telescope/telescope-frecency.nvim",
     config = function()
@@ -114,7 +113,8 @@ require("lazy").setup({
   -- indent tracing
   {
     "lukas-reineke/indent-blankline.nvim",
-    event = "BufRead",
+    main = "ibl",
+    opts = {},
     config = function()
       require("plugins.configs.indent-blankline")
     end,
@@ -177,12 +177,11 @@ require("lazy").setup({
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
+      'hrsh7th/cmp-vsnip',
+      'hrsh7th/vim-vsnip',
       "kdheepak/cmp-latex-symbols",
-      "L3MON4D3/LuaSnip",
     },
   },
-
-  "L3MON4D3/LuaSnip",
 
   -- copilot
   {
