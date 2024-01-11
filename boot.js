@@ -7,7 +7,6 @@ within(async () => {
   await $`date >> ${LogFile}`;
 
   await $`pm2 start -n clash "Clash/cfw"`;
-  await $`pm2 start -n doc "pen" -- -p4000 -r repos/docs`;
 
   // await $`pm2 start -n fcitx5 "fcitx5"`;
   // await $`pm2 start -n hidden "v2ray" -- run --config .config/v2ray/config-hidden.json`;

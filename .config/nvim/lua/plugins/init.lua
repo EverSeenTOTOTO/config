@@ -191,7 +191,7 @@ require("lazy").setup({
     config = function()
       require("copilot").setup({
         filetypes = {
-          markdown = true
+          markdown = false
         },
         suggestion = { enabled = false },
         panel = { enabled = false },
