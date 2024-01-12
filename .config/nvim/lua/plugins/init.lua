@@ -161,9 +161,6 @@ require("lazy").setup({
     end,
   },
 
-  -- lisp
-  { "gpanders/nvim-parinfer" },
-
   -- Completion
   {
     "hrsh7th/nvim-cmp",
