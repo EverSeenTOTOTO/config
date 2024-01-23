@@ -211,9 +211,6 @@ require("lazy").setup({
     end,
   },
 
-  -- remember last edit position
-  { "vladdoster/remember.nvim", lazy = false },
-
   -- vim plugins
   "tpope/vim-surround",
 

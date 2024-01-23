@@ -78,22 +78,24 @@ const installed = data.stdout.split("\n").map(pkg => pkg.trim());
 const required = [
   "pm2",
   "yarn",
-  "vls",
+  "@vue/language-server",
   "typescript",
   "typescript-language-server",
   "stylelint-lsp",
   "svelte-language-server",
-  "vscode-langservers-extracted",
   "commitizen",
   "cz-conventional-changelog"
-].map(pkg => new RegExp(pkg));
+];
+const regex = required.map(pkg => new RegExp(pkg));
 
-for (const pkg of required) {
+for (let i = 0; i < required.length; ++i) {
+  const pkg = regex[i];
+
   if (installed.some(name => pkg.test(name))) {
     echo(`already installed ${chalk.green(pkg.source)}`);
   } else {
-    echo(`installing npm global pkg: ${chalk.yellow(pkg.source)}`);
-    await spinner(() => $`npm i -g ${pkg.source}`)
+    echo(`installing npm global pkg: ${chalk.yellow(required[i])}`);
+    await spinner(() => $`npm i -g ${required[i]}`)
   }
 }
 
