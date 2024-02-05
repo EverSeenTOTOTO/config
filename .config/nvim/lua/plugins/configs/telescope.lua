@@ -1,8 +1,6 @@
 local present, telescope = pcall(require, "telescope")
 
-if not present then
-  return
-end
+if not present then return end
 
 local telescope_actions = require("telescope.actions.set")
 
@@ -46,7 +44,6 @@ local options = {
       height = 0.80,
       preview_cutoff = 120,
     },
-    file_sorter = require("telescope.sorters").get_fuzzy_file,
     file_ignore_patterns = {
       "%.lock",
       "__pycache__/*",
@@ -98,7 +95,6 @@ local options = {
       "%.flac",
       "%.tar.gz",
     },
-    generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
     path_display = { "truncate" },
     winblend = 0,
     border = {},
@@ -135,7 +131,11 @@ local options = {
     },
   },
   extensions = {
-    fzf = {},
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+    },
   },
 }
 
