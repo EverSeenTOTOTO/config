@@ -81,3 +81,6 @@ export QT_IM_MODULE=fcitx
 
 # proxy
 export no_proxy="localhost, 127.0.0.1, ::1" 
+
+# corepack
+export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com

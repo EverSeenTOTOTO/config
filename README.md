@@ -76,15 +76,17 @@ echo(`installling or updating ${chalk.yellow('nvm')}`);
 const data = await $`npm ls -g --depth 0`
 const installed = data.stdout.split("\n").map(pkg => pkg.trim());
 const required = [
+  "commitizen",
+  "cz-conventional-changelog",
   "pm2",
-  "yarn",
-  "@vue/language-server",
-  "typescript",
-  "typescript-language-server",
   "stylelint-lsp",
   "svelte-language-server",
-  "commitizen",
-  "cz-conventional-changelog"
+  "typescript",
+  "typescript-language-server",
+  "@vue/language-server",
+  "@vue/typescript-plugin",
+  "vscode-langservers-extracted",
+  "yarn",
 ];
 const regex = required.map(pkg => new RegExp(pkg));
 

@@ -4,6 +4,8 @@ if not present then
   return
 end
 
+local util = require 'lspconfig.util'
+
 local signs = {
   { name = "DiagnosticSignError", text = "" },
   { name = "DiagnosticSignWarn",  text = "" },
@@ -35,7 +37,7 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
   border = "rounded",
 })
 
-local lsp_defaults = lspconfig.util.default_config
+local lsp_defaults = util.default_config
 
 lsp_defaults.capabilities =
     vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
@@ -110,7 +112,45 @@ setup("stylelint_lsp", {
 setup("svelte")
 
 -- tsserver
+local npm_root = vim.fn.system("npm root -g", true):gsub("^%s*(.-)%s*$", "%1")
+
+if not npm_root or npm_root == "" then
+  vim.notify("No npm root found", vim.log.levels.ERROR)
+  return
+end
+
+setup('tsserver', {
+  init_options = {
+    plugins = {
+      {
+        name = "@vue/typescript-plugin",
+        location = npm_root .. "/@vue/typescript-plugin",
+        languages = { "javascript", "typescript", "vue" },
+      },
+    },
+  },
+  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+})
+
+local function get_typescript_server_path(root_dir)
+  local global_ts = npm_root .. '/typescript/lib'
+  local found_ts = ''
+  local function check_dir(path)
+    found_ts = util.path.join(path, 'node_modules', 'typescript', 'lib')
+    if util.path.exists(found_ts) then
+      return path
+    end
+  end
+  if util.search_ancestors(root_dir, check_dir) then
+    return found_ts
+  else
+    return global_ts
+  end
+end
+
 -- vue
 setup("volar", {
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' }
+  on_new_config = function(new_config, new_root_dir)
+    new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
+  end,
 })
