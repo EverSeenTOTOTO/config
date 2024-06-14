@@ -13,6 +13,8 @@ opt.title = true
 opt.completeopt = { "menu", "menuone", "noselect" }
 opt.copyindent = true
 opt.cursorline = true
+opt.conceallevel = 2
+opt.confirm = true
 
 -- Indentline
 opt.expandtab = true
@@ -20,9 +22,10 @@ opt.preserveindent = true
 opt.shiftwidth = 2
 opt.smartindent = true
 
-opt.pumheight = 10
-opt.scrolloff = 8
 opt.showmode = false
+opt.pumblend = 10 -- Popup blend
+opt.pumheight = 10
+opt.scrolloff = 4
 opt.sidescrolloff = 8
 
 opt.fillchars = {
@@ -55,6 +58,9 @@ opt.wildignore = {
 	"*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz",
 }
 
+opt.grepformat = "%f:%l:%c:%m"
+opt.grepprg = "rg --vimgrep"
+
 opt.hidden = true
 opt.ignorecase = true
 opt.mouse = "a"
@@ -66,7 +72,6 @@ opt.numberwidth = 2
 opt.relativenumber = false
 opt.ruler = false
 
--- disable nvim intro
 opt.shortmess = {
 	t = true, -- truncate file messages at start
 	A = true, -- ignore annoying swap file messages
@@ -108,6 +113,7 @@ opt.listchars = {
 opt.signcolumn = "yes"
 opt.splitbelow = true
 opt.splitright = true
+opt.splitkeep = "screen"
 opt.tabstop = 2
 opt.termguicolors = true
 opt.timeoutlen = 400
@@ -117,6 +123,8 @@ opt.undofile = true
 opt.updatetime = 300
 opt.swapfile = false
 opt.writebackup = false
+opt.winminwidth = 5 -- Minimum window width
+opt.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
 
 -- go to previous/next line with h,l,left arrow and right arrow
 -- when cursor reaches end/beginning of line
@@ -178,3 +186,9 @@ if vim.g.neovide then
 	vim.g.neovide_transparency = 0.95
 	vim.g.neovide_cursor_vfx_mode = "sonicboom"
 end
+
+if vim.fn.has("nvim-0.10") == 1 then
+	opt.smoothscroll = true
+end
+
+vim.g.markdown_recommended_style = 0

@@ -70,7 +70,7 @@ function M.provider.encoding()
 end
 
 function M.provider.lsp_progress()
-	local Lsp = vim.lsp.util.get_progress_messages()[1]
+	local Lsp = vim.lsp.status()[1]
 	return Lsp
 			and string.format(
 				" %%<%s %s %s (%s%%%%) ",

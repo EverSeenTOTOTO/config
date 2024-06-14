@@ -1,16 +1,16 @@
 local present, file_explorer = pcall(require, "nvim-tree")
 
 if not present then
-  return
+	return
 end
 
 file_explorer.setup({
-  filters = {
-    custom = {
-      "\\.jpg$",
-      "\\.jepg$",
-      "\\.png$",
-      "\\.webp$"
-    }
-  }
+	filters = {
+		custom = {
+			"\\.jpg$",
+			"\\.jepg$",
+			"\\.png$",
+			"\\.webp$",
+		},
+	},
 })
