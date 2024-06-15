@@ -180,6 +180,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- neovide
+---@diagnostic disable-next-line: undefined-field
 if vim.g.neovide then
 	vim.o.guifont = "FiraCode Nerd Font:h14"
 	vim.g.neovide_scale_factor = 1.0

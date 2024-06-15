@@ -5,7 +5,7 @@ end
 
 local options = {
 	options = {
-		always_show_bufferline = false,
+		always_show_bufferline = true,
 		buffer_close_icon = "",
 		diagnostics = "nvim_lsp",
 		diagnostics_update_in_insert = false,
