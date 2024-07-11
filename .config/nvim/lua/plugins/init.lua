@@ -82,9 +82,10 @@ require("lazy").setup({
 
 	-- statusline
 	{
-		"feline-nvim/feline.nvim",
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require("plugins.configs.feline")
+			require("plugins.configs.lualine")
 		end,
 	},
 
