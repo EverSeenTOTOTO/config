@@ -16,20 +16,13 @@ lualine.setup({
 		lualine_x = {
 			{
 				"diagnostics",
-				symbols = {
-					error = "",
-					warn = "",
-					info = "",
-					hint = "",
-				},
 			},
 			function()
 				local buf_client_names = {}
-				for _, client in
-					pairs(vim.lsp.get_clients({
-						bufnr = vim.api.nvim_get_current_buf(),
-					}))
-				do
+				local clients = vim.lsp.get_clients({
+					bufnr = vim.api.nvim_get_current_buf(),
+				})
+				for _, client in pairs(clients) do
 					table.insert(buf_client_names, client.name)
 				end
 				return table.concat(buf_client_names, ", ")

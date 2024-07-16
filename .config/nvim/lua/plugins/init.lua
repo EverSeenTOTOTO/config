@@ -154,11 +154,9 @@ require("lazy").setup({
 
 	-- rust
 	{
-		"simrat39/rust-tools.nvim",
-		ft = "rust",
-		config = function()
-			require("rust-tools").setup({})
-		end,
+		"mrcjkb/rustaceanvim",
+		version = "^4", -- Recommended
+		lazy = false, -- This plugin is already lazy
 	},
 
 	-- Completion
@@ -202,17 +200,10 @@ require("lazy").setup({
 		end,
 	},
 
-	-- autopair
-	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		config = function()
-			require("plugins.configs.autopairs")
-		end,
-	},
-
 	-- vim plugins
 	"tpope/vim-surround",
+
+	"farmergreg/vim-lastplace",
 
 	-- enhanced dot command
 	"tpope/vim-repeat",

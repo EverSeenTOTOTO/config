@@ -19,6 +19,7 @@
 [alias]
   ai = add -i
   b = branch 
+  bb = "!~/better-branch.sh"
   c = commit -m
   d = diff
   cln = clone --recursive
