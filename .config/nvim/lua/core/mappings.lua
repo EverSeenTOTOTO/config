@@ -95,11 +95,43 @@ if vim.fn.has("unix") == 1 then
 end
 
 -- plugin mappings
+
 -- lsp
+local allowed_order = {
+	"volar",
+	"prettier",
+	"vtsls",
+	"tsserver",
+	"eslint",
+}
+
 map("n", "<leader>f", function()
 	vim.lsp.buf.format({
-		filter = function(client)
-			return client.name ~= "tsserver"
+		async = false,
+		filter = function(current)
+			local all_clients = vim.lsp.get_clients({ bufnr = 0 })
+			local first_index = #allowed_order
+			local client_index = 0
+
+			-- create a map for faster lookup
+			local client_map = {}
+			for _, c in ipairs(all_clients) do
+				client_map[c.name] = c
+			end
+
+			for i, allowed in ipairs(allowed_order) do
+				if client_map[allowed] and first_index == #allowed_order then -- found allowed client
+					first_index = i
+				end
+				if current.name == allowed then -- found current
+					client_index = i
+				end
+				if first_index ~= #allowed_order and client_index ~= 0 then
+					break
+				end
+			end
+
+			return client_index <= first_index
 		end,
 	})
 end)

@@ -137,7 +137,6 @@ require("lazy").setup({
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			"ray-x/lsp_signature.nvim",
-			"simrat39/rust-tools.nvim",
 		},
 		config = function()
 			require("plugins.configs.lspconfig")

@@ -13,3 +13,11 @@ create_usercmd("SplitCurrentLine", function()
 		vim.api.nvim_win_set_cursor(0, { row, col })
 	end)
 end, {})
+
+create_usercmd("TsOrganizeImports", function()
+	vim.lsp.buf.execute_command({
+		command = "_typescript.organizeImports",
+		arguments = { vim.api.nvim_buf_get_name(0) },
+		title = "",
+	})
+end, {})
