@@ -90,14 +90,49 @@ map("n", "<leader>z", "$zf%")
 -- terminal
 map("t", "vv", "<C-\\><C-n>")
 
-if vim.api.nvim_command_output("echo has('unix')") == 1 then
+if vim.fn.has("unix") == 1 then
 	map("n", "gx", ':execute "!xdg-open" expand(\'%:p:h\') . "/" . expand("<cfile>") " &"<cr>end')
 end
 
 -- plugin mappings
+
 -- lsp
+local allowed_order_map = {
+	"volar",
+	"eslint",
+	"vtsls",
+	"tsserver",
+}
+
 map("n", "<leader>f", function()
-	vim.lsp.buf.format()
+	vim.lsp.buf.format({
+		async = false,
+		filter = function(current)
+			local all_clients = vim.lsp.get_clients({ bufnr = 0 })
+			local first_allowed_index = #allowed_order_map
+			local current_index = 0
+
+			-- create a map for faster lookup
+			local client_map = {}
+			for _, c in ipairs(all_clients) do
+				client_map[c.name] = c
+			end
+
+			for i, allowed in ipairs(allowed_order_map) do
+				if client_map[allowed] and first_allowed_index > i then -- found first allowed client
+					first_allowed_index = i
+				end
+				if current.name == allowed then -- found current
+					current_index = i
+				end
+				if current_index ~= 0 then
+					break
+				end
+			end
+
+			return current_index <= first_allowed_index
+		end,
+	})
 end)
 
 map("n", "<leader>h", function()
@@ -114,31 +149,21 @@ map("n", "<leader>a", function()
 end)
 
 map("n", "<leader>[", function()
-	vim.diagnostic.goto_prev()
+	vim.diagnostic.jump({
+		count = -1,
+		float = true,
+	})
 end)
 
 map("n", "<leader>]", function()
-	vim.diagnostic.goto_next()
-end)
-map("n", "<leader>m", function()
-	for _, client in ipairs(vim.lsp.buf_get_clients()) do
-		if client.name == "tsserver" then
-			vim.lsp.buf.execute_command({
-				command = "_typescript.organizeImports",
-				arguments = { vim.api.nvim_buf_get_name(0) },
-				title = "",
-			})
-			break
-		end
-	end
+	vim.diagnostic.jump({
+		count = 1,
+		float = true,
+	})
 end)
 
 map("n", "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
 map("n", "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-map("n", "<leader>bp", "<cmd> :BufferLineTogglePin<CR>")
-map("n", "<leader>bo", "<cmd> :BufferLineCloseOthers<CR>")
-map("n", "<leader>br", "<cmd> :BufferLineCloseRight<CR>")
-map("n", "<leader>bl", "<cmd> :BufferLineCloseLeft<CR>")
 
 map("n", "<C-b>", "<cmd> :Telescope buffers<CR>")
 map("n", "ss", "<cmd> :Telescope live_grep<CR>")

@@ -51,6 +51,7 @@
   ff = only
 [push]
   default = simple
+  autoSetupRemote = true
 [help]
   autocorrect = 1
 [init]

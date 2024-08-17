@@ -56,14 +56,7 @@ setup("clangd")
 setup("cmake")
 
 -- eslint
-setup("eslint", {
-	on_attach = function(_, bufnr)
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			buffer = bufnr,
-			command = "EslintFixAll",
-		})
-	end,
-})
+setup("eslint")
 
 -- html
 setup("html")
@@ -115,19 +108,6 @@ if not npm_root or npm_root == "" then
 	return
 end
 
-setup("tsserver", {
-	init_options = {
-		plugins = {
-			{
-				name = "@vue/typescript-plugin",
-				location = npm_root .. "/@vue/typescript-plugin",
-				languages = { "javascript", "typescript", "vue" },
-			},
-		},
-	},
-	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-})
-
 local function get_typescript_server_path(root_dir)
 	local global_ts = npm_root .. "/typescript/lib"
 	local found_ts = ""
@@ -143,6 +123,39 @@ local function get_typescript_server_path(root_dir)
 		return global_ts
 	end
 end
+
+-- typescript
+setup("vtsls", {
+	filetypes = {
+		"javascript",
+		"javascriptreact",
+		"javascript.jsx",
+		"typescript",
+		"typescriptreact",
+		"typescript.tsx",
+		"vue",
+	},
+	settings = {
+		typescript = {
+			updateImportsOnFileMove = "always",
+		},
+		javascript = {
+			updateImportsOnFileMove = "always",
+		},
+		vtsls = {
+			enableMoveToFileCodeAction = true,
+			tsserver = {
+				globalPlugins = {
+					{
+						name = "@vue/typescript-plugin",
+						location = npm_root .. "/@vue/typescript-plugin",
+						languages = { "javascript", "typescript", "vue" },
+					},
+				},
+			},
+		},
+	},
+})
 
 -- vue
 setup("volar", {

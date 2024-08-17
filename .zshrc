@@ -8,7 +8,7 @@ fi
 # ZSH_THEME="fino-time"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-plugins=(git emoji extract docker-compose fd history zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git emoji extract docker-compose history zsh-autosuggestions zsh-syntax-highlighting)
 
 unset file;
 

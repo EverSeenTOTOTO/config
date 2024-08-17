@@ -82,7 +82,7 @@ const required = [
   "stylelint-lsp",
   "svelte-language-server",
   "typescript",
-  "typescript-language-server",
+  "@vtsls/language-server",
   "@vue/language-server",
   "@vue/typescript-plugin",
   "vscode-langservers-extracted",
