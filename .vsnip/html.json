@@ -1,0 +1,10 @@
+{
+  "doctype": {
+    "prefix": "doctype",
+    "body": [
+      "<!DOCTYPE>",
+      "$1"
+    ],
+    "description": "HTML - Defines the document type"
+  }
+}

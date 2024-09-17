@@ -1,0 +1,66 @@
+{
+  "@keyframes": {
+    "prefix": "keyf",
+    "body": "@keyframes ${1:name} {\n  $0\n}"
+  },
+  "margin": {
+    "prefix": "m",
+    "body": "margin: ${1:0};"
+  },
+  "margin-left": {
+    "prefix": "ml",
+    "body": "margin-inline-start: ${1:0};"
+  },
+  "margin-right": {
+    "prefix": "mr",
+    "body": "margin-inline-end: ${1:0};"
+  },
+  "margin-top": {
+    "prefix": "mt",
+    "body": "margin-block-start: ${1:0};"
+  },
+  "margin-bottom": {
+    "prefix": "mb",
+    "body": "margin-block-end: ${1:0};"
+  },
+  "margin-inline": {
+    "prefix": "mx",
+    "body": "margin-inline: ${1:0};"
+  },
+  "margin-block": {
+    "prefix": "my",
+    "body": "margin-block: ${1:0};"
+  },
+  "padding": {
+    "prefix": "p",
+    "body": "padding: ${1:0};"
+  },
+  "padding-left": {
+    "prefix": "pl",
+    "body": "padding-inline-start: ${1:0};"
+  },
+  "padding-right": {
+    "prefix": "pr",
+    "body": "padding-inline-end: ${1:0};"
+  },
+  "padding-top": {
+    "prefix": "pt",
+    "body": "padding-block-start: ${1:0};"
+  },
+  "padding-bottom": {
+    "prefix": "pb",
+    "body": "padding-block-end: ${1:0};"
+  },
+  "padding-inline": {
+    "prefix": "px",
+    "body": "padding-inline: ${1:0};"
+  },
+  "padding-block": {
+    "prefix": "py",
+    "body": "padding-block: ${1:0};"
+  },
+  "bd": {
+    "prefix": "bd",
+    "body": "border: 1px solid ${1:#000};"
+  }
+}
