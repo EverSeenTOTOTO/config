@@ -80,13 +80,12 @@ const required = [
   "cz-conventional-changelog",
   "pm2",
   "stylelint-lsp",
-  "svelte-language-server",
   "typescript",
+  "@biomejs/biome",
   "@vtsls/language-server",
   "@vue/language-server",
   "@vue/typescript-plugin",
   "vscode-langservers-extracted",
-  "yarn",
 ];
 const regex = required.map(pkg => new RegExp(pkg));
 

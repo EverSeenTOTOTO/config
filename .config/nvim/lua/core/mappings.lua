@@ -94,7 +94,7 @@ map("t", "vv", "<C-\\><C-n>")
 
 -- lsp
 local allowed_order_map = {
-  "volar",
+  "biome",
   "eslint",
   "vtsls",
   "tsserver",

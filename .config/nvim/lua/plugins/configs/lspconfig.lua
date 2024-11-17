@@ -49,6 +49,12 @@ local setup = function(name, opts)
   lspconfig[name].setup(options)
 end
 
+-- biome
+setup("biome", {
+  filetypes = { "astro", "graphql", "javascript", "javascript.jsx", "javascriptreact", "json", "jsonc", "svelte",
+    "typescript", "typescript.tsx", "typescriptreact" }
+})
+
 -- cpp
 setup("clangd")
 
@@ -60,9 +66,6 @@ setup("eslint")
 
 -- html
 setup("html")
-
--- json
-setup("jsonls")
 
 -- lua
 setup("lua_ls", {
@@ -98,8 +101,6 @@ setup("stylelint_lsp", {
   },
 })
 
-setup("svelte")
-
 -- tsserver
 local npm_root = vim.fn.system("npm root -g", nil):gsub("^%s*(.-)%s*$", "%1")
 
@@ -108,7 +109,7 @@ if not npm_root or npm_root == "" then
   return
 end
 
-local function get_typescript_server_path(root_dir)
+local function get_ts_server_path(root_dir)
   local global_ts = npm_root .. "/typescript/lib"
   local found_ts = ""
   local function check_dir(path)
@@ -162,6 +163,6 @@ setup("vtsls", {
 -- vue
 setup("volar", {
   on_new_config = function(new_config, new_root_dir)
-    new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
+    new_config.init_options.typescript.tsdk = get_ts_server_path(new_root_dir)
   end,
 })
