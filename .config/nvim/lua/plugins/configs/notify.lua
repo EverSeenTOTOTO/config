@@ -15,4 +15,5 @@ if status_ok then
 			vim.api.nvim_win_set_config(win, { zindex = 100 })
 		end,
 	})
+	vim.notify = notify
 end
