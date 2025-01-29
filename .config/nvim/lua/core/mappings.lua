@@ -92,24 +92,13 @@ map("t", "vv", "<C-\\><C-n>")
 
 -- plugin mappings
 
--- lsp
-local allowed_order_map = {
-  "biome",
-  "eslint",
-  "vtsls",
-  "tsserver",
-}
-
-map("n", "<leader>f", function()
-  -- prettier
-  local prettier_path = vim.fn.finddir("node_modules/.bin", vim.fn.getcwd() .. ";") .. '/prettier'
-  local current_file_path = vim.fn.expand('%:p')
-
-  if vim.uv.fs_stat(prettier_path) then
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    vim.cmd('%!' .. prettier_path .. ' --stdin-filepath ' .. current_file_path)
-    vim.api.nvim_win_set_cursor(0, cursor)
-  end
+local function lsp_format()
+  -- lsp
+  local allowed_order_map = {
+    "biome",
+    "eslint",
+    "vtsls",
+  }
 
   vim.lsp.buf.format({
     async = false,
@@ -140,6 +129,47 @@ map("n", "<leader>f", function()
       return current_index <= first_allowed_index
     end,
   })
+end
+
+local function prettier_format()
+  -- prettier
+  local prettier_path = vim.fn.finddir("node_modules/.bin", vim.fn.getcwd() .. ";") .. "/prettier"
+  local current_file_path = vim.fn.expand("%:p")
+
+  if vim.uv.fs_stat(prettier_path) then
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local job = vim.fn.jobstart(prettier_path .. " --stdin-filepath " .. current_file_path, {
+      on_exit = function(_, exitcode)
+        if exitcode == 0 then
+          vim.cmd("%!" .. prettier_path .. " --stdin-filepath " .. current_file_path)
+          vim.api.nvim_win_set_cursor(0, cursor)
+        end
+      end,
+    })
+    vim.fn.chansend(job, vim.api.nvim_buf_get_lines(0, 0, -1, false))
+    vim.fn.chanclose(job, 'stdin')
+  end
+end
+
+map("n", "<leader>f", function()
+  lsp_format()
+
+  local found = false
+
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+    if client.name == "vtsls" then
+      found = true
+      client:request('workspace/executeCommand', {
+        command = "typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = "",
+      }, prettier_format)
+    end
+  end
+
+  if not found then
+    prettier_format()
+  end
 end)
 
 map("n", "<leader>h", function()

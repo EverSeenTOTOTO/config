@@ -86,6 +86,7 @@ const required = [
   "@vue/language-server",
   "@vue/typescript-plugin",
   "vscode-langservers-extracted",
+  // "typescript-language-server"
 ];
 const regex = required.map(pkg => new RegExp(pkg));
 

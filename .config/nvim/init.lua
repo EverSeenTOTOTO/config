@@ -7,9 +7,9 @@ end
 local core_modules = {
 	"core.options",
 	"plugins",
+	"core.usercmds",
 	"core.autocmds",
 	"core.mappings",
-	"core.usercmds",
 }
 
 for _, module in ipairs(core_modules) do
