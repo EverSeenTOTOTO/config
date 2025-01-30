@@ -19,7 +19,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	-- lib
 	"nvim-lua/plenary.nvim",
-	"nvim-lua/popup.nvim",
 	"MunifTanjim/nui.nvim",
 	{
 		"rcarriga/nvim-notify",
@@ -28,7 +27,7 @@ require("lazy").setup({
 		end,
 	},
 
-	-- dressing
+	-- dressing ui improvement
 	{
 		"stevearc/dressing.nvim",
 		config = function()

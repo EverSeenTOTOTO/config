@@ -33,7 +33,7 @@ lualine.setup({
 						and string.format(
 							" %%<%s %s %s (%s%%%%) ",
 							((server.percentage or 0) >= 70 and { "", "", "" } or { "", "", "" })[math.floor(
-								vim.loop.hrtime() / 12e7
+								vim.uv.hrtime() / 12e7
 							) % 3 + 1],
 							server.title or "",
 							server.message or "",
