@@ -1,5 +1,17 @@
 local create_usercmd = vim.api.nvim_create_user_command
 
+create_usercmd("TsOrgnizeImports", function()
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+		if client.name == "vtsls" then
+			client:request("workspace/executeCommand", {
+				command = "typescript.organizeImports",
+				arguments = { vim.api.nvim_buf_get_name(0) },
+				title = "",
+			})
+		end
+	end
+end, {})
+
 local function get_selection_or_cursor_range()
 	-- 获取选区的开始和结束位置
 	local _, start_line, start_col, _ = unpack(vim.fn.getpos("'<"))

@@ -153,23 +153,7 @@ end
 
 map("n", "<leader>f", function()
 	lsp_format()
-
-	local found = false
-
-	for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
-		if client.name == "vtsls" then
-			found = true
-			client:request("workspace/executeCommand", {
-				command = "typescript.organizeImports",
-				arguments = { vim.api.nvim_buf_get_name(0) },
-				title = "",
-			}, prettier_format)
-		end
-	end
-
-	if not found then
-		prettier_format()
-	end
+	prettier_format()
 end)
 
 map("n", "<leader>h", function()
