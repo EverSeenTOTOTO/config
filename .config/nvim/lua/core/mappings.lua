@@ -185,7 +185,7 @@ end)
 
 map({ "n", "v" }, "<TAB>", "<cmd> :BufferLineCycleNext <CR>")
 map({ "n", "v" }, "<S-Tab>", "<cmd> :BufferLineCyclePrev <CR>")
-map({ "n", "v" }, "<space><space>", "<cmd> :Telescope command_history <CR>")
+-- map({ "n", "v" }, "<space><space>", "<cmd> :Telescope command_history <CR>")
 map({ "n", "v" }, "ss", "<cmd> :Telescope live_grep<CR>")
 map({ "n", "v" }, "<C-b>", "<cmd> :Telescope buffers<CR>")
 map({ "n", "v" }, "//", "<cmd> :Telescope current_buffer_fuzzy_find <CR>")

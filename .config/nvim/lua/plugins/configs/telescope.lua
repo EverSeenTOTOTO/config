@@ -140,5 +140,4 @@ local options = {
 	},
 }
 
-telescope.load_extension("fzf")
 telescope.setup(options)

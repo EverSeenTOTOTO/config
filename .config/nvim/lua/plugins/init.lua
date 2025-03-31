@@ -57,6 +57,9 @@ require("lazy").setup({
 	{
 		"nvim-telescope/telescope-fzf-native.nvim",
 		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		config = function()
+			require("telescope").load_extension("fzf")
+		end,
 	},
 	{
 		"nvim-telescope/telescope-frecency.nvim",
@@ -85,10 +88,10 @@ require("lazy").setup({
 	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("plugins.configs.lualine")
 		end,
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 
 	-- smart split
@@ -185,13 +188,7 @@ require("lazy").setup({
 		cmd = "Copilot",
 		event = "InsertEnter",
 		config = function()
-			require("copilot").setup({
-				filetypes = {
-					markdown = false,
-				},
-				suggestion = { enabled = false },
-				panel = { enabled = false },
-			})
+			require("plugins.configs.copilot")
 		end,
 	},
 	{
@@ -199,6 +196,54 @@ require("lazy").setup({
 		config = function()
 			require("copilot_cmp").setup()
 		end,
+	},
+
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			require("plugins.configs.treesitter")
+		end,
+	},
+
+	{
+		"yetone/avante.nvim",
+		event = "VeryLazy",
+		version = false,
+		config = function()
+			require("plugins.configs.avante")
+		end,
+		build = "make",
+		dependencies = {
+			{
+				-- support for image pasting
+				"HakonHarnes/img-clip.nvim",
+				event = "VeryLazy",
+				opts = {
+					default = {
+						embed_image_as_base64 = false,
+						prompt_for_file_name = false,
+						drag_and_drop = {
+							insert_mode = true,
+						},
+						-- required for Windows users
+						use_absolute_path = true,
+					},
+				},
+			},
+			{
+				"OXY2DEV/markview.nvim",
+				enabled = true,
+				lazy = false,
+				ft = { "markdown", "norg", "rmd", "org", "vimwiki", "Avante" },
+				opts = {
+					preview = {
+						filetypes = { "markdown", "norg", "rmd", "org", "vimwiki", "Avante" },
+						ignore_buftypes = {},
+					},
+				},
+			},
+		},
 	},
 
 	-- vim plugins
@@ -224,17 +269,7 @@ require("lazy").setup({
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("tokyonight").setup({
-				on_colors = function(colors)
-					colors.comment = "#a09a91"
-				end,
-				on_highlights = function(highlights)
-					highlights.DiagnosticUnnecessary = {
-						fg = "#a09a91",
-					}
-				end,
-			})
-			vim.cmd([[colorscheme tokyonight-moon]])
+			require("plugins.configs.tokyonight")
 		end,
 	},
 
