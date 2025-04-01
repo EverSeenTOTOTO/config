@@ -141,18 +141,11 @@ require("lazy").setup({
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
+			-- lsp signature when typing
 			"ray-x/lsp_signature.nvim",
 		},
 		config = function()
 			require("plugins.configs.lspconfig")
-		end,
-	},
-
-	-- lsp signature when typing
-	{
-		"ray-x/lsp_signature.nvim",
-		config = function()
-			require("plugins.configs.lsp_signature")
 		end,
 	},
 

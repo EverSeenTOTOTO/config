@@ -39,11 +39,11 @@ avante.setup({
 			prev = "<leader>[",
 		},
 		submit = {
-			insert = "<C-i>",
+			insert = "<C-l>",
 		},
 		cancel = {
-			normal = { "vv", "<Esc>", "q" },
-			insert = { "vv" },
+			normal = { "vv", "<C-c>", "<Esc>", "q" },
+			insert = { "vv", "<C-c>" },
 		},
 		ask = "<space><space>",
 		edit = "<space>e",

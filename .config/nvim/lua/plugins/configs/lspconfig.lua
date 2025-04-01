@@ -33,6 +33,25 @@ local capabilities = vim.tbl_deep_extend(
 local setup = function(name, opts)
 	local options = {
 		capabilities = capabilities,
+		on_attach = function(client, bufnr)
+			require("lsp_signature").on_attach({
+				bind = true,
+				doc_lines = 0,
+				floating_window = true,
+				fix_pos = true,
+				hint_enable = true,
+				hint_prefix = " ",
+				hint_scheme = "String",
+				hi_parameter = "Search",
+				max_height = 22,
+				max_width = 120,
+				handler_opts = {
+					border = "single", -- double, single, shadow, none
+				},
+				zindex = 200,
+				padding = "",
+			}, bufnr)
+		end,
 	}
 
 	if opts then
