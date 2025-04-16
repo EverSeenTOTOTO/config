@@ -152,10 +152,12 @@ else
   vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 endif
 
-augroup TextYankPost
-  autocmd!
-  autocmd TextYankPost * call s:TextYankPost()
-augroup END
+if exists('##TextYankPost')
+  augroup TextYankPost
+    autocmd!
+    autocmd TextYankPost * call s:TextYankPost()
+  augroup END
+endif
 
 function! s:TextYankPost() abort
   if has("mac")

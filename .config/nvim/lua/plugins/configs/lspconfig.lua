@@ -1,109 +1,85 @@
-local present, lspconfig = pcall(require, "lspconfig")
+local present, lspconfig = pcall(require, 'lspconfig')
 
-if not present then
-  return
-end
+if not present then return end
 
-local util = require("lspconfig.util")
+local util = require('lspconfig.util')
 
 vim.diagnostic.config({
   virtual_text = {
     spacing = 4,
-    source = "if_many",
-    prefix = "●",
+    source = 'if_many',
+    prefix = '●',
   },
   severity_sort = true,
   underline = true,
   update_in_insert = false,
   float = {
-    border = "rounded",
-    source = "if_many",
-    header = "",
-    prefix = "",
+    border = 'rounded',
+    source = 'if_many',
+    header = '',
+    prefix = '',
   },
 })
 
 local capabilities = vim.tbl_deep_extend(
-  "force",
+  'force',
   vim.lsp.protocol.make_client_capabilities(),
-  require("cmp_nvim_lsp").default_capabilities()
+  require('cmp_nvim_lsp').default_capabilities()
 )
 
 -- LSP
 local setup = function(name, opts)
   local options = {
     capabilities = capabilities,
-    on_attach = function(client, bufnr)
-      require("lsp_signature").on_attach({
-        bind = true,
-        doc_lines = 0,
-        cursorhold_update = false,
-        floating_window = true,
-        fix_pos = true,
-        hint_enable = true,
-        hint_prefix = " ",
-        hint_scheme = "String",
-        hi_parameter = "Search",
-        max_height = 22,
-        max_width = 120,
-        handler_opts = {
-          border = "single", -- double, single, shadow, none
-        },
-        zindex = 200,
-        padding = "",
-      }, bufnr)
-    end,
   }
 
-  if opts then
-    options = vim.tbl_extend("force", options, opts)
-  end
+  if opts then options = vim.tbl_extend('force', options, opts) end
 
   lspconfig[name].setup(options)
 end
 
 -- biome
-setup("biome", {
+setup('biome', {
   filetypes = {
-    "astro",
-    "graphql",
-    "javascript",
-    "javascript.jsx",
-    "javascriptreact",
-    "json",
-    "jsonc",
-    "svelte",
-    "typescript",
-    "typescript.tsx",
-    "typescriptreact",
+    'astro',
+    'graphql',
+    'javascript',
+    'javascript.jsx',
+    'javascriptreact',
+    'json',
+    'jsonc',
+    'svelte',
+    'typescript',
+    'typescript.tsx',
+    'typescriptreact',
   },
 })
 
 -- cpp
-setup("clangd")
+setup('clangd')
 
 -- cmake
-setup("cmake")
+setup('cmake')
 
 -- eslint
-setup("eslint")
+setup('eslint')
 
 -- html
-setup("html")
+setup('html')
 
 -- lua
-setup("lua_ls", {
+setup('lua_ls', {
   settings = {
     Lua = {
       runtime = {
-        version = "Lua 5.1",
+        version = 'Lua 5.1',
       },
       diagnostics = {
-        globals = { "vim" },
+        globals = { 'vim' },
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
+        library = vim.api.nvim_get_runtime_file('', true),
       },
       -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = {
@@ -116,8 +92,8 @@ setup("lua_ls", {
 -- rust
 
 -- stylelint
-setup("stylelint_lsp", {
-  filetypes = { "css", "less", "scss", "sugarss", "vue", "wxss" },
+setup('stylelint_lsp', {
+  filetypes = { 'css', 'less', 'scss', 'sugarss', 'vue', 'wxss' },
   settings = {
     stylelintplus = {
       autoFixOnFormat = true,
@@ -126,21 +102,19 @@ setup("stylelint_lsp", {
 })
 
 -- tsserver
-local npm_root = vim.fn.system("npm root -g", nil):gsub("^%s*(.-)%s*$", "%1")
+local npm_root = vim.fn.system('npm root -g', nil):gsub('^%s*(.-)%s*$', '%1')
 
-if not npm_root or npm_root == "" then
-  vim.notify("No npm root found", vim.log.levels.ERROR)
+if not npm_root or npm_root == '' then
+  vim.notify('No npm root found', vim.log.levels.ERROR)
   return
 end
 
 local function get_ts_server_path(root_dir)
-  local global_ts = npm_root .. "/typescript/lib"
-  local found_ts = ""
+  local global_ts = npm_root .. '/typescript/lib'
+  local found_ts = ''
   local function check_dir(path)
-    found_ts = table.concat({ path, "node_modules", "typescript", "lib" })
-    if vim.uv.fs_stat(found_ts) then
-      return path
-    end
+    found_ts = table.concat({ path, 'node_modules', 'typescript', 'lib' })
+    if vim.uv.fs_stat(found_ts) then return path end
   end
   if util.search_ancestors(root_dir, check_dir) then
     return found_ts
@@ -150,32 +124,32 @@ local function get_ts_server_path(root_dir)
 end
 
 -- typescript
-setup("vtsls", {
+setup('vtsls', {
   filetypes = {
-    "javascript",
-    "javascriptreact",
-    "javascript.jsx",
-    "typescript",
-    "typescriptreact",
-    "typescript.tsx",
-    "vue",
+    'javascript',
+    'javascriptreact',
+    'javascript.jsx',
+    'typescript',
+    'typescriptreact',
+    'typescript.tsx',
+    'vue',
   },
   settings = {
     typescript = {
-      updateImportsOnFileMove = "always",
+      updateImportsOnFileMove = 'always',
     },
     javascript = {
-      updateImportsOnFileMove = "always",
+      updateImportsOnFileMove = 'always',
     },
     vtsls = {
       enableMoveToFileCodeAction = true,
       tsserver = {
         globalPlugins = {
           {
-            name = "@vue/typescript-plugin",
-            location = npm_root .. "/@vue/language-server",
-            languages = { "vue" },
-            configNamespace = "typescript",
+            name = '@vue/typescript-plugin',
+            location = npm_root .. '/@vue/language-server',
+            languages = { 'vue' },
+            configNamespace = 'typescript',
             enableForWorkspaceTypeScriptVersions = true,
           },
         },
@@ -185,7 +159,7 @@ setup("vtsls", {
 })
 
 -- vue
-setup("volar", {
+setup('volar', {
   on_new_config = function(new_config, new_root_dir)
     new_config.init_options.typescript.tsdk = get_ts_server_path(new_root_dir)
   end,

@@ -10,9 +10,6 @@ unset file;
 # nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-# pyenv
-# eval "$(pyenv init --path)"
-
 # Set Windows codepage to 65001 (UTF-8).
 if [[ "$OSTYPE" == "msys" ]]; then
     chcp.com 65001
