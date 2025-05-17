@@ -12,6 +12,7 @@ lualine.setup({
     lualine_b = { { 'branch', separator = { right = '' } } },
     lualine_c = {},
     lualine_x = {
+      { require('mcphub.extensions.lualine') },
       {
         'diagnostics',
       },

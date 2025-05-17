@@ -17,3 +17,11 @@ fi
 
 # z
 . $HOME/.config/z.sh
+
+
+# pnpm
+export PNPM_HOME="/home/everseen/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
