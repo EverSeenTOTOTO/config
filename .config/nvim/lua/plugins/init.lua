@@ -128,7 +128,7 @@ require('lazy').setup({
   -- rust
   {
     'mrcjkb/rustaceanvim',
-    version = '^4', -- Recommended
+    version = '^6', -- Recommended
     lazy = false, -- This plugin is already lazy
   },
 
@@ -244,5 +244,6 @@ require('lazy').setup({
   -- theme similar to vscode default dark
   {
     'lunarvim/darkplus.nvim',
+    config = function() vim.cmd([[colorscheme darkplus]]) end,
   },
 })

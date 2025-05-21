@@ -44,9 +44,7 @@ avante.setup({
   -- },
   copilot = {
     endpoint = 'https://api.githubcopilot.com',
-    model = 'gpt-4o-2024-08-06',
-    proxy = nil, -- [protocol://]host[:port] Use this proxy
-    max_tokens = 20480,
+    model = 'gpt-4o',
   },
   web_search_engine = {
     provider = 'searpapi',
@@ -63,21 +61,19 @@ avante.setup({
       insert = '<C-l>',
     },
     cancel = {
-      normal = { '<C-c>', '<Esc>', '<leader>q' },
-      insert = { 'vv', '<C-c>' },
+      normal = { '<C-c>' },
+      insert = { '<C-c>' },
     },
     ask = '<space><space>',
     edit = '<space>e',
     sidebar = {
-      close = { '<Esc>', '<leader>q' },
+      close = { '<Esc>', '<space><space>' },
     },
   },
   file_selector = {
     provider = 'telescope',
   },
-  behaviour = {
-    auto_focus_sidebar = false,
-  },
+  behaviour = {},
   windows = {
     width = 40,
   },

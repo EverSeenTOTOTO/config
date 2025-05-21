@@ -120,9 +120,10 @@ local options = {
     end, { 'i', 's' }),
   }),
   sources = {
-    { name = 'copilot' },
+    { name = 'copilot', group = 'lsp' },
     {
       name = 'nvim_lsp',
+      group = 'lsp',
       keyword_length = 3,
     },
     { name = 'nvim_lsp_signature_help' },

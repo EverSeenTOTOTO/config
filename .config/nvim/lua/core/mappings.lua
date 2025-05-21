@@ -77,10 +77,10 @@ map('i', '<C-a>', '<Home>')
 map('i', '<C-b>', '<esc>bi')
 map('i', '<C-e>', '<End>')
 map('i', '<C-f>', '<esc>ea')
-map('i', '<C-h>', '<Left>')
-map('i', '<C-j>', '<Down>')
-map('i', '<C-k>', '<Up>')
-map('i', '<C-l>', '<Right>')
+map({ 'i', 'v' }, '<C-h>', '<Left>')
+map({ 'i', 'v' }, '<C-j>', '<Down>')
+map({ 'i', 'v' }, '<C-k>', '<Up>')
+map({ 'i', 'v' }, '<C-l>', '<Right>')
 map('i', '<C-o>', '<esc>O')
 
 map('n', '<leader>z', '$zf%')
@@ -182,7 +182,6 @@ end)
 
 map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
 map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
--- map({ "n", "v" }, "<space><space>", "<cmd> :Telescope command_history <CR>")
 map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
 map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
 map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
@@ -201,7 +200,13 @@ map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
 map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
 map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
 map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
-map('n', '<leader>q', '<cmd> :Bdelete<CR>')
+map('n', '<leader>q', function()
+  if vim.wo.winfixbuf then
+    vim.cmd(':bdelete')
+  else
+    vim.cmd(':Bdelete')
+  end
+end)
 
 -- 窗口
 map('', '<up>', function() require('smart-splits').resize_up() end)
