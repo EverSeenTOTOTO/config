@@ -156,13 +156,14 @@ require('lazy').setup({
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter',
+    enabled = not vim.env.HEADLESS,
     config = function() require('plugins.configs.copilot') end,
   },
   {
     'zbirenbaum/copilot-cmp',
+    enabled = not vim.env.HEADLESS,
     config = function() require('copilot_cmp').setup() end,
   },
-
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -174,7 +175,8 @@ require('lazy').setup({
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
-    build = 'npm install -g mcp-hub@latest',
+    build = 'bun add -g mcp-hub@latest',
+    enabled = not vim.env.HEADLESS,
     config = function() require('mcphub').setup() end,
   },
 
@@ -182,6 +184,7 @@ require('lazy').setup({
     'yetone/avante.nvim',
     event = 'VeryLazy',
     version = false,
+    enabled = not vim.env.HEADLESS,
     config = function() require('plugins.configs.avante') end,
     build = 'make',
     dependencies = {

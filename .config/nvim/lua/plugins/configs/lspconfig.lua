@@ -102,15 +102,15 @@ setup('stylelint_lsp', {
 })
 
 -- tsserver
-local npm_root = vim.fn.system('npm root -g', nil):gsub('^%s*(.-)%s*$', '%1')
+local bun_root = vim.fn.system('echo $BUN_INSTALL', nil):gsub('^%s*(.-)%s*$', '%1') .. '/install/global'
 
-if not npm_root or npm_root == '' then
-  vim.notify('No npm root found', vim.log.levels.ERROR)
+if not bun_root or bun_root == '' then
+  vim.notify('No bun root found', vim.log.levels.ERROR)
   return
 end
 
 local function get_ts_server_path(root_dir)
-  local global_ts = npm_root .. '/typescript/lib'
+  local global_ts = bun_root .. '/typescript/lib'
   local found_ts = ''
   local function check_dir(path)
     found_ts = table.concat({ path, 'node_modules', 'typescript', 'lib' })
@@ -147,7 +147,7 @@ setup('vtsls', {
         globalPlugins = {
           {
             name = '@vue/typescript-plugin',
-            location = npm_root .. '/@vue/language-server',
+            location = bun_root .. '/@vue/language-server',
             languages = { 'vue' },
             configNamespace = 'typescript',
             enableForWorkspaceTypeScriptVersions = true,

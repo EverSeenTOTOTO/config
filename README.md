@@ -1,6 +1,6 @@
 # My dotfiles and configs
 
-> After clone this repo, you can use [zx](https://github.com/google/zx/blob/main/docs/markdown.md) to setup.
+> After cloning this repo, you can use [zx](https://github.com/google/zx/blob/main/docs/markdown.md) to set up.
 >
 > ```bash
 > zx README.md
@@ -8,189 +8,201 @@
 
 ## Copy dot files
 
-```js
+```javascript
+echo(`----- Starting: ${chalk.cyan('Copy dot files')} -----`);
+
 const files = fs.readdirSync('.');
 
 for (const file of files) {
-    if (!/(\.git|\.ssh|\.bak|\.json|README\.md(\.mjs)?)$/.test(file)) {
-        await $`cp -r ${file} ~/`;
+  if (!/^\.git|\.ssh|\.bak|\.json|\.md|\.mjs$/.test(file)) {
+    await $`cp -r ${file} ~/`;
+  }
+}
+
+await $`rm -f README.md.mjs`;
+await $`rm -f README.md-*.mjs`;
+
+echo(`----- Completed: ${chalk.cyan('Copy dot files')} -----\n\n`);
+```
+
+## Install `omz` (Oh My Zsh)
+
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install Oh My Zsh')} -----`);
+
+if (!fs.existsSync(path.resolve(os.homedir(), '.oh-my-zsh/oh-my-zsh.sh'))) {
+  await $`sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`;
+}
+
+const installOmzPlugins = async (...plugins) => {
+  const ZSH_PLUG = path.resolve(process.env.ZSH_CUSTOM || path.resolve(os.homedir(), '.oh-my-zsh/custom'), 'plugins');
+
+  for (const plugin of plugins) {
+    if (!fs.existsSync(`${ZSH_PLUG}/${plugin}`)) {
+      await $`git clone https://github.com/zsh-users/${plugin} ${ZSH_PLUG}/${plugin} --depth 1`;
     }
-}
-```
+  }
+};
 
-## Install `omz` (require zsh to be installed)
+await installOmzPlugins('zsh-autosuggestions', 'zsh-syntax-highlighting');
 
-```bash
-# install oh-my-zsh
-if [[ ! -e ~/.oh-my-zsh/oh-my-zsh.sh ]]; then
-  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
+const P10K = path.resolve(process.env.ZSH_CUSTOM || path.resolve(os.homedir(), '.oh-my-zsh/custom'), 'themes/powerlevel10k');
 
-install_omz_plugins() {
-  ZSH_PLUG=$\{ZSH_CUSTOM:-~/.oh-my-zsh/custom\}/plugins
-  for plug in $@
-  do
-    if [[ ! -e $ZSH_PLUG/$plug ]]
-    then
-      git clone https://github.com/zsh-users/$plug $ZSH_PLUG/$plug --depth 1
-    fi
-  done
+if (!fs.existsSync(P10K)) {
+  await $`git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${P10K}`;
 }
 
-# omz plugins
-install_omz_plugins zsh-autosuggestions zsh-syntax-highlighting
-
-# zsh theme p10k
-if [[ ! -e $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k ]]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $\{ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom\}/themes/powerlevel10k
-fi
+echo(`----- Completed: ${chalk.cyan('Install Oh My Zsh')} -----\n\n`);
 ```
 
-## Install fzf
+## Install `fzf`
 
-```bash
-if [[ ! -e ~/.fzf ]]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install
-fi
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install fzf')} -----`);
+
+if (!fs.existsSync(path.resolve(os.homedir(), '.fzf'))) {
+  await $`git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf`;
+  await $`~/.fzf/install`;
+}
+
+echo(`----- Completed: ${chalk.cyan('Install fzf')} -----\n\n`);
 ```
 
 ## Install `z` command
 
-```bash
-if [[ ! -e ~/.config/z.sh ]]; then
-    wget https://raw.githubusercontent.com/rupa/z/master/z.sh -P ~/.config
-fi
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install z command')} -----`);
+
+if (!fs.existsSync(path.resolve(os.homedir(), '.config/z.sh'))) {
+  await $`wget https://raw.githubusercontent.com/rupa/z/master/z.sh -P ~/.config`;
+}
+echo(`----- Completed: ${chalk.cyan('Install z command')} -----\n\n`);
 ```
 
-## Install `nvm`
+## Install npm globals (now using bun)
 
-```js
-echo(`installling or updating ${chalk.yellow('nvm')}`);
-// await $`wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`;
-```
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install bun globals')} -----`);
 
-## Install npm globals
-
-```js
-const data = await $`npm ls -g --depth 0`
-const installed = data.stdout.split("\n").map(pkg => pkg.trim());
+const data = await $`bun pm ls -g`;
+const installed = data.stdout.split('\n').map(pkg => pkg.trim());
 const required = [
-  "commitizen",
-  "cz-conventional-changelog",
-  "pm2",
-  "stylelint-lsp",
-  "typescript",
-  "@biomejs/biome",
-  "@vtsls/language-server",
-  "@vue/language-server",
-  "@vue/typescript-plugin",
-  "vscode-langservers-extracted",
-  // "typescript-language-server"
+  'commitizen',
+  'cz-conventional-changelog',
+  'pm2',
+  'stylelint-lsp',
+  'typescript',
+  '@biomejs/biome',
+  '@vtsls/language-server',
+  '@vue/language-server',
+  '@vue/typescript-plugin',
+  'vscode-langservers-extracted'
 ];
-const regex = required.map(pkg => new RegExp(pkg));
 
-for (let i = 0; i < required.length; ++i) {
-  const pkg = regex[i];
-
-  if (installed.some(name => pkg.test(name))) {
-    echo(`already installed ${chalk.green(pkg.source)}`);
+for (const pkg of required) {
+  if (!installed.includes(pkg)) {
+    echo(`Installing npm package: ${chalk.yellow(pkg)}`);
+    await spinner(() => $`bun add -g ${pkg}`);
   } else {
-    echo(`installing npm global pkg: ${chalk.yellow(required[i])}`);
-    await spinner(() => $`npm i -g ${required[i]}`)
+    echo(`Already installed: ${chalk.green(pkg)}`);
   }
 }
 
-await $`echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc`;
+await $`echo '{ "path": "cz-conventional-changelog" }' > ${path.resolve(os.homedir(), '.czrc')}`;
+
+echo(`----- Completed: ${chalk.cyan('Install bun globals')} -----\n\n`);
 ```
 
 ## Install Lua 5.1
 
-```js
-const Lua = "lua-5.1.5";
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install Lua 5.1')} -----`);
 
-// install lua
+const luaVersion = 'lua-5.1.5';
+
 try {
   await which('lua');
-  echo(`already installed ${chalk.blue(Lua)}`);
+  echo(`${chalk.blue(luaVersion)} is already installed.`);
 } catch {
-  echo(`${chalk.cyan(Lua)} is not found, downloading...`);
-
-  await $`wget https://www.lua.org/ftp/${Lua}.tar.gz`;
-  await $`tar -xvf ${Lua}.tar.gz`;
-
-  cd(Lua);
-
+  echo(`${chalk.cyan(luaVersion)} not found. Downloading...`);
+  await $`wget https://www.lua.org/ftp/${luaVersion}.tar.gz`;
+  await $`tar -xvf ${luaVersion}.tar.gz`;
+  cd(luaVersion);
   await $`make linux && sudo make install`;
+  cd('..');
+  await $`rm -rf ${luaVersion} ${luaVersion}.tar.gz`;
 }
 
-// lua-ls
 try {
   await which('lua-language-server');
-  echo(`already installed ${chalk.blue("lua-ls")}`);
+  echo(`${chalk.blue('lua-language-server')} is already installed.`);
 } catch {
-  echo(`installing ${chalk.blue("lua-ls")}...`);
-  if (os.platform() === 'darwin') {
-    await $`brew install lua-language-server`;
-  } else if (os.platform() === 'linux') {
-    const LUA_LS = "lua-language-server-3.6.23-linux-x64.tar.gz";
-    const LUA_LS_HOME = path.join(process.env.HOME, 'lua-ls');
-  
-    echo(`install lua-language-server in ${chalk.yellow(LUA_LS_HOME)}...`)
+  echo(`Installing ${chalk.blue('lua-language-server')}...`);
 
-    if (!fs.existsSync(LUA_LS_HOME)) {
-      await $`mkdir ${LUA_LS_HOME}`;
-    }
-  
-    cd(LUA_LS_HOME);
-    await $`wget https://github.com/LuaLS/lua-language-server/releases/download/3.6.23/${LUA_LS}`;
-    await $`tar -xvf ${LUA_LS}`;
-    await $`echo "export PATH=\"$HOME/lua-ls/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$PATH\"" >> ~/.exports.local`;
+  const luaLsHome = path.join(process.env.HOME, 'lua-ls');
+
+  if (!fs.existsSync(luaLsHome)) {
+    fs.mkdirSync(luaLsHome);
   }
+
+  cd(luaLsHome);
+  const luaLsVersion = 'lua-language-server-3.6.23-linux-x64';
+
+  await $`wget https://github.com/LuaLS/lua-language-server/releases/download/3.6.23/${luaLsVersion}.tar.gz`;
+  await $`tar -xvf ${luaLsVersion}.tar.gz`;
+  await $`rm -rf ${luaLsVersion} ${luaLsVersion}.tar.gz`;
+  await $`echo "export PATH=\"$HOME/lua-ls/bin:$PATH\"" >> ~/.exports.local`;
 }
+
+echo(`----- Completed: ${chalk.cyan('Install Lua 5.1')} -----\n\n`);
 ```
 
 ## Install `cargo` tools
 
-Install rust and some mordern command line tools writen in rust.
+```javascript
+try {
+  await which('cargo');
+} catch {
+  await $`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`;
+  await $`source ~/.cargo/env`;
+  await $`rustup component add rust-src clippy rust-analyzer`;
+  await $`rustup target add wasm32-unknown-unknown`;
+}
 
-```bash
-if ! command -v cargo > /dev/null 2>&1; then
-  curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | bash -s -- -y
-  source ~/.cargo/env
-  rustup component add rust-src clippy rust-analyzer
-  rustup target add wasm32-unknown-unknown
-  # see https://rust-analyzer.github.io/manual.html#rustup
-  # ln -s $(rustup which rust-analyzer) ~/.cargo/bin/rust-analyzer
-fi
-
-echo 'install mordern linux commands with cargo...'
-cargo install ripgrep lsd bat fd-find du-dust stylua cargo-expand
+echo('----- Installing modern Linux commands with cargo... -----\n\n');
+await $`cargo install ripgrep lsd bat fd-find du-dust stylua cargo-expand`;
 ```
 
-## Install FiraCode (use `nerd fonts` patched version)
+## Install FiraCode (Nerd Fonts patched version)
 
-```bash
-if [[ ! -e ~/.nerd-fonts ]]; then
-    git clone https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts --depth 1
-    cd ~/.nerd-fonts 
-    ./install.sh FiraCode
-fi
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install FiraCode')} -----`);
+
+if (!fs.existsSync(path.resolve(os.homedir(), '.nerd-fonts'))) {
+  await $`git clone https://github.com/ryanoasis/nerd-fonts.git ~/.nerd-fonts --depth 1`;
+  cd(path.resolve(os.homedir(), '.nerd-fonts'));
+  await $`./install.sh FiraCode`;
+}
 ```
 
 ## Install wabt and wasmtime
 
-```bash
-if [[ ! -e ~/.wasmtime ]]; then
-  curl https://wasmtime.dev/install.sh -sSf | bash
-  mkdir -p ~/repos/wabt
-  git clone --recursive https://github.com/WebAssembly/wabt ~/repos/wabt
-  cd ~/repos/wabt
-  git submodule update --init
-  mkdir build
-  cd build
-  cmake ..
-  cmake --build .
-  mv ./* ~/.wasmtime/bin
-fi
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install wabt and wasmtime')} -----`);
+
+if (!fs.existsSync('~/.wasmtime')) {
+  await $`curl https://wasmtime.dev/install.sh -sSf | bash`;
+
+  const wabtRepo = path.resolve(os.homedir(), 'repos/wabt');
+
+  if (!fs.existsSync(wabtRepo)) {
+    fs.mkdirSync(wabtRepo, { recursive: true });
+  }
+
+  cd(wabtRepo);
+  await $`git clone --recursive https://github.com/WebAssembly/wabt .`;
+  await $`git submodule update --init`;
+  await $`mkdir build && cd build && cmake .. && cmake --build .`;
+  await $`mv ./* ~/.wasmtime/bin`;
+}
 ```
