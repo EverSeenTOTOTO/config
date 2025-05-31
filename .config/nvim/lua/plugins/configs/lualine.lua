@@ -37,7 +37,7 @@ lualine.setup({
               server.message or '',
               server.percentage or 0
             )
-            or ''
+          or ''
       end,
     },
     lualine_y = {

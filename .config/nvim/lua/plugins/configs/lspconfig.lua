@@ -1,9 +1,3 @@
-local present, lspconfig = pcall(require, 'lspconfig')
-
-if not present then return end
-
-local util = require('lspconfig.util')
-
 vim.diagnostic.config({
   virtual_text = {
     spacing = 4,
@@ -35,7 +29,8 @@ local setup = function(name, opts)
 
   if opts then options = vim.tbl_extend('force', options, opts) end
 
-  lspconfig[name].setup(options)
+  vim.lsp.config(name, options)
+  vim.lsp.enable(name)
 end
 
 -- biome
@@ -109,20 +104,6 @@ if not bun_root or bun_root == '' then
   return
 end
 
-local function get_ts_server_path(root_dir)
-  local global_ts = bun_root .. '/typescript/lib'
-  local found_ts = ''
-  local function check_dir(path)
-    found_ts = table.concat({ path, 'node_modules', 'typescript', 'lib' })
-    if vim.uv.fs_stat(found_ts) then return path end
-  end
-  if util.search_ancestors(root_dir, check_dir) then
-    return found_ts
-  else
-    return global_ts
-  end
-end
-
 -- typescript
 setup('vtsls', {
   filetypes = {
@@ -159,8 +140,16 @@ setup('vtsls', {
 })
 
 -- vue
-setup('volar', {
-  on_new_config = function(new_config, new_root_dir)
-    new_config.init_options.typescript.tsdk = get_ts_server_path(new_root_dir)
-  end,
+setup('vue_ls', {
+  init_options = {
+    typescript = {
+      tsdk = bun_root .. '/typescript/lib'
+    }
+  },
+  before_init = function(_, config)
+    local lib_path = vim.fs.find('node_modules/typescript/lib', { path = config.root_dir, upward = true })[1]
+    if lib_path then
+      config.init_options.typescript.tsdk = lib_path
+    end
+  end
 })
