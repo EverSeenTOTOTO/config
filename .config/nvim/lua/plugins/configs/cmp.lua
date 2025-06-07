@@ -62,7 +62,7 @@ local options = {
       vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = 'symbol' })
       vim_item.menu = source_mapping[entry.source.name]
 
-      if entry.source.name == 'cmp_tabnine' or entry.source.name == 'copilot' then
+      if entry.source.name == 'copilot' then
         local detail = (entry.completion_item.data or {}).detail
 
         vim_item.kind = ''

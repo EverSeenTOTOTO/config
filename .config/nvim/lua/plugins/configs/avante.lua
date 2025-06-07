@@ -12,7 +12,6 @@ if not api_base or not api_key then
 end
 
 avante.setup({
-  provider = 'copilot',
   system_prompt = function()
     local hub = require('mcphub').get_hub_instance()
     return hub and hub:get_active_servers_prompt() or ''
@@ -36,22 +35,41 @@ avante.setup({
     'bash', -- Built-in terminal access
   },
 
-  -- openai = {
-  --   endpoint = api_base,
-  --   model = "gpt-4o",
-  --   max_tokens = 16384,
-  --   reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
-  -- },
-  copilot = {
-    endpoint = 'https://api.githubcopilot.com',
-    model = 'gpt-4o',
+  provider = 'proxy-claude',
+  providers = {
+    ['proxy-claude'] = {
+      __inherited_from = 'openai',
+      endpoint = api_base,
+      api_key_name = 'OPENAI_API_KEY',
+      model = 'claude-3-7-sonnet-latest',
+    },
+
+    ['proxy-gemmi'] = {
+      __inherited_from = 'openai',
+      endpoint = api_base,
+      api_key_name = 'OPENAI_API_KEY',
+      model = 'gemini-2.5-pro-preview-06-05',
+    },
+
+    openai = {
+      endpoint = api_base,
+      model = 'gpt-4o',
+      timeout = 30000,
+      extra_request_body = {
+        temperature = 0.7,
+        max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
+        reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
+      },
+    },
   },
+
   web_search_engine = {
     provider = 'searpapi',
     searpapi = {
       api_key_name = serp_api_key,
     },
   },
+
   mappings = {
     diff = {
       next = '<leader>]',
