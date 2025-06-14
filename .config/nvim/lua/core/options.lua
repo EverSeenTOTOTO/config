@@ -5,7 +5,7 @@ opt.backspace = 'indent,eol,start'
 opt.clipboard = 'unnamedplus'
 opt.cmdheight = 1
 opt.confirm = true
-opt.cul = true -- cursor line
+opt.cul = true     -- cursor line
 opt.laststatus = 3 -- global statusline
 opt.lazyredraw = true
 opt.title = true
@@ -30,7 +30,7 @@ opt.sidescrolloff = 8
 
 opt.fillchars = {
   diff = '╱', -- alternatives = ⣿ ░ ─
-  eob = ' ', -- suppress ~ at EndOfBuffer
+  eob = ' ',  -- suppress ~ at EndOfBuffer
   fold = ' ',
   foldclose = '▸',
   foldopen = '▾',
@@ -87,12 +87,12 @@ opt.shortmess = {
 opt.formatoptions = {
   ['1'] = true,
   ['2'] = true, -- Use indent from 2nd line of a paragraph
-  q = true, -- continue comments with gq"
-  c = true, -- Auto-wrap comments using textwidth
-  r = true, -- Continue comments when pressing Enter
-  n = true, -- Recognize numbered lists
-  t = false, -- autowrap lines using text width value
-  j = true, -- remove a comment leader when joining lines.
+  q = true,     -- continue comments with gq"
+  c = true,     -- Auto-wrap comments using textwidth
+  r = true,     -- Continue comments when pressing Enter
+  n = true,     -- Recognize numbered lists
+  t = false,    -- autowrap lines using text width value
+  j = true,     -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -107,7 +107,7 @@ opt.listchars = {
   tab = '│ ',
   extends = '›', -- Alternatives: … »
   precedes = '‹', -- Alternatives: … «
-  trail = '•', -- BULLET (U+2022, UTF-8: E2 80 A2)
+  trail = '•',  -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 
 opt.signcolumn = 'yes'
@@ -123,7 +123,7 @@ opt.undofile = true
 opt.updatetime = 300
 opt.swapfile = false
 opt.writebackup = false
-opt.winminwidth = 5 -- Minimum window width
+opt.winminwidth = 5       -- Minimum window width
 opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 
 -- go to previous/next line with h,l,left arrow and right arrow
@@ -197,3 +197,7 @@ vim.g.vsnip_filetypes = {
   scss = { 'css' },
   less = { 'css' },
 }
+
+if vim.g.vscode then
+  vim.notify = require('vscode').notify
+end

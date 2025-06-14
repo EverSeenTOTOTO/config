@@ -133,10 +133,6 @@
     "when": "editorTextFocus && vim.active && vim.use<C-s> && !inDebugRepl"
   },
   {
-    "command": "workbench.action.findInFiles",
-    "key": "ctrl+s"
-  },
-  {
     "command": "-workbench.action.findInFiles",
     "key": "ctrl+shift+f"
   },
@@ -150,13 +146,87 @@
     "when": "editorTextFocus && vim.active && vim.use<C-t> && !inDebugRepl"
   },
   {
-    "command": "workbench.view.explorer",
+    "command": "workbench.files.action.showActiveFileInExplorer",
     "key": "ctrl+t",
-    "when": "viewContainer.workbench.view.explorer.enabled"
+    "when": "viewContainer.workbench.view.explorer.enabled && !explorerViewletVisible"
+  },
+  {
+    "command": "workbench.action.closeSidebar",
+    "key": "ctrl+t",
+    "when": "viewContainer.workbench.view.explorer.enabled && explorerViewletVisible"
   },
   {
     "command": "-workbench.view.explorer",
     "key": "ctrl+shift+e",
     "when": "viewContainer.workbench.view.explorer.enabled"
-  }
+  },
+  {
+    "key": "ctrl+f",
+    "command": "-cursorRight",
+    "when": "textInputFocus"
+  },
+  {
+    "key": "ctrl+f",
+    "command": "workbench.action.quickOpen",
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-cursorLeft",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+h",
+    "when": "editorTextFocus",
+    "args": "<C-w>h",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+l",
+    "when": "editorTextFocus",
+    "args": "<C-w>l",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+j",
+    "when": "editorTextFocus",
+    "args": "<C-w>j",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+k",
+    "when": "editorTextFocus",
+    "args": "<C-w>k",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+b",
+    "when": "editorTextFocus && neovim.mode == insert",
+    "args": "<esc>bi",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+a",
+    "when": "editorTextFocus && neovim.mode == insert",
+    "args": "<home>",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+e",
+    "when": "editorTextFocus && neovim.mode == insert",
+    "args": "<end>",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+f",
+    "when": "editorTextFocus && neovim.mode == insert",
+    "args": "<esc>ea",
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+o",
+    "when": "editorTextFocus && neovim.mode == insert",
+    "args": "<esc>O",
+  },
 ]
+

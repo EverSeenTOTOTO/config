@@ -152,31 +152,6 @@ else
   vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 endif
 
-if exists('##TextYankPost')
-  augroup TextYankPost
-    autocmd!
-    autocmd TextYankPost * call s:TextYankPost()
-  augroup END
-endif
-
-function! s:TextYankPost() abort
-  if has("mac")
-    call system('pbcopy && tmux set-buffer "$(reattach-to-user-namespace pbpaste)"', @")
-  else
-    let type = system('echo $XDG_SESSION_TYPE')
-
-    if type ==# 'x11' && system('command -v xclip') !=# ''
-      " xclip
-      call system('xclip -i -sel c && tmux set-buffer "$(xclip -o -sel c)"', @")
-    elseif type ==# 'wayland' && system('command -v wayland') !=# ''
-      " wl-clipboard
-      call system('wl-copy && tmux set-buffer "$(wl-paste)"', @")
-    endif
-  endif
-
-  call timer_start(700, { -> execute('highlight on_yank IncSearch') })
-endfunction
-
 vnoremap p p:let @+=@0<CR>
 
 imap <C-a> <Home>

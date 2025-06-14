@@ -180,43 +180,48 @@ map('n', '<leader>]', function()
   })
 end)
 
-map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
-map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
-map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
-map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
-map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
-map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
-map(
-  { 'n', 'v' },
-  '<C-f>',
-  function()
-    require('telescope.builtin').find_files({
-      find_command = { 'fd', '-LH', '-tf' },
-    })
-  end
-)
+if not vim.g.vscode then
+  map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
+  map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
+  map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
+  map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
+  map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
+  map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
+  map(
+    { 'n', 'v' },
+    '<C-f>',
+    function()
+      require('telescope.builtin').find_files({
+        find_command = { 'fd', '-LH', '-tf' },
+      })
+    end
+  )
 
-map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
-map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
-map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
-map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
-map('n', '<leader>q', function()
-  if vim.wo.winfixbuf then
-    vim.cmd(':bdelete')
-  else
-    vim.cmd(':Bdelete')
-  end
-end)
+  map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
+  map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
+  map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
+  map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
+  map('n', '<leader>q', function()
+    if vim.wo.winfixbuf then
+      vim.cmd(':bdelete')
+    else
+      vim.cmd(':Bdelete')
+    end
+  end)
+end
 
 -- 窗口
-map('', '<up>', function() require('smart-splits').resize_up() end)
-map('', '<down>', function() require('smart-splits').resize_down() end)
-map('', '<left>', function() require('smart-splits').resize_left() end)
-map('', '<right>', function() require('smart-splits').resize_right() end)
-map('n', '<C-h>', function() require('smart-splits').move_cursor_left() end)
-map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
-map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
-map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
+if not vim.g.vscode then
+  map('', '<up>', function() require('smart-splits').resize_up() end)
+  map('', '<down>', function() require('smart-splits').resize_down() end)
+  map('', '<left>', function() require('smart-splits').resize_left() end)
+  map('', '<right>', function() require('smart-splits').resize_right() end)
+  map('n', '<C-h>', function() require('smart-splits').move_cursor_left() end)
+  map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
+  map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
+  map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
+end
+
 map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
 map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
 map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
@@ -231,3 +236,39 @@ map('', '<C-t>', function()
     vim.cmd(':NvimTreeFindFile')
   end
 end)
+
+if vim.g.vscode then
+  local vscode = require('vscode')
+
+  map("n", "<leader>f", function()
+    vscode.action("editor.action.formatDocument")
+  end)
+
+  map('n', '<leader>[', function()
+    vscode.action("editor.action.marker.next")
+  end)
+
+  map('n', '<leader>]', function()
+    vscode.action("editor.action.marker.prev")
+  end)
+
+  map("n", '<Tab>', function()
+    vscode.action("workbench.action.nextEditor")
+  end)
+
+  map("n", '<S-Tab>', function()
+    vscode.action("workbench.action.previousEditor")
+  end)
+
+  map("n", 'ss', function()
+    vscode.action("workbench.action.findInFiles")
+  end)
+
+  map("n", '//', function()
+    vscode.action("actions.find")
+  end)
+
+  map("n", "<leader>q", function()
+    vscode.action("workbench.action.closeActiveEditor")
+  end)
+end

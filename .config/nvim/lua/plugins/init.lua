@@ -6,7 +6,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
-      { out, 'WarningMsg' },
+      { out,                            'WarningMsg' },
       { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
@@ -19,15 +19,17 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- lib
   'nvim-lua/plenary.nvim',
-  'MunifTanjim/nui.nvim',
+  { 'MunifTanjim/nui.nvim', enabled = not vim.g.vscode },
   {
     'rcarriga/nvim-notify',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.notify') end,
   },
 
   -- dressing ui improvement
   {
     'stevearc/dressing.nvim',
+    enabled = not vim.g.vscode,
     config = function()
       require('dressing').setup({
         input = {
@@ -47,28 +49,34 @@ require('lazy').setup({
   -- fzf
   {
     'nvim-telescope/telescope.nvim',
+    enabled = not vim.g.vscode,
     cmd = 'Telescope',
     config = function() require('plugins.configs.telescope') end,
   },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+    enabled = not vim.g.vscode,
+    build =
+    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
     config = function() require('telescope').load_extension('fzf') end,
   },
   {
     'nvim-telescope/telescope-frecency.nvim',
+    enabled = not vim.g.vscode,
     config = function() require('telescope').load_extension('frecency') end,
   },
 
   -- show register content
   {
     'tversteeg/registers.nvim',
+    enabled = not vim.g.vscode,
     config = function() require('registers').setup() end,
   },
 
   -- icon
   {
     'kyazdani42/nvim-web-devicons',
+    enabled = not vim.g.vscode,
     lazy = true,
     config = function() require('plugins.configs.icons') end,
   },
@@ -76,6 +84,7 @@ require('lazy').setup({
   -- statusline
   {
     'nvim-lualine/lualine.nvim',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.lualine') end,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
@@ -83,17 +92,20 @@ require('lazy').setup({
   -- smart split
   {
     'mrjones2014/smart-splits.nvim',
+    enabled = not vim.g.vscode,
   },
 
   -- file explorer
   {
     'nvim-tree/nvim-tree.lua',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.nvim-tree') end,
   },
 
   -- manage buffers
   {
     'akinsho/bufferline.nvim',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.bufferline') end,
   },
 
@@ -102,6 +114,7 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
     opts = {},
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.indent-blankline') end,
   },
 
@@ -109,15 +122,20 @@ require('lazy').setup({
   {
     'norcalli/nvim-colorizer.lua',
     event = 'BufRead',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.colorizer') end,
   },
 
   -- LSP
   -- lspkind pictogram
-  'onsails/lspkind.nvim',
+  {
+    'onsails/lspkind.nvim',
+    enabled = not vim.g.vscode,
+  },
 
   {
     'neovim/nvim-lspconfig',
+    enabled = not vim.g.vscode,
     dependencies = {
       -- lsp signature when typing
       -- "ray-x/lsp_signature.nvim",
@@ -128,13 +146,15 @@ require('lazy').setup({
   -- rust
   {
     'mrcjkb/rustaceanvim',
+    enabled = not vim.g.vscode,
     version = '^6', -- Recommended
-    lazy = false, -- This plugin is already lazy
+    lazy = false,   -- This plugin is already lazy
   },
 
   -- Completion
   {
     'hrsh7th/nvim-cmp',
+    enabled = not vim.g.vscode,
     event = 'InsertEnter',
     config = function() require('plugins.configs.cmp') end,
     dependencies = {
@@ -156,12 +176,12 @@ require('lazy').setup({
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter',
-    enabled = not vim.env.HEADLESS,
+    enabled = not vim.env.HEADLESS and not vim.g.vscode,
     config = function() require('plugins.configs.copilot') end,
   },
   {
     'zbirenbaum/copilot-cmp',
-    enabled = not vim.env.HEADLESS,
+    enabled = not vim.env.HEADLESS and not vim.g.vscode,
     config = function() require('copilot_cmp').setup() end,
   },
   {
@@ -170,13 +190,21 @@ require('lazy').setup({
     config = function() require('plugins.configs.treesitter') end,
   },
 
+  -- extra text objects
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter'
+    }
+  },
+
   {
     'ravitemer/mcphub.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
     build = 'bun add -g mcp-hub@latest',
-    enabled = not vim.env.HEADLESS,
+    enabled = not vim.env.HEADLESS and not vim.g.vscode,
     config = function() require('mcphub').setup() end,
   },
 
@@ -184,7 +212,7 @@ require('lazy').setup({
     'yetone/avante.nvim',
     event = 'VeryLazy',
     version = false,
-    enabled = not vim.env.HEADLESS,
+    enabled = not vim.env.HEADLESS and not vim.g.vscode,
     config = function() require('plugins.configs.avante') end,
     build = 'make',
     dependencies = {
@@ -196,7 +224,7 @@ require('lazy').setup({
           default = {
             embed_image_as_base64 = false,
             prompt_for_file_name = false,
-            drag_and_drop = {
+            qrag_and_drop = {
               insert_mode = true,
             },
             -- required for Windows users
@@ -222,16 +250,11 @@ require('lazy').setup({
   -- vim plugins
   'tpope/vim-surround',
 
-  'farmergreg/vim-lastplace',
-
   -- enhanced dot command
   'tpope/vim-repeat',
 
   -- editorconfig
   'editorconfig/editorconfig-vim',
-
-  -- extra text objects
-  'wellle/targets.vim',
 
   -- Bdelete without destroy our layout
   'moll/vim-bbye',
@@ -240,6 +263,7 @@ require('lazy').setup({
   {
     'folke/tokyonight.nvim',
     lazy = false,
+    enabled = not vim.g.vscode,
     priority = 1000,
     config = function() require('plugins.configs.tokyonight') end,
   },
@@ -247,6 +271,7 @@ require('lazy').setup({
   -- theme similar to vscode default dark
   {
     'lunarvim/darkplus.nvim',
+    enabled = not vim.g.vscode,
     config = function() vim.cmd([[colorscheme darkplus]]) end,
   },
 })
