@@ -1,26 +1,36 @@
 local opt = vim.opt
 
-opt.encoding = 'utf-8'
-opt.backspace = 'indent,eol,start'
-opt.clipboard = 'unnamedplus'
-opt.cmdheight = 1
-opt.confirm = true
-opt.cul = true     -- cursor line
-opt.laststatus = 3 -- global statusline
-opt.lazyredraw = true
-opt.title = true
+-- General Settings
+opt.encoding = 'utf-8' -- Set default encoding
+opt.backspace = 'indent,eol,start' -- Make backspace work as expected
+opt.clipboard = 'unnamedplus' -- Use system clipboard
+opt.hidden = true -- Enable background buffers
+opt.mouse = 'a' -- Enable mouse in all modes
+opt.timeoutlen = 400 -- Time to wait for a mapped sequence to complete (in milliseconds)
+opt.undofile = true -- Enable persistent undo
+opt.swapfile = false -- Disable swap files
+opt.writebackup = false -- Disable backup files
 
-opt.completeopt = { 'menu', 'menuone', 'noselect' }
-opt.copyindent = true
-opt.cursorline = true
-opt.conceallevel = 2
-opt.confirm = true
+-- UI Settings
+opt.cmdheight = 1 -- Command line height
+opt.confirm = true -- Ask for confirmation instead of erroring
+opt.cursorline = true -- Highlight current line
+opt.laststatus = 3 -- Global statusline
+opt.number = true -- Show line numbers
+opt.numberwidth = 2 -- Width of line number column
+opt.relativenumber = false -- Disable relative line numbers
+opt.ruler = false -- Hide ruler
+opt.showmode = false -- Don't show mode in command line
+opt.signcolumn = 'yes' -- Always show sign column
+opt.title = true -- Set window title
 
--- Indentline
-opt.expandtab = true
-opt.preserveindent = true
-opt.shiftwidth = 2
-opt.smartindent = true
+-- Indentation and Formatting
+opt.expandtab = true -- Use spaces instead of tabs
+opt.preserveindent = true -- Preserve indent structure when reindenting
+opt.shiftwidth = 2 -- Number of spaces for each indentation level
+opt.smartindent = true -- Smart autoindenting when starting a new line
+opt.tabstop = 2 -- Number of spaces that a <Tab> counts for
+opt.copyindent = true -- Copy indent from current line when starting a new line
 
 opt.showmode = false
 opt.pumblend = 10 -- Popup blend
@@ -30,7 +40,7 @@ opt.sidescrolloff = 8
 
 opt.fillchars = {
   diff = '╱', -- alternatives = ⣿ ░ ─
-  eob = ' ',  -- suppress ~ at EndOfBuffer
+  eob = ' ', -- suppress ~ at EndOfBuffer
   fold = ' ',
   foldclose = '▸',
   foldopen = '▾',
@@ -87,12 +97,12 @@ opt.shortmess = {
 opt.formatoptions = {
   ['1'] = true,
   ['2'] = true, -- Use indent from 2nd line of a paragraph
-  q = true,     -- continue comments with gq"
-  c = true,     -- Auto-wrap comments using textwidth
-  r = true,     -- Continue comments when pressing Enter
-  n = true,     -- Recognize numbered lists
-  t = false,    -- autowrap lines using text width value
-  j = true,     -- remove a comment leader when joining lines.
+  q = true, -- continue comments with gq"
+  c = true, -- Auto-wrap comments using textwidth
+  r = true, -- Continue comments when pressing Enter
+  n = true, -- Recognize numbered lists
+  t = false, -- autowrap lines using text width value
+  j = true, -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -107,7 +117,7 @@ opt.listchars = {
   tab = '│ ',
   extends = '›', -- Alternatives: … »
   precedes = '‹', -- Alternatives: … «
-  trail = '•',  -- BULLET (U+2022, UTF-8: E2 80 A2)
+  trail = '•', -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 
 opt.signcolumn = 'yes'
@@ -123,7 +133,7 @@ opt.undofile = true
 opt.updatetime = 300
 opt.swapfile = false
 opt.writebackup = false
-opt.winminwidth = 5       -- Minimum window width
+opt.winminwidth = 5 -- Minimum window width
 opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 
 -- go to previous/next line with h,l,left arrow and right arrow
@@ -198,6 +208,5 @@ vim.g.vsnip_filetypes = {
   less = { 'css' },
 }
 
-if vim.g.vscode then
-  vim.notify = require('vscode').notify
-end
+---@diagnostic disable-next-line: undefined-field
+if vim.g.vscode then vim.notify = require('vscode').notify end

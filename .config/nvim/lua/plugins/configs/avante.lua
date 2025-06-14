@@ -1,11 +1,12 @@
 local present, avante = pcall(require, 'avante')
+if not present then return end
 
+-- Get environment variables once
 local api_base = vim.uv.os_getenv('OPENAI_API_BASE')
 local api_key = vim.uv.os_getenv('OPENAI_API_KEY')
 local serp_api_key = vim.uv.os_getenv('SERP_API_KEY')
 
-if not present then return end
-
+-- Validate required environment variables
 if not api_base or not api_key then
   vim.notify('Please set OPENAI_API_BASE and OPENAI_API_KEY environment variables', vim.log.levels.ERROR)
   return
@@ -35,8 +36,12 @@ avante.setup({
     'bash', -- Built-in terminal access
   },
 
-  provider = 'proxy-claude',
+  provider = 'copilot',
   providers = {
+    copilot = {
+      model = 'claude-3.7-sonnet',
+    },
+
     ['proxy-claude'] = {
       __inherited_from = 'openai',
       endpoint = api_base,
@@ -64,8 +69,8 @@ avante.setup({
   },
 
   web_search_engine = {
-    provider = 'searpapi',
-    searpapi = {
+    provider = 'serpapi',
+    serpapi = {
       api_key_name = serp_api_key,
     },
   },
@@ -75,6 +80,8 @@ avante.setup({
       next = '<leader>]',
       prev = '<leader>[',
     },
+    suggestions = {},
+    jump = {},
     submit = {
       insert = '<C-l>',
     },
@@ -82,10 +89,18 @@ avante.setup({
       normal = { '<C-c>' },
       insert = { '<C-c>' },
     },
+    new_ask = '<space>a',
     ask = '<space><space>',
     edit = '<space>e',
+    refresh = '<space>r',
+    focus = '<space>f',
+    stop = '<space>s',
+    toggle = {},
     sidebar = {
       close = { '<Esc>', '<space><space>' },
+    },
+    files = {
+      add_all_buffers = '<leader>ab',
     },
   },
   file_selector = {

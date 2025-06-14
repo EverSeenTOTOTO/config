@@ -9,7 +9,9 @@ lualine.setup({
   },
   sections = {
     lualine_a = { 'mode' },
-    lualine_b = { { 'branch', separator = { right = '' } } },
+    lualine_b = {
+      { 'branch', separator = { right = '' } },
+    },
     lualine_c = {},
     lualine_x = {
       {

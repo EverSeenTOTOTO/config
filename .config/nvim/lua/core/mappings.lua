@@ -1,3 +1,4 @@
+-- Helper function for mapping keys
 local map = function(mode, keys, command, opt)
   local options = { silent = true }
 
@@ -90,72 +91,10 @@ map('t', 'vv', '<C-\\><C-n>')
 
 -- plugin mappings
 
-local function lsp_format()
-  -- lsp
-  local allowed_order_map = {
-    'biome',
-    'eslint',
-    'vtsls',
-  }
+-- Import formatting utilities
+local format = require('core.format')
 
-  vim.lsp.buf.format({
-    async = false,
-    filter = function(current)
-      -- lsp format, sort by allowed_order_map
-      local all_clients = vim.lsp.get_clients({ bufnr = 0 })
-      local first_allowed_index = #allowed_order_map
-      local current_index = 0
-
-      -- create a map for faster lookup
-      local client_map = {}
-      for _, c in ipairs(all_clients) do
-        client_map[c.name] = c
-      end
-
-      for i, allowed in ipairs(allowed_order_map) do
-        if client_map[allowed] and first_allowed_index > i then -- found first allowed client
-          first_allowed_index = i
-        end
-        if current.name == allowed then -- found current
-          current_index = i
-        end
-        if current_index ~= 0 then break end
-      end
-
-      return current_index <= first_allowed_index
-    end,
-  })
-end
-
-local function prettier_format()
-  -- prettier
-  local prettier_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';') .. '/prettier'
-  local current_file_path = vim.fn.expand('%:p')
-
-  if vim.uv.fs_stat(prettier_path) then
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-    local job = vim.fn.jobstart(prettier_path .. ' --stdin-filepath ' .. current_file_path, {
-      on_stdout = function(_, data)
-        if data then
-          vim.api.nvim_buf_set_lines(0, 0, -1, false, data)
-          vim.api.nvim_win_set_cursor(0, cursor)
-        end
-      end,
-      on_exit = function(_, exitcode)
-        if exitcode == 0 then vim.api.nvim_win_set_cursor(0, cursor) end
-      end,
-      stdout_buffered = true,
-    })
-    vim.fn.chansend(job, lines)
-    vim.fn.chanclose(job, 'stdin')
-  end
-end
-
-map('n', '<leader>f', function()
-  lsp_format()
-  prettier_format()
-end)
+map('n', '<leader>f', function() format.format_all() end)
 
 map('n', '<leader>h', function()
   vim.lsp.buf.hover()
@@ -240,35 +179,19 @@ end)
 if vim.g.vscode then
   local vscode = require('vscode')
 
-  map("n", "<leader>f", function()
-    vscode.action("editor.action.formatDocument")
-  end)
+  map('n', '<leader>f', function() vscode.action('editor.action.formatDocument') end)
 
-  map('n', '<leader>[', function()
-    vscode.action("editor.action.marker.next")
-  end)
+  map('n', '<leader>[', function() vscode.action('editor.action.marker.next') end)
 
-  map('n', '<leader>]', function()
-    vscode.action("editor.action.marker.prev")
-  end)
+  map('n', '<leader>]', function() vscode.action('editor.action.marker.prev') end)
 
-  map("n", '<Tab>', function()
-    vscode.action("workbench.action.nextEditor")
-  end)
+  map('n', '<Tab>', function() vscode.action('workbench.action.nextEditor') end)
 
-  map("n", '<S-Tab>', function()
-    vscode.action("workbench.action.previousEditor")
-  end)
+  map('n', '<S-Tab>', function() vscode.action('workbench.action.previousEditor') end)
 
-  map("n", 'ss', function()
-    vscode.action("workbench.action.findInFiles")
-  end)
+  map('n', 'ss', function() vscode.action('workbench.action.findInFiles') end)
 
-  map("n", '//', function()
-    vscode.action("actions.find")
-  end)
+  map('n', '//', function() vscode.action('actions.find') end)
 
-  map("n", "<leader>q", function()
-    vscode.action("workbench.action.closeActiveEditor")
-  end)
+  map('n', '<leader>q', function() vscode.action('workbench.action.closeActiveEditor') end)
 end
