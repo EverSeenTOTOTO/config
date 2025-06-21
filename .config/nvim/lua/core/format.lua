@@ -1,20 +1,20 @@
 local M = {}
 
+-- Track prettier formatting state
+M.formatting = false
+
 -- Define formatters in priority order (highest priority first)
 local formatters_priority = {
   'biome',
   'eslint',
   'vtsls',
 }
--- Create a map of client names to their priority index
 local priority_map = {}
 for i, formatter in ipairs(formatters_priority) do
   priority_map[formatter] = i
 end
 
--- LSP formatting with priority order
 function M.lsp_format()
-  -- Get active clients for current buffer
   local buf = vim.api.nvim_get_current_buf()
   local active_clients = vim.lsp.get_clients({ bufnr = buf })
 
@@ -41,7 +41,6 @@ function M.lsp_format()
   })
 end
 
--- Prettier formatting for JavaScript/TypeScript files
 function M.prettier_format()
   local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
 
@@ -58,32 +57,47 @@ function M.prettier_format()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
-  -- Setup data collectors
   local stderr_data = {}
   local stdout_data = {}
-
-  -- Helper function to filter empty lines
   local function collect_data(data, target)
     if not data then return end
     for _, line in ipairs(data) do
-      if line ~= '' then table.insert(target, line) end
+      table.insert(target, line)
     end
   end
 
-  -- Start prettier job
   local job = vim.fn.jobstart(prettier_path .. ' --stdin-filepath ' .. current_file_path, {
     on_stdout = function(_, data) collect_data(data, stdout_data) end,
     on_stderr = function(_, data) collect_data(data, stderr_data) end,
     on_exit = function(_, exitcode)
       if exitcode == 0 and #stdout_data > 0 then
-        -- Only update buffer if prettier succeeded and returned content
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, stdout_data)
-        vim.api.nvim_win_set_cursor(0, cursor)
+        -- Check if there's any difference between current content and formatted content
+        local has_diff = false
+        if #lines ~= #stdout_data then
+          has_diff = true
+        else
+          for i, line in ipairs(lines) do
+            if line ~= stdout_data[i] then
+              has_diff = true
+              break
+            end
+          end
+        end
+
+        -- Only update buffer if there are actual changes
+        if has_diff then
+          vim.api.nvim_buf_set_lines(0, 0, -1, false, stdout_data)
+          vim.api.nvim_win_set_cursor(0, cursor)
+          vim.notify("Prettier: Formatted file", vim.log.levels.INFO)
+        end
       elseif exitcode ~= 0 then
         -- Show error notification
         local error_msg = table.concat(stderr_data, '\n')
         vim.notify('Prettier error: ' .. error_msg, vim.log.levels.ERROR)
       end
+
+      -- Reset formatting state when complete
+      M.formatting = false
     end,
     stdout_buffered = true,
     stderr_buffered = true,
@@ -94,8 +108,10 @@ function M.prettier_format()
   vim.fn.chanclose(job, 'stdin')
 end
 
--- Format using both LSP and Prettier
 function M.format_all()
+  -- Set formatting state to true
+  M.formatting = true
+
   M.lsp_format()
   M.prettier_format()
 end

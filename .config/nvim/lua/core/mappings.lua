@@ -126,6 +126,7 @@ if not vim.g.vscode then
   map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
   map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
   map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
+  map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
   map(
     { 'n', 'v' },
     '<C-f>',
@@ -147,10 +148,8 @@ if not vim.g.vscode then
       vim.cmd(':Bdelete')
     end
   end)
-end
 
--- 窗口
-if not vim.g.vscode then
+  -- 窗口
   map('', '<up>', function() require('smart-splits').resize_up() end)
   map('', '<down>', function() require('smart-splits').resize_down() end)
   map('', '<left>', function() require('smart-splits').resize_left() end)
@@ -159,25 +158,26 @@ if not vim.g.vscode then
   map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
   map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
   map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
+
+  map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
+  map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
+  map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
+  map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
+
+  -- file explorer
+  map('', '<C-t>', function()
+    local view = require('nvim-tree.view')
+    if view.is_visible() or vim.o.buftype == 'nofile' then
+      vim.cmd(':NvimTreeToggle')
+    else
+      vim.cmd(':NvimTreeFindFile')
+    end
+  end)
 end
-
-map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
-
--- file explorer
-map('', '<C-t>', function()
-  local view = require('nvim-tree.view')
-  if view.is_visible() or vim.o.buftype == 'nofile' then
-    vim.cmd(':NvimTreeToggle')
-  else
-    vim.cmd(':NvimTreeFindFile')
-  end
-end)
 
 if vim.g.vscode then
   local vscode = require('vscode')
+  map('n', '<leader>a', function() vscode.action('editor.action.quickFix') end)
 
   map('n', '<leader>f', function() vscode.action('editor.action.formatDocument') end)
 

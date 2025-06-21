@@ -67,12 +67,6 @@ require('lazy').setup({
     config = function() require('telescope').load_extension('frecency') end,
   },
 
-  -- show register content
-  {
-    'tversteeg/registers.nvim',
-    enabled = not vim.g.vscode,
-    config = function() require('registers').setup() end,
-  },
 
   -- icon
   {

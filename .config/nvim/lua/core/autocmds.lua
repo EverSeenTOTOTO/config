@@ -94,3 +94,15 @@ autocmd('FileType', {
   pattern = { 'man' },
   callback = function(event) vim.bo[event.buf].buflisted = false end,
 })
+
+autocmd({ "FileType" }, {
+  callback = function()
+    if require("nvim-treesitter.parsers").has_parser() then
+      vim.opt.foldmethod = "expr"
+      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+    else
+      -- use alternative foldmethod
+      vim.opt.foldmethod = "syntax"
+    end
+  end,
+})

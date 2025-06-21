@@ -63,7 +63,7 @@ avante.setup({
       extra_request_body = {
         temperature = 0.7,
         max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
-        reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
+        reasoning_effort = 'medium',   -- low|medium|high, only used for reasoning models
       },
     },
   },
@@ -76,10 +76,7 @@ avante.setup({
   },
 
   mappings = {
-    diff = {
-      next = '<leader>]',
-      prev = '<leader>[',
-    },
+    diff = {},
     suggestions = {},
     jump = {},
     submit = {
@@ -89,8 +86,8 @@ avante.setup({
       normal = { '<C-c>' },
       insert = { '<C-c>' },
     },
-    new_ask = '<space>a',
-    ask = '<space><space>',
+    new_ask = '<space><space>',
+    ask = '<space>a',
     edit = '<space>e',
     refresh = '<space>r',
     focus = '<space>f',
@@ -105,6 +102,35 @@ avante.setup({
   },
   file_selector = {
     provider = 'telescope',
+    provider_opts = {
+      get_filepaths = function(params)
+        local plenary_scan = require('plenary.scandir')
+        local project_root = params.cwd or vim.fn.getcwd()
+
+        -- Use plenary's scan_dir to get all files including hidden ones
+        -- Get telescope ignore patterns to ensure consistency
+        local telescope_ignore_patterns = require('telescope.config').values.file_ignore_patterns or {}
+
+        local all_files = plenary_scan.scan_dir(project_root, {
+          hidden = true,
+          depth = 10,
+          on_insert = function(entry)
+            -- Check against telescope ignore patterns
+            for _, pattern in ipairs(telescope_ignore_patterns) do
+              if entry:match(pattern) then
+                return false
+              end
+            end
+
+            return true
+          end
+        })
+
+        return vim.tbl_filter(function(filepath)
+          return not vim.tbl_contains(params.selected_filepaths, filepath)
+        end, all_files)
+      end,
+    },
   },
   behaviour = {},
   windows = {

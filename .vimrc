@@ -34,6 +34,7 @@ set so=7
 set tm=500
 set whichwrap+=<,>,h,l
 set clipboard=unnamedplus
+set foldopen-=block
 
 syntax enable
 
