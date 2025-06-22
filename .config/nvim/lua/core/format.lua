@@ -88,7 +88,6 @@ function M.prettier_format()
         if has_diff then
           vim.api.nvim_buf_set_lines(0, 0, -1, false, stdout_data)
           vim.api.nvim_win_set_cursor(0, cursor)
-          vim.notify("Prettier: Formatted file", vim.log.levels.INFO)
         end
       elseif exitcode ~= 0 then
         -- Show error notification

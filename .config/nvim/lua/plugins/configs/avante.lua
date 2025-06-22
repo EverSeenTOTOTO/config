@@ -63,7 +63,7 @@ avante.setup({
       extra_request_body = {
         temperature = 0.7,
         max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
-        reasoning_effort = 'medium',   -- low|medium|high, only used for reasoning models
+        reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
       },
     },
   },
@@ -114,21 +114,21 @@ avante.setup({
         local all_files = plenary_scan.scan_dir(project_root, {
           hidden = true,
           depth = 10,
+          respect_gitignore = true,
           on_insert = function(entry)
             -- Check against telescope ignore patterns
             for _, pattern in ipairs(telescope_ignore_patterns) do
-              if entry:match(pattern) then
-                return false
-              end
+              if entry:match(pattern) then return false end
             end
 
             return true
-          end
+          end,
         })
 
-        return vim.tbl_filter(function(filepath)
-          return not vim.tbl_contains(params.selected_filepaths, filepath)
-        end, all_files)
+        return vim.tbl_filter(
+          function(filepath) return not vim.tbl_contains(params.selected_filepaths, filepath) end,
+          all_files
+        )
       end,
     },
   },

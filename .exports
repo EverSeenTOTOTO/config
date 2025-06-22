@@ -16,11 +16,12 @@ export RISCV=/opt/riscv
 
 # wasm
 export WASMTIME_HOME="$HOME/.wasmtime"
+export WASI_SDK_PATH=/opt/wasi-sdk
 
 # cargo
 export CARGO_HOME="$HOME/.cargo"
 
-export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$CARGO_HOME/bin:$PATH"
+export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$WASI_SDK_PATH/bin:$CARGO_HOME/bin:$PATH"
 
 # puppeteer
 export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox;

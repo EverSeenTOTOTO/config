@@ -185,24 +185,40 @@ if (!fs.existsSync(path.resolve(os.homedir(), '.nerd-fonts'))) {
 }
 ```
 
-## Install wabt and wasmtime
+## Install wasm toolchains
 
 ```javascript
 echo(`----- Starting: ${chalk.cyan('Install wabt and wasmtime')} -----`);
 
-if (!fs.existsSync('~/.wasmtime')) {
+if (!fs.existsSync(path.resolve(os.homedir(), '.wasmtime'))) {
   await $`curl https://wasmtime.dev/install.sh -sSf | bash`;
+}
 
-  const wabtRepo = path.resolve(os.homedir(), 'repos/wabt');
+const wabtRepo = path.resolve(os.homedir(), 'repos/wabt');
 
-  if (!fs.existsSync(wabtRepo)) {
-    fs.mkdirSync(wabtRepo, { recursive: true });
-  }
+if (!fs.existsSync(wabtRepo)) {
+  fs.mkdirSync(wabtRepo, { recursive: true });
 
   cd(wabtRepo);
   await $`git clone --recursive https://github.com/WebAssembly/wabt .`;
   await $`git submodule update --init`;
   await $`mkdir build && cd build && cmake .. && cmake --build .`;
   await $`mv ./* ~/.wasmtime/bin`;
+}
+
+const wasiRepo = path.resolve(os.homedir(), 'repos/wasi');
+
+if (!fs.existsSync(wasiRepo)) {
+  fs.mkdirSync(wasiRepo, { recursive: true });
+
+  cd(wasiRepo);
+  await $`git clone --recursive https://github.com/WebAssembly/wasi-sdk.git .`
+  await $`bash ci/build.sh`;
+  await $`cmake --build build/toolchain --target dist`;
+  await $`cmake --build build/sysroot --target dist`;
+
+  fs.mkdirSync(path.resolve(wasiRepo, 'dist-my-platform'));
+  await $`cp build/toolchain/dist/* build/sysroot/dist/* dist-my-platform`;
+  await $`./ci/merge-artifacts.sh`;
 }
 ```

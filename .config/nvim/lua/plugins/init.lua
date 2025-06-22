@@ -67,7 +67,6 @@ require('lazy').setup({
     config = function() require('telescope').load_extension('frecency') end,
   },
 
-
   -- icon
   {
     'kyazdani42/nvim-web-devicons',
