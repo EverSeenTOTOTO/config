@@ -18,8 +18,6 @@ end
 
 -- Leader
 vim.g.mapleader = ','
-
-map('', '<leader><leader>', '%')
 map('', '<space>', ':', { silent = false })
 map({ 'n', 'i' }, 'vv', '<esc>')
 
@@ -119,6 +117,68 @@ map('n', '<leader>]', function()
   })
 end)
 
+-- treesitter
+local ts_utils = require('nvim-treesitter.ts_utils')
+
+map('', '<leader><leader>', function()
+  local _row, col = unpack(vim.api.nvim_win_get_cursor(0)) -- row(1-base), col(0-base)
+  local row = _row - 1
+  local line = vim.api.nvim_get_current_line()
+  local char = line:sub(col + 1, col + 1) -- 光标下字符
+  local defaults = {
+    ['('] = true,
+    [')'] = true,
+    ['['] = true,
+    [']'] = true,
+    ['{'] = true,
+    ['}'] = true,
+    ['<'] = true,
+    ['>'] = true,
+  }
+
+  if defaults[char] then
+    vim.cmd('normal! %')
+    return
+  end
+
+  local node = ts_utils.get_node_at_cursor()
+  local wanted = {
+    block = true,
+    class_definition = true,
+    function_definition = true,
+    arrow_function = true,
+    if_statement = true,
+    switch_statement = true,
+    for_statement = true,
+    while_statement = true,
+    element = true,
+    jsx_element = true,
+    string = true,
+    template_string = true,
+  }
+
+  while node and not wanted[node:type()] do
+    node = node:parent()
+  end
+
+  if not node then return end
+
+  local sr, sc = node:start() -- 0-base
+  local er, ec = node:end_() -- 0-base
+
+  -- vim.notify(
+  --   char .. ' ' .. node:type() .. ' ' .. sr .. ':' .. sc .. ' - ' .. er .. ':' .. ec .. ' ' .. row .. ':' .. col,
+  --   vim.log.levels.INFO
+  -- )
+
+  if row == sr then
+    vim.api.nvim_win_set_cursor(0, { er + 1, ec })
+  else
+    vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
+  end
+  if sr == er then vim.api.nvim_win_set_cursor(0, { er + 1, col == sc and ec or sc }) end
+end)
+
 if not vim.g.vscode then
   map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
   map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
@@ -126,16 +186,9 @@ if not vim.g.vscode then
   map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
   map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
   map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
+  map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
+  map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
   map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
-  map(
-    { 'n', 'v' },
-    '<C-f>',
-    function()
-      require('telescope.builtin').find_files({
-        find_command = { 'fd', '-LH', '-tf' },
-      })
-    end
-  )
 
   map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
   map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
@@ -166,8 +219,7 @@ if not vim.g.vscode then
 
   -- file explorer
   map('', '<C-t>', function()
-    local view = require('nvim-tree.view')
-    if view.is_visible() or vim.o.buftype == 'nofile' then
+    if require('nvim-tree.api').tree.is_visible() or vim.o.buftype == 'nofile' then
       vim.cmd(':NvimTreeToggle')
     else
       vim.cmd(':NvimTreeFindFile')

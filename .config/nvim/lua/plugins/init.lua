@@ -236,6 +236,9 @@ require('lazy').setup({
             filetypes = { 'markdown', 'norg', 'rmd', 'org', 'vimwiki', 'Avante' },
             ignore_buftypes = {},
           },
+          experimental = {
+            check_rtp_message = false,
+          },
         },
       },
     },

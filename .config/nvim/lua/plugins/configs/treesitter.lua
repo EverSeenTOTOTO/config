@@ -15,8 +15,8 @@ configs.setup({
         ['if'] = '@function.inner',
         ['ac'] = '@class.outer',
         ['ic'] = '@class.inner',
-        ['ab'] = '@block.outer',
-        ['ib'] = '@block.inner',
+        ['aa'] = '@assignment.outer',
+        ['ia'] = '@assignment.inner',
         ['am'] = '@comment.outer',
         ['im'] = '@comment.inner',
         ['ad'] = '@conditional.outer',
@@ -35,7 +35,7 @@ configs.setup({
       goto_next_start = {
         [']f'] = '@function.outer',
         [']c'] = '@class.outer',
-        [']b'] = '@block.outer',
+        [']a'] = '@assignment.outer',
         [']m'] = '@comment.outer',
         [']d'] = '@conditional.outer',
         [']o'] = '@loop.outer',
@@ -48,7 +48,7 @@ configs.setup({
       goto_previous_start = {
         ['[f'] = '@function.outer',
         ['[c'] = '@class.outer',
-        ['[b'] = '@block.outer',
+        ['[a'] = '@assignment.outer',
         ['[m'] = '@comment.outer',
         ['[d'] = '@conditional.outer',
         ['[o'] = '@loop.outer',

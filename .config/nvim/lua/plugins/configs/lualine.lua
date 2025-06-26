@@ -17,7 +17,7 @@ lualine.setup({
     lualine_x = {
       -- formatting spinner
       function()
-        if format.prettier_formatting then
+        if format.formatting then
           local spinner_frames = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
           local ms = vim.uv.hrtime() / 1000000
           local frame = spinner_frames[math.floor(ms / 80) % #spinner_frames + 1]

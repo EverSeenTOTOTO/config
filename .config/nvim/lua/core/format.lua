@@ -66,6 +66,9 @@ function M.prettier_format()
     end
   end
 
+  -- Set formatting state to true
+  M.formatting = true
+
   local job = vim.fn.jobstart(prettier_path .. ' --stdin-filepath ' .. current_file_path, {
     on_stdout = function(_, data) collect_data(data, stdout_data) end,
     on_stderr = function(_, data) collect_data(data, stderr_data) end,
@@ -87,6 +90,14 @@ function M.prettier_format()
         -- Only update buffer if there are actual changes
         if has_diff then
           vim.api.nvim_buf_set_lines(0, 0, -1, false, stdout_data)
+
+          -- Check if cursor is out of range (after formatting)
+          local line_count = vim.api.nvim_buf_line_count(0)
+          local line = math.min(cursor[1], line_count)
+          local col = cursor[2]
+          -- Clamp column to line length
+          local line_content = vim.api.nvim_buf_get_lines(0, line - 1, line, false)[1] or ''
+          if col > #line_content then col = #line_content end
           vim.api.nvim_win_set_cursor(0, cursor)
         end
       elseif exitcode ~= 0 then
@@ -108,9 +119,6 @@ function M.prettier_format()
 end
 
 function M.format_all()
-  -- Set formatting state to true
-  M.formatting = true
-
   M.lsp_format()
   M.prettier_format()
 end

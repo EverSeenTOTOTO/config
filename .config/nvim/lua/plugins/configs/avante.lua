@@ -49,13 +49,6 @@ avante.setup({
       model = 'claude-3-7-sonnet-latest',
     },
 
-    ['proxy-gemmi'] = {
-      __inherited_from = 'openai',
-      endpoint = api_base,
-      api_key_name = 'OPENAI_API_KEY',
-      model = 'gemini-2.5-pro-preview-06-05',
-    },
-
     openai = {
       endpoint = api_base,
       model = 'gpt-4o',
@@ -86,12 +79,13 @@ avante.setup({
       normal = { '<C-c>' },
       insert = { '<C-c>' },
     },
-    new_ask = '<space><space>',
-    ask = '<space>a',
+    new_ask = '<space>a',
+    ask = '<space><space>',
     edit = '<space>e',
     refresh = '<space>r',
     focus = '<space>f',
     stop = '<space>s',
+    select_model = '<space>m',
     toggle = {},
     sidebar = {
       close = { '<Esc>', '<space><space>' },
@@ -135,5 +129,8 @@ avante.setup({
   behaviour = {},
   windows = {
     width = 40,
+    ask = {
+      start_insert = false,
+    },
   },
 })

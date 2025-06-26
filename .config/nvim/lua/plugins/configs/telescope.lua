@@ -3,6 +3,17 @@ local present, telescope = pcall(require, 'telescope')
 if not present then return end
 
 local telescope_actions = require('telescope.actions.set')
+local actions = require('telescope.actions')
+
+local rg_args = {
+  'rg',
+  '--hidden',
+  '--color=never',
+  '--no-heading',
+  '--with-filename',
+  '--line-number',
+  '--column',
+}
 
 local options = {
   defaults = {
@@ -11,20 +22,12 @@ local options = {
     },
     mappings = {
       i = {
-        ['vv'] = require('telescope.actions').close,
-        ['<C-u>'] = require('telescope.actions').results_scrolling_up,
-        ['<C-d>'] = require('telescope.actions').results_scrolling_down,
+        ['vv'] = actions.close,
+        ['<C-u>'] = actions.results_scrolling_up,
+        ['<C-d>'] = actions.results_scrolling_down,
       },
     },
-    vimgrep_arguments = {
-      'rg',
-      '--hidden',
-      '--color=never',
-      '--no-heading',
-      '--with-filename',
-      '--line-number',
-      '--column',
-    },
+    vimgrep_arguments = rg_args,
     prompt_prefix = '  ',
     selection_caret = '  ',
     entry_prefix = '  ',
@@ -119,6 +122,76 @@ local options = {
     live_grep = {
       only_sort_text = true,
       layout_strategy = 'horizontal',
+      attach_mappings = function(prompt_bufnr, map)
+        -- Add <C-q> mapping to send all results to quickfix list
+        map('i', '<C-q>', function()
+          local action_state = require('telescope.actions.state')
+          local current_picker = action_state.get_current_picker(prompt_bufnr)
+          local pattern = current_picker:_get_prompt()
+
+          actions.smart_send_to_qflist(prompt_bufnr)
+
+          local qf_refresh_group = vim.api.nvim_create_augroup('TelescopeQFRefresh', { clear = true })
+
+          vim.api.nvim_create_autocmd('BufWritePost', {
+            group = qf_refresh_group,
+            pattern = '*',
+            callback = function()
+              local current_idx = vim.fn.getqflist({ idx = 0 }).idx
+
+              -- redo the search with the current pattern
+              local ok, lines = pcall(function()
+                local cmd = vim.deepcopy(rg_args)
+                table.insert(cmd, vim.fn.shellescape(pattern))
+
+                -- Execute ripgrep search
+                return vim.fn.systemlist(table.concat(cmd, ' '))
+              end)
+
+              if not ok or vim.v.shell_error ~= 0 then
+                vim.notify('Error refreshing qflist: ' .. (lines or ''), vim.log.levels.ERROR)
+                return
+              end
+
+              -- Parse ripgrep output into quickfix entries
+              local qf_entries = {}
+              for _, line in ipairs(lines) do
+                if line ~= '' then
+                  -- Parse format: filename:line:column:text
+                  local filename, lnum, col, text = line:match('([^:]+):(%d+):(%d+):(.*)$')
+                  if filename and lnum and col and text then
+                    table.insert(qf_entries, {
+                      filename = filename,
+                      lnum = tonumber(lnum),
+                      col = tonumber(col),
+                      text = text,
+                    })
+                  end
+                end
+              end
+
+              vim.fn.setqflist(qf_entries)
+              vim.notify('Qflist for "' .. pattern .. '" updated', vim.log.levels.INFO)
+
+              if current_idx <= #qf_entries then vim.fn.setqflist({}, 'a', { idx = current_idx }) end
+            end,
+          })
+
+          vim.api.nvim_create_autocmd('QuitPre', {
+            group = qf_refresh_group,
+            callback = function()
+              if vim.bo.filetype == 'qf' then
+                vim.api.nvim_del_augroup_by_name('TelescopeQFRefresh')
+                vim.notify('Stop auto update qflist', vim.log.levels.WARN)
+              end
+            end,
+            once = true,
+          })
+
+          vim.cmd('copen')
+        end)
+        return true
+      end,
     },
     find_files = {
       layout_strategy = 'horizontal',
@@ -128,7 +201,7 @@ local options = {
         })
         return true
       end,
-      find_command = { 'fd', '--type=file', '--hidden' },
+      find_command = { 'fd', '-LH', '-tf' },
     },
   },
   extensions = {
