@@ -1,7 +1,5 @@
 local M = {}
-
--- Track prettier formatting state
-M.formatting = false
+local spinner = require('core.spinner')
 
 -- Define formatters in priority order (highest priority first)
 local formatters_priority = {
@@ -66,8 +64,7 @@ function M.prettier_format()
     end
   end
 
-  -- Set formatting state to true
-  M.formatting = true
+  spinner.start('Formatting...')
 
   local job = vim.fn.jobstart(prettier_path .. ' --stdin-filepath ' .. current_file_path, {
     on_stdout = function(_, data) collect_data(data, stdout_data) end,
@@ -106,8 +103,7 @@ function M.prettier_format()
         vim.notify('Prettier error: ' .. error_msg, vim.log.levels.ERROR)
       end
 
-      -- Reset formatting state when complete
-      M.formatting = false
+      spinner.stop('Formated')
     end,
     stdout_buffered = true,
     stderr_buffered = true,

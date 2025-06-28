@@ -12,6 +12,10 @@ if not api_base or not api_key then
   return
 end
 
+if not serp_api_key then
+  vim.notify('Please set SERP_API_KEY environment variable for web search', vim.log.levels.WARN)
+end
+
 avante.setup({
   system_prompt = function()
     local hub = require('mcphub').get_hub_instance()
@@ -36,10 +40,10 @@ avante.setup({
     'bash', -- Built-in terminal access
   },
 
-  provider = 'copilot',
+  provider = 'proxy-claude',
   providers = {
     copilot = {
-      model = 'claude-3.7-sonnet',
+      model = 'gpt-4.1',
     },
 
     ['proxy-claude'] = {

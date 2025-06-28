@@ -46,7 +46,6 @@ autocmd('BufWritePre', {
   end,
 })
 
--- highlight yanked text for 700ms
 local has_mac = vim.fn.has('mac') == 1
 local xdg_session_type = vim.env.XDG_SESSION_TYPE
 local is_x11 = xdg_session_type == 'x11' and vim.fn.executable('xclip') == 1
@@ -66,7 +65,7 @@ autocmd('TextYankPost', {
       vim.fn.system('wl-copy && tmux set-buffer $(wl-paste)', vim.fn.getreg('"'))
     end
 
-    -- Highlight yanked text
+    -- highlight yanked text for 700ms
     vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 700 })
   end,
 })
@@ -78,6 +77,7 @@ autocmd('FocusGained', {
   end,
 })
 
+-- Automatically track files in nvim-tree
 autocmd('BufEnter', {
   callback = function()
     local path = vim.fn.expand('%:p')
@@ -95,6 +95,7 @@ autocmd('FileType', {
   callback = function(event) vim.bo[event.buf].buflisted = false end,
 })
 
+-- fold
 autocmd({ 'FileType' }, {
   callback = function()
     if require('nvim-treesitter.parsers').has_parser() then
@@ -104,5 +105,32 @@ autocmd({ 'FileType' }, {
       -- use alternative foldmethod
       vim.opt.foldmethod = 'syntax'
     end
+  end,
+})
+
+-- resize splits if window got resized
+vim.api.nvim_create_autocmd({ 'VimResized' }, {
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd('tabdo wincmd =')
+    vim.cmd('tabnext ' .. current_tab)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'json', 'jsonc', 'json5' },
+  callback = function() vim.opt_local.conceallevel = 0 end,
+})
+
+-- go to last loc when opening a buffer
+vim.api.nvim_create_autocmd('BufReadPost', {
+  callback = function(event)
+    local exclude = { 'gitcommit' }
+    local buf = event.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then return end
+    vim.b[buf].lazyvim_last_loc = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= lcount then pcall(vim.api.nvim_win_set_cursor, 0, mark) end
   end,
 })

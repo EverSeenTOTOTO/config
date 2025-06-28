@@ -1,5 +1,4 @@
 local status_ok, lualine = pcall(require, 'lualine')
-local format = require('core.format')
 
 if not status_ok then return end
 
@@ -15,16 +14,6 @@ lualine.setup({
     },
     lualine_c = {},
     lualine_x = {
-      -- formatting spinner
-      function()
-        if format.formatting then
-          local spinner_frames = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
-          local ms = vim.uv.hrtime() / 1000000
-          local frame = spinner_frames[math.floor(ms / 80) % #spinner_frames + 1]
-          return frame .. ' formatting'
-        end
-        return ''
-      end,
       {
         'diagnostics',
       },

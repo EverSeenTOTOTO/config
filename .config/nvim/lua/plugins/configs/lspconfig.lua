@@ -15,6 +15,36 @@ vim.diagnostic.config({
   },
 })
 
+require('lspkind').setup({
+  symbol_map = {
+    Text = '󰉿',
+    Method = '󰆧',
+    Function = '󰊕',
+    Constructor = '',
+    Field = '󰜢',
+    Variable = '󰀫',
+    Class = '󰠱',
+    Interface = '',
+    Module = '',
+    Property = '󰜢',
+    Unit = '󰑭',
+    Value = '󰎠',
+    Enum = '',
+    Keyword = '󰌋',
+    Snippet = '',
+    Color = '󰏘',
+    File = '󰈙',
+    Reference = '󰈇',
+    Folder = '󰉋',
+    EnumMember = '',
+    Constant = '󰏿',
+    Struct = '󰙅',
+    Event = '',
+    Operator = '󰆕',
+    TypeParameter = '',
+  },
+})
+
 local capabilities = vim.tbl_deep_extend(
   'force',
   vim.lsp.protocol.make_client_capabilities(),

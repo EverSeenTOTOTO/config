@@ -153,6 +153,7 @@ map('', '<leader><leader>', function()
     while_statement = true,
     element = true,
     jsx_element = true,
+    script_element = true,
     string = true,
     template_string = true,
   }
@@ -179,6 +180,12 @@ map('', '<leader><leader>', function()
   if sr == er then vim.api.nvim_win_set_cursor(0, { er + 1, col == sc and ec or sc }) end
 end)
 
+-- redirect command line output
+map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
+
+map('n', '[c', ':cp<Cr>')
+map('n', ']c', ':cn<Cr>')
+
 if not vim.g.vscode then
   map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
   map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
@@ -195,11 +202,37 @@ if not vim.g.vscode then
   map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
   map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
   map('n', '<leader>q', function()
+    local delete = {
+      'PlenaryTestPopup',
+      'checkhealth',
+      'dbout',
+      'gitsigns-blame',
+      'grug-far',
+      'help',
+      'lspinfo',
+      'neotest-output',
+      'neotest-output-panel',
+      'neotest-summary',
+      'notify',
+      'qf',
+      'spectre_panel',
+      'startuptime',
+      'tsplayground',
+    }
+
+    for _, ft in ipairs(delete) do
+      if vim.bo.filetype == ft then
+        vim.cmd(':bdelete!')
+        return
+      end
+    end
+
     if vim.wo.winfixbuf then
       vim.cmd(':bdelete')
-    else
-      vim.cmd(':Bdelete')
+      return
     end
+
+    vim.cmd(':Bdelete')
   end)
 
   -- 窗口
@@ -225,8 +258,11 @@ if not vim.g.vscode then
       vim.cmd(':NvimTreeFindFile')
     end
   end)
+
+  map('n', '<leader>l', function() require('persistence').load({ last = true }) end)
 end
 
+-- vscode nvim
 if vim.g.vscode then
   local vscode = require('vscode')
   map('n', '<leader>a', function() vscode.action('editor.action.quickFix') end)

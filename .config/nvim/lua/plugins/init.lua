@@ -28,24 +28,15 @@ require('lazy').setup({
     config = function() require('plugins.configs.notify') end,
   },
 
-  -- dressing ui improvement
   {
-    'stevearc/dressing.nvim',
+    'folke/noice.nvim',
+    event = 'VeryLazy',
     enabled = not vim.g.vscode,
-    config = function()
-      require('dressing').setup({
-        input = {
-          mappings = {
-            n = {
-              ['vv'] = 'Close',
-            },
-          },
-        },
-        select = {
-          backend = { 'telescope', 'nui', 'builtin' },
-        },
-      })
-    end,
+    config = function() require('plugins.configs.noice') end,
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
   },
 
   -- fzf
@@ -159,8 +150,6 @@ require('lazy').setup({
       'hrsh7th/cmp-cmdline',
       'hrsh7th/cmp-vsnip',
       'hrsh7th/vim-vsnip',
-      'hrsh7th/cmp-nvim-lsp-signature-help',
-      'hrsh7th/cmp-nvim-lsp-document-symbol',
       'kdheepak/cmp-latex-symbols',
     },
   },
@@ -211,22 +200,6 @@ require('lazy').setup({
     build = 'make',
     dependencies = {
       {
-        -- support for image pasting
-        'HakonHarnes/img-clip.nvim',
-        event = 'VeryLazy',
-        opts = {
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            qrag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
         'OXY2DEV/markview.nvim',
         enabled = true,
         lazy = false,
@@ -243,15 +216,6 @@ require('lazy').setup({
       },
     },
   },
-
-  -- vim plugins
-  'tpope/vim-surround',
-
-  -- enhanced dot command
-  'tpope/vim-repeat',
-
-  -- editorconfig
-  'editorconfig/editorconfig-vim',
 
   -- Bdelete without destroy our layout
   'moll/vim-bbye',

@@ -57,12 +57,12 @@ set nobackup
 set noswapfile
 set nowb
 set shiftwidth=2
-set si "Smart indent
+set si
 set smarttab
 set softtabstop=2
 set tabstop=2
 set tw=500
-set wrap "Wrap lines
+set wrap 
 
 try
   set switchbuf=useopen,usetab,newtab

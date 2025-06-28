@@ -3,26 +3,25 @@ local opt = vim.opt
 -- General Settings
 opt.encoding = 'utf-8' -- Set default encoding
 opt.backspace = 'indent,eol,start' -- Make backspace work as expected
-opt.clipboard = 'unnamedplus' -- Use system clipboard
+opt.clipboard = vim.env.SSH_TTY and '' or 'unnamedplus' -- Use system clipboard
 opt.hidden = true -- Enable background buffers
 opt.mouse = 'a' -- Enable mouse in all modes
 opt.timeoutlen = 400 -- Time to wait for a mapped sequence to complete (in milliseconds)
-opt.undofile = true -- Enable persistent undo
-opt.swapfile = false -- Disable swap files
-opt.writebackup = false -- Disable backup files
 
 -- UI Settings
 opt.cmdheight = 1 -- Command line height
 opt.confirm = true -- Ask for confirmation instead of erroring
 opt.cursorline = true -- Highlight current line
 opt.laststatus = 3 -- Global statusline
+opt.showmode = false -- Don't show mode in command line
+opt.signcolumn = 'yes' -- Always show sign column
+opt.title = true -- Set window title
+
+-- Numbers
 opt.number = true -- Show line numbers
 opt.numberwidth = 2 -- Width of line number column
 opt.relativenumber = false -- Disable relative line numbers
 opt.ruler = false -- Hide ruler
-opt.showmode = false -- Don't show mode in command line
-opt.signcolumn = 'yes' -- Always show sign column
-opt.title = true -- Set window title
 
 -- Indentation and Formatting
 opt.expandtab = true -- Use spaces instead of tabs
@@ -30,6 +29,7 @@ opt.preserveindent = true -- Preserve indent structure when reindenting
 opt.shiftwidth = 2 -- Number of spaces for each indentation level
 opt.smartindent = true -- Smart autoindenting when starting a new line
 opt.tabstop = 2 -- Number of spaces that a <Tab> counts for
+opt.softtabstop = 2 -- Number of spaces that a <Tab> counts for while editing
 opt.copyindent = true -- Copy indent from current line when starting a new line
 
 opt.showmode = false
@@ -71,16 +71,8 @@ opt.wildignore = {
 opt.grepformat = '%f:%l:%c:%m'
 opt.grepprg = 'rg --vimgrep'
 
-opt.hidden = true
 opt.ignorecase = true
-opt.mouse = 'a'
 opt.smartcase = true
-
--- Numbers
-opt.number = true
-opt.numberwidth = 2
-opt.relativenumber = false
-opt.ruler = false
 
 opt.shortmess = {
   t = true, -- truncate file messages at start
@@ -129,10 +121,10 @@ opt.termguicolors = true
 opt.timeoutlen = 400
 opt.undofile = true
 
--- interval for writing swap file to disk, also used by gitsigns
+opt.undofile = true -- Enable persistent undo
 opt.updatetime = 300
-opt.swapfile = false
-opt.writebackup = false
+opt.swapfile = false -- Disable swap files
+opt.writebackup = false -- Disable backup files
 opt.winminwidth = 5 -- Minimum window width
 opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 
@@ -154,12 +146,8 @@ if vim.fn.exists('syntax_on') then vim.cmd('syntax reset') end
 -- disable some builtin vim plugins
 
 local default_plugins = {
-  'black',
   '2html_plugin',
-  'getscript',
-  'getscriptPlugin',
   'gzip',
-  'logipat',
   'netrw',
   'netrwPlugin',
   'netrwSettings',
@@ -167,10 +155,7 @@ local default_plugins = {
   'matchit',
   'tar',
   'tarPlugin',
-  'rrhelper',
   'spellfile_plugin',
-  'vimball',
-  'vimballPlugin',
   'zip',
   'zipPlugin',
 }
@@ -185,12 +170,10 @@ vim.schedule(function()
 end)
 
 -- disable providers
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_ruby_provider = 0
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_node_provider = 1
+vim.g.loaded_perl_provider = 1
+vim.g.loaded_python3_provider = 1
+vim.g.loaded_ruby_provider = 1
 
 -- neovide
 ---@diagnostic disable-next-line: undefined-field
@@ -201,7 +184,7 @@ if vim.g.neovide then
   vim.g.neovide_cursor_vfx_mode = 'sonicboom'
 end
 
-if vim.fn.has('nvim-0.10') == 1 then opt.smoothscroll = true end
+opt.smoothscroll = true
 
 vim.g.markdown_recommended_style = 0
 

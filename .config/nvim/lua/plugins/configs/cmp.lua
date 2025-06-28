@@ -128,7 +128,6 @@ local options = {
       name = 'nvim_lsp',
       keyword_length = 3,
     },
-    { name = 'nvim_lsp_signature_help' },
     { name = 'vsnip' },
     {
       name = 'buffer',
@@ -154,7 +153,6 @@ cmp.setup.cmdline(':', {
 cmp.setup.cmdline({ '/', '?' }, {
   mapping = cmp.mapping.preset.cmdline(),
   sources = {
-    { name = 'nvim_lsp_document_symbol' },
     { name = 'buffer' },
   },
 })

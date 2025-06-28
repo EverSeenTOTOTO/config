@@ -1,9 +1,25 @@
 local configs = require('nvim-treesitter.configs')
 
 configs.setup({
-  ensure_installed = { 'c', 'cpp', 'lua', 'javascript', 'typescript', 'html', 'tsx', 'vue', 'rust', 'bash', 'python' },
+  ensure_installed = {
+    'bash',
+    'c',
+    'cpp',
+    'html',
+    'javascript',
+    'lua',
+    'markdown',
+    'markdown_inline',
+    'python',
+    'regex',
+    'rust',
+    'tsx',
+    'typescript',
+    'vim',
+    'vue',
+  },
   sync_install = false,
-  highlight = { enable = true },
+  highlight = { enable = not vim.g.vscode },
   indent = { enable = true },
   textobjects = {
     select = {
