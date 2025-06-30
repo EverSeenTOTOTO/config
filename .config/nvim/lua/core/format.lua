@@ -40,6 +40,9 @@ function M.lsp_format()
 end
 
 function M.prettier_format()
+  -- Store the buffer number at the beginning of the function
+  local bufnr = vim.api.nvim_get_current_buf()
+
   local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
 
   if bin_path == '' then return end
@@ -71,6 +74,12 @@ function M.prettier_format()
     on_stderr = function(_, data) collect_data(data, stderr_data) end,
     on_exit = function(_, exitcode)
       if exitcode == 0 and #stdout_data > 0 then
+        -- Check if buffer is still valid and matches the original buffer
+        if not vim.api.nvim_buf_is_valid(bufnr) then
+          spinner.stop('Formatting cancelled')
+          return
+        end
+
         -- Check if there's any difference between current content and formatted content
         local has_diff = false
         if #lines ~= #stdout_data then
@@ -86,16 +95,19 @@ function M.prettier_format()
 
         -- Only update buffer if there are actual changes
         if has_diff then
-          vim.api.nvim_buf_set_lines(0, 0, -1, false, stdout_data)
+          vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
 
           -- Check if cursor is out of range (after formatting)
-          local line_count = vim.api.nvim_buf_line_count(0)
+          local line_count = vim.api.nvim_buf_line_count(bufnr)
           local line = math.min(cursor[1], line_count)
           local col = cursor[2]
           -- Clamp column to line length
-          local line_content = vim.api.nvim_buf_get_lines(0, line - 1, line, false)[1] or ''
+          local line_content = vim.api.nvim_buf_get_lines(bufnr, line - 1, line, false)[1] or ''
           if col > #line_content then col = #line_content end
-          vim.api.nvim_win_set_cursor(0, cursor)
+
+          -- Only set cursor if we're in the same window with the buffer
+          local win = vim.fn.bufwinid(bufnr)
+          if win ~= -1 then vim.api.nvim_win_set_cursor(win, { line, col }) end
         end
       elseif exitcode ~= 0 then
         -- Show error notification

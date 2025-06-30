@@ -58,7 +58,6 @@ configs.setup({
         [']p'] = '@parameter.outer',
         [']t'] = '@tag.outer',
         [']s'] = { query = '@local.scope', query_group = 'locals', desc = 'Next scope' },
-        [']z'] = { query = '@fold', query_group = 'folds', desc = 'Next fold' },
       },
       goto_next_end = {},
       goto_previous_start = {
@@ -71,7 +70,6 @@ configs.setup({
         ['[p'] = '@parameter.outer',
         ['[t'] = '@tag.outer',
         ['[s'] = { query = '@local.scope', query_group = 'locals', desc = 'Prev scope' },
-        ['[z'] = { query = '@fold', query_group = 'folds', desc = 'Prev fold' },
       },
       goto_previous_end = {},
     },

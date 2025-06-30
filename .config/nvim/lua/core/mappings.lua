@@ -95,22 +95,32 @@ local format = require('core.format')
 map('n', '<leader>f', function() format.format_all() end)
 
 map('n', '<leader>h', function()
-  vim.lsp.buf.hover()
-  vim.lsp.buf.hover() -- call twice to jump to float window
+  local winid = require('ufo').peekFoldedLinesUnderCursor()
+  if winid then
+    local bufnr = vim.api.nvim_win_get_buf(winid)
+    local keys = { 'a', 'i', 'o', 'A', 'I', 'O', 'gd', 'gr' }
+    for _, k in ipairs(keys) do
+      -- Add a prefix key to fire `trace` action,
+      vim.keymap.set('n', k, '<CR>' .. k, { noremap = false, buffer = bufnr })
+    end
+  else
+    vim.lsp.buf.hover()
+    vim.lsp.buf.hover() -- call twice to jump to float window
+  end
 end)
 
 map('n', '<leader>n', function() vim.lsp.buf.rename() end)
 
 map('n', '<leader>a', function() vim.lsp.buf.code_action() end)
 
-map('n', '<leader>[', function()
+map('n', '[[', function()
   vim.diagnostic.jump({
     count = -1,
     float = true,
   })
 end)
 
-map('n', '<leader>]', function()
+map('n', ']]', function()
   vim.diagnostic.jump({
     count = 1,
     float = true,
@@ -183,9 +193,6 @@ end)
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
 
-map('n', '[c', ':cp<Cr>')
-map('n', ']c', ':cn<Cr>')
-
 if not vim.g.vscode then
   map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
   map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
@@ -195,6 +202,7 @@ if not vim.g.vscode then
   map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
   map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
   map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
+  map({ 'n', 'v' }, '<Space><Space>', '<cmd> :Telescope command_history<CR>')
   map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
 
   map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
@@ -259,7 +267,9 @@ if not vim.g.vscode then
     end
   end)
 
-  map('n', '<leader>l', function() require('persistence').load({ last = true }) end)
+  -- fold
+  map('', '[z', function() require('ufo').goPreviousClosedFold() end)
+  map('', ']z', function() require('ufo').goNextClosedFold() end)
 end
 
 -- vscode nvim
@@ -269,9 +279,9 @@ if vim.g.vscode then
 
   map('n', '<leader>f', function() vscode.action('editor.action.formatDocument') end)
 
-  map('n', '<leader>[', function() vscode.action('editor.action.marker.next') end)
+  map('n', '[[', function() vscode.action('editor.action.marker.next') end)
 
-  map('n', '<leader>]', function() vscode.action('editor.action.marker.prev') end)
+  map('n', ']]', function() vscode.action('editor.action.marker.prev') end)
 
   map('n', '<Tab>', function() vscode.action('workbench.action.nextEditor') end)
 

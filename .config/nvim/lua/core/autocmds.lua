@@ -95,19 +95,6 @@ autocmd('FileType', {
   callback = function(event) vim.bo[event.buf].buflisted = false end,
 })
 
--- fold
-autocmd({ 'FileType' }, {
-  callback = function()
-    if require('nvim-treesitter.parsers').has_parser() then
-      vim.opt.foldmethod = 'expr'
-      vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-    else
-      -- use alternative foldmethod
-      vim.opt.foldmethod = 'syntax'
-    end
-  end,
-})
-
 -- resize splits if window got resized
 vim.api.nvim_create_autocmd({ 'VimResized' }, {
   callback = function()

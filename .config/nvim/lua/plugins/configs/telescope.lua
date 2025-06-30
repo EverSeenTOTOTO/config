@@ -182,7 +182,7 @@ local options = {
             callback = function()
               if vim.bo.filetype == 'qf' then
                 vim.api.nvim_del_augroup_by_name('TelescopeQFRefresh')
-                vim.notify('Stop auto update qflist', vim.log.levels.WARN)
+                vim.notify('Stop auto update qflist', vim.log.levels.INFO)
               end
             end,
             once = true,

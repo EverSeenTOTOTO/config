@@ -28,6 +28,7 @@ require('lazy').setup({
     config = function() require('plugins.configs.notify') end,
   },
 
+  -- better ui
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
@@ -37,6 +38,25 @@ require('lazy').setup({
       'MunifTanjim/nui.nvim',
       'rcarriga/nvim-notify',
     },
+  },
+
+  -- vim.ui.select/input replacement
+  {
+    'stevearc/dressing.nvim',
+    config = function()
+      require('dressing').setup({
+        input = {
+          mappings = {
+            n = {
+              ['vv'] = 'Close',
+            },
+          },
+        },
+        select = {
+          backend = { 'telescope', 'nui', 'builtin' },
+        },
+      })
+    end,
   },
 
   -- fzf
@@ -217,6 +237,15 @@ require('lazy').setup({
     },
   },
 
+  {
+    'kevinhwang91/nvim-ufo',
+    config = function() require('plugins.configs.ufo') end,
+    dependencies = {
+      'kevinhwang91/promise-async',
+    },
+  },
+
+  'tpope/vim-surround',
   -- Bdelete without destroy our layout
   'moll/vim-bbye',
 

@@ -138,6 +138,9 @@ opt.wrap = true
 local default_foldopen = vim.opt.foldopen:get()
 if vim.tbl_contains(default_foldopen, 'block') then vim.opt.foldopen:remove('block') end
 vim.opt.foldlevelstart = 99 -- Start with all folds open
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldenable = true
 
 -- theme
 vim.cmd('highlight clear')
@@ -170,10 +173,10 @@ vim.schedule(function()
 end)
 
 -- disable providers
-vim.g.loaded_node_provider = 1
-vim.g.loaded_perl_provider = 1
-vim.g.loaded_python3_provider = 1
-vim.g.loaded_ruby_provider = 1
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 -- neovide
 ---@diagnostic disable-next-line: undefined-field
@@ -195,6 +198,3 @@ vim.g.vsnip_filetypes = {
   scss = { 'css' },
   less = { 'css' },
 }
-
----@diagnostic disable-next-line: undefined-field
-if vim.g.vscode then vim.notify = require('vscode').notify end
