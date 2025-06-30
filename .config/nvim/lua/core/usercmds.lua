@@ -33,3 +33,15 @@ create_usercmd('SplitCurrentLine', function()
     vim.api.nvim_win_set_cursor(0, { row, col })
   end)
 end, {})
+
+create_usercmd('ChangeEncodingAndReload', function()
+  vim.ui.input({
+    prompt = 'Encoding: ',
+    default = 'gbk',
+  }, function(enc)
+    local original_enc = vim.opt.fileencoding:get()
+    vim.cmd(':e ++enc=' .. enc)
+    vim.opt.fileencoding = enc
+    vim.notify('Changing encoding from ' .. original_enc(' to ') .. enc, vim.log.levels.INFO)
+  end)
+end, {})
