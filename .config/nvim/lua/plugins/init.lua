@@ -40,25 +40,6 @@ require('lazy').setup({
     },
   },
 
-  -- vim.ui.select/input replacement
-  {
-    'stevearc/dressing.nvim',
-    config = function()
-      require('dressing').setup({
-        input = {
-          mappings = {
-            n = {
-              ['vv'] = 'Close',
-            },
-          },
-        },
-        select = {
-          backend = { 'telescope', 'nui', 'builtin' },
-        },
-      })
-    end,
-  },
-
   -- fzf
   {
     'nvim-telescope/telescope.nvim',
@@ -237,17 +218,28 @@ require('lazy').setup({
     },
   },
 
+  -- fold
   {
     'kevinhwang91/nvim-ufo',
+    enabled = not vim.g.vscode,
     config = function() require('plugins.configs.ufo') end,
     dependencies = {
       'kevinhwang91/promise-async',
     },
   },
 
+  -- session
+  {
+    'folke/persistence.nvim',
+    event = 'BufReadPre',
+    enabled = not vim.g.vscode,
+    opts = {
+      dir = vim.fn.stdpath('state') .. '/sessions/',
+    },
+  },
+
+  -- enhance textobjects
   'tpope/vim-surround',
-  -- Bdelete without destroy our layout
-  'moll/vim-bbye',
 
   -- theme
   {
@@ -255,13 +247,17 @@ require('lazy').setup({
     lazy = false,
     enabled = not vim.g.vscode,
     priority = 1000,
-    config = function() require('plugins.configs.tokyonight') end,
+    config = function() require('plugins.configs.theme') end,
   },
 
   -- theme similar to vscode default dark
   {
     'lunarvim/darkplus.nvim',
     enabled = not vim.g.vscode,
-    config = function() vim.cmd([[colorscheme darkplus]]) end,
+    config = function()
+      vim.cmd('highlight clear')
+      if vim.fn.exists('syntax_on') then vim.cmd('syntax reset') end
+      vim.cmd([[colorscheme darkplus]])
+    end,
   },
 })

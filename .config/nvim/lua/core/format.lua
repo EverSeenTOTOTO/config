@@ -1,5 +1,5 @@
 local M = {}
-local spinner = require('core.spinner')
+local spinner = require('core.ui.spinner')
 
 -- Define formatters in priority order (highest priority first)
 local formatters_priority = {

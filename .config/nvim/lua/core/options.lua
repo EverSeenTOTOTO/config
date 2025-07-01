@@ -142,10 +142,6 @@ vim.o.foldcolumn = '1' -- '0' is not bad
 vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldenable = true
 
--- theme
-vim.cmd('highlight clear')
-if vim.fn.exists('syntax_on') then vim.cmd('syntax reset') end
-
 -- disable some builtin vim plugins
 
 local default_plugins = {

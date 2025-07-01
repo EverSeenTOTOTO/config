@@ -39,10 +39,10 @@ configs.setup({
         ['id'] = '@conditional.inner',
         ['ao'] = '@loop.outer',
         ['io'] = '@loop.inner',
-        ['at'] = '@tag.outer',
         ['ap'] = '@parameter.outer',
         ['ip'] = '@parameter.inner',
-        ['as'] = { query = '@local.scope', query_group = 'locals' },
+        ['at'] = '@tag.outer',
+        ['it'] = '@tag.inner',
       },
     },
     move = {
@@ -57,7 +57,6 @@ configs.setup({
         [']o'] = '@loop.outer',
         [']p'] = '@parameter.outer',
         [']t'] = '@tag.outer',
-        [']s'] = { query = '@local.scope', query_group = 'locals', desc = 'Next scope' },
       },
       goto_next_end = {},
       goto_previous_start = {
@@ -69,7 +68,6 @@ configs.setup({
         ['[o'] = '@loop.outer',
         ['[p'] = '@parameter.outer',
         ['[t'] = '@tag.outer',
-        ['[s'] = { query = '@local.scope', query_group = 'locals', desc = 'Prev scope' },
       },
       goto_previous_end = {},
     },

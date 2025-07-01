@@ -50,19 +50,19 @@ map('n', 'U', '<C-r>')
 
 -- Alt + jk move lines
 if vim.fn.has('mac') ~= 0 then
-  map('n', '∆', 'mz:m+<cr>`z')
-  map('i', '∆', '<esc>mz:m+<cr>`zi')
-  map('v', '∆', ":m'>+<cr>`<my`>mzgv`yo`z")
-  map('i', '˚', '<esc>mz:m-2<cr>`zi')
-  map('n', '˚', 'mz:m-2<cr>`z')
-  map('v', '˚', ":m'<-2<cr>`>my`<mzgv`yo`z")
+  map('n', '∆', "<cmd>execute 'move .+' . v:count1<cr>==")
+  map('i', '∆', '<esc><cmd>m .+1<cr>==gi')
+  map('v', '∆', ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
+  map('n', '˚', "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==")
+  map('i', '˚', '<esc><cmd>m .-2<cr>==gi')
+  map('v', '˚', ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
 else
-  map('n', '<M-j>', 'mz:m+<cr>`z')
-  map('i', '<M-j>', '<esc>mz:m+<cr>`zi')
-  map('v', '<M-j>', ":m'>+<cr>`<my`>mzgv`yo`z")
-  map('i', '<M-k>', '<esc>mz:m-2<cr>`zi')
-  map('n', '<M-k>', 'mz:m-2<cr>`z')
-  map('v', '<M-k>', ":m'<-2<cr>`>my`<mzgv`yo`z")
+  map('n', '<M-j>', "<cmd>execute 'move .+' . v:count1<cr>==")
+  map('i', '<M-j>', '<esc><cmd>m .+1<cr>==gi')
+  map('v', '<M-j>', ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
+  map('n', '<M-k>', "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==")
+  map('i', '<M-k>', '<esc><cmd>m .-2<cr>==gi')
+  map('v', '<M-k>', ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
 end
 
 -- Don't copy the replaced text after pasting in visual mode
@@ -142,8 +142,6 @@ map('', '<leader><leader>', function()
     [']'] = true,
     ['{'] = true,
     ['}'] = true,
-    ['<'] = true,
-    ['>'] = true,
   }
 
   if defaults[char] then
@@ -179,7 +177,7 @@ map('', '<leader><leader>', function()
 
   -- vim.notify(
   --   char .. ' ' .. node:type() .. ' ' .. sr .. ':' .. sc .. ' - ' .. er .. ':' .. ec .. ' ' .. row .. ':' .. col,
-  --   vim.log.levels.INFO
+  --   vim.log.levels.info
   -- )
 
   if row == sr then
@@ -240,7 +238,7 @@ if not vim.g.vscode then
       return
     end
 
-    vim.cmd(':Bdelete')
+    require('core.bdelete').delete()
   end)
 
   -- 窗口
@@ -270,6 +268,9 @@ if not vim.g.vscode then
   -- fold
   map('', '[z', function() require('ufo').goPreviousClosedFold() end)
   map('', ']z', function() require('ufo').goNextClosedFold() end)
+
+  -- session
+  vim.keymap.set('n', '<space>l', function() require('persistence').load() end)
 end
 
 -- vscode nvim
@@ -279,9 +280,9 @@ if vim.g.vscode then
 
   map('n', '<leader>f', function() vscode.action('editor.action.formatDocument') end)
 
-  map('n', '[[', function() vscode.action('editor.action.marker.next') end)
+  map('n', '<leader>[', function() vscode.action('editor.action.marker.next') end)
 
-  map('n', ']]', function() vscode.action('editor.action.marker.prev') end)
+  map('n', '<leader>]', function() vscode.action('editor.action.marker.prev') end)
 
   map('n', '<Tab>', function() vscode.action('workbench.action.nextEditor') end)
 

@@ -138,19 +138,19 @@ nnoremap U <C-r>
 
 " Alt + jk move lines
 if has("mac")
-  nmap ∆ mz:m+<cr>`z
-  imap ∆ <esc>mz:m+<cr>`zi
-  vmap ∆ :m'>+<cr>`<my`>mzgv`yo`z
-  imap ˚ <esc>mz:m-2<cr>`zi
-  nmap ˚ mz:m-2<cr>`z
-  vmap ˚ :m'<-2<cr>`>my`<mzgv`yo`z
+  nmap ∆ <cmd>execute 'move .+' . v:count1<cr>==
+  imap ∆ <esc><cmd>m .+1<cr>==gi
+  vmap ∆ :<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv
+  nmap ˚ <cmd>execute 'move .-' . (v:count1 + 1)<cr>==
+  imap ˚ <esc><cmd>m .-2<cr>==gi
+  vmap ˚ :<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv
 else
-  nmap <M-j> mz:m+<cr>`z
-  imap <M-j> <esc>mz:m+<cr>`zi
-  vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-  imap <M-k> <esc>mz:m-2<cr>`zi
-  nmap <M-k> mz:m-2<cr>`z
-  vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+  nmap <M-j> <cmd>execute 'move .+' . v:count1<cr>==
+  imap <M-j> <esc><cmd>m .+1<cr>==gi
+  vmap <M-j> :<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv
+  nmap <M-k> <cmd>execute 'move .-' . (v:count1 + 1)<cr>==
+  imap <M-k> <esc><cmd>m .-2<cr>==gi
+  vmap <M-k> :<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv
 endif
 
 vnoremap p p:let @+=@0<CR>

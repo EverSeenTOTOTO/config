@@ -210,3 +210,5 @@ local options = {
 }
 
 telescope.setup(options)
+
+vim.ui.select = require('core.ui.select').select

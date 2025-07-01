@@ -84,7 +84,7 @@ avante.setup({
       insert = { '<C-c>' },
     },
     new_ask = '<space>a',
-    ask = '<space><space>',
+    ask = '<space><leader>',
     edit = '<space>e',
     refresh = '<space>r',
     focus = '<space>f',
