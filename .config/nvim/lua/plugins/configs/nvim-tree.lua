@@ -4,7 +4,7 @@ if not present then return end
 
 local api = require('nvim-tree.api')
 
-local function telescope_find_files()
+local function telescope_live_grep()
   local ok, _ = pcall(require, 'telescope')
 
   if not ok then return end
@@ -18,10 +18,10 @@ local function telescope_find_files()
 
   if node.name == '..' then basedir = require('nvim-tree.core').get_cwd() end
 
-  return require('telescope.builtin').find_files({
+  return require('telescope.builtin').live_grep({
     cwd = basedir,
     search_dirs = { basedir },
-    prompt_title = 'Live Grep in ' .. basedir,
+    prompt_title = 'Live Grep in ' .. node.name,
   })
 end
 
@@ -68,7 +68,7 @@ file_explorer.setup({
     end, {
       buffer = bufnr,
     })
-    vim.keymap.set('n', '<C-f>', telescope_find_files, {
+    vim.keymap.set('n', 'ss', telescope_live_grep, {
       buffer = bufnr,
     })
   end,

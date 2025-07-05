@@ -1,5 +1,6 @@
 local M = {}
 local spinner = require('core.ui.spinner')
+local utils = require('core.utils')
 
 -- Define formatters in priority order (highest priority first)
 local formatters_priority = {
@@ -42,7 +43,6 @@ end
 function M.prettier_format()
   -- Store the buffer number at the beginning of the function
   local bufnr = vim.api.nvim_get_current_buf()
-
   local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
 
   if bin_path == '' then return end
@@ -54,9 +54,9 @@ function M.prettier_format()
 
   local current_file_path = vim.fn.expand('%:p')
 
-  -- Save cursor position and buffer content
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  -- Save cursor position, marks
+  local state = utils.save_bufstate(bufnr)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 
   local stderr_data = {}
   local stdout_data = {}
@@ -67,55 +67,47 @@ function M.prettier_format()
     end
   end
 
-  spinner.start('Formatting...')
-
   local job = vim.fn.jobstart(prettier_path .. ' --stdin-filepath ' .. current_file_path, {
     on_stdout = function(_, data) collect_data(data, stdout_data) end,
     on_stderr = function(_, data) collect_data(data, stderr_data) end,
     on_exit = function(_, exitcode)
-      if exitcode == 0 and #stdout_data > 0 then
-        -- Check if buffer is still valid and matches the original buffer
-        if not vim.api.nvim_buf_is_valid(bufnr) then
-          spinner.stop('Formatting cancelled')
-          return
-        end
-
-        -- Check if there's any difference between current content and formatted content
-        local has_diff = false
-        if #lines ~= #stdout_data then
-          has_diff = true
-        else
-          for i, line in ipairs(lines) do
-            if line ~= stdout_data[i] then
-              has_diff = true
-              break
-            end
-          end
-        end
-
-        -- Only update buffer if there are actual changes
-        if has_diff then
-          vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
-
-          -- Check if cursor is out of range (after formatting)
-          local line_count = vim.api.nvim_buf_line_count(bufnr)
-          local line = math.min(cursor[1], line_count)
-          local col = cursor[2]
-          -- Clamp column to line length
-          local line_content = vim.api.nvim_buf_get_lines(bufnr, line - 1, line, false)[1] or ''
-          if col > #line_content then col = #line_content end
-
-          -- Only set cursor if we're in the same window with the buffer
-          local win = vim.fn.bufwinid(bufnr)
-          if win ~= -1 then vim.api.nvim_win_set_cursor(win, { line, col }) end
-        end
-      elseif exitcode ~= 0 then
+      if exitcode ~= 0 then
         -- Show error notification
         local error_msg = table.concat(stderr_data, '\n')
         vim.notify('Prettier error: ' .. error_msg, vim.log.levels.ERROR)
+        spinner.stop('Formatting failed')
+        return
       end
 
-      spinner.stop('Formated')
+      if not vim.api.nvim_buf_is_valid(bufnr) then
+        spinner.stop('Formatting cancelled: invalid buffer')
+        return
+      end
+
+      -- Check if buffer content has changed during formatting
+      local current_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+      local content_changed = false
+      if #current_lines ~= #lines then
+        content_changed = true
+      else
+        for i, line in ipairs(lines) do
+          if line ~= current_lines[i] then
+            content_changed = true
+            break
+          end
+        end
+      end
+
+      if content_changed then
+        spinner.stop('Formatting cancelled: dirty buffer')
+        return
+      end
+
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
+
+      -- Restore cursor and marks
+      utils.restore_bufstate(bufnr, state)
+      spinner.stop('Formatted')
     end,
     stdout_buffered = true,
     stderr_buffered = true,
@@ -127,6 +119,7 @@ function M.prettier_format()
 end
 
 function M.format_all()
+  spinner.start('Formatting...')
   M.lsp_format()
   M.prettier_format()
 end

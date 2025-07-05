@@ -28,7 +28,7 @@ local custom_kind = {
         client_id = item[1]
       end
       local client_name = vim.lsp.get_client_by_id(client_id).name
-      local text = opts.format_item(item)
+      local text = opts.format_item(item.action)
 
       client_width = math.max(client_width, vim.api.nvim_strwidth(client_name))
       text_width = math.max(text_width, vim.api.nvim_strwidth(text))
@@ -134,7 +134,7 @@ local telescope_select = function(config, items, opts, on_choice)
   end
 end
 
-local function sanitize_line(line) return string.gsub(tostring(line), '\n', ' ') end
+local function sanitize_line(line) return string.gsub(tostring(line.title or line), '\n', ' ') end
 
 ---Wrap an async function so that if called multiple times only one will execute concurrently
 ---@param callback_arg_num integer The position of the callback argument in the function

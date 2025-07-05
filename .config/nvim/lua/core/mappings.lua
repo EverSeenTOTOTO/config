@@ -113,14 +113,14 @@ map('n', '<leader>n', function() vim.lsp.buf.rename() end)
 
 map('n', '<leader>a', function() vim.lsp.buf.code_action() end)
 
-map('n', '[[', function()
+map('n', '<leader>[', function()
   vim.diagnostic.jump({
     count = -1,
     float = true,
   })
 end)
 
-map('n', ']]', function()
+map('n', '<leader>]', function()
   vim.diagnostic.jump({
     count = 1,
     float = true,
