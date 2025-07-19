@@ -186,42 +186,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    'ravitemer/mcphub.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    build = 'bun add -g mcp-hub@latest',
-    enabled = not vim.env.HEADLESS and not vim.g.vscode,
-    config = function() require('mcphub').setup() end,
-  },
-
-  {
-    'yetone/avante.nvim',
-    event = 'VeryLazy',
-    version = false,
-    enabled = not vim.env.HEADLESS and not vim.g.vscode,
-    config = function() require('plugins.configs.avante') end,
-    build = 'make',
-    dependencies = {
-      {
-        'OXY2DEV/markview.nvim',
-        enabled = true,
-        lazy = false,
-        ft = { 'markdown', 'norg', 'rmd', 'org', 'vimwiki', 'Avante' },
-        opts = {
-          preview = {
-            filetypes = { 'markdown', 'norg', 'rmd', 'org', 'vimwiki', 'Avante' },
-            ignore_buftypes = {},
-          },
-          experimental = {
-            check_rtp_message = false,
-          },
-        },
-      },
-    },
-  },
-
   -- fold
   {
     'kevinhwang91/nvim-ufo',

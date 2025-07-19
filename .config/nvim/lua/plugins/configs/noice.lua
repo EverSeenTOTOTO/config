@@ -25,6 +25,20 @@ require('noice').setup({
         stop = true, -- stop filter chain
       },
     },
+    {
+      filter = {
+        event = 'msg_show',
+        find = 'lines moved',
+      },
+      opts = { skip = true },
+    },
+    {
+      filter = {
+        event = 'msg_show',
+        find = 'lines indented',
+      },
+      opts = { skip = true },
+    },
   },
   presets = {
     bottom_search = false,
