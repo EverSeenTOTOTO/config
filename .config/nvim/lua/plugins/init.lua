@@ -85,6 +85,7 @@ require('lazy').setup({
   {
     'nvim-tree/nvim-tree.lua',
     enabled = not vim.g.vscode,
+    cmd = 'NvimTreeToggle',
     config = function() require('plugins.configs.nvim-tree') end,
   },
 
@@ -99,6 +100,7 @@ require('lazy').setup({
   {
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
+    event = 'BufReadPre',
     opts = {},
     enabled = not vim.g.vscode,
     config = function() require('plugins.configs.indent-blankline') end,
@@ -122,6 +124,7 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     enabled = not vim.g.vscode,
+    event = 'BufReadPre',
     dependencies = {
       -- lsp signature when typing
       -- "ray-x/lsp_signature.nvim",
@@ -171,6 +174,7 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    event = 'BufReadPre',
     config = function() require('plugins.configs.treesitter') end,
   },
 
@@ -222,6 +226,7 @@ require('lazy').setup({
   {
     'kevinhwang91/nvim-ufo',
     enabled = not vim.g.vscode,
+    event = 'BufReadPre',
     config = function() require('plugins.configs.ufo') end,
     dependencies = {
       'kevinhwang91/promise-async',

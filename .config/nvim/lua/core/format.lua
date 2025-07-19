@@ -45,12 +45,18 @@ function M.prettier_format()
   local bufnr = vim.api.nvim_get_current_buf()
   local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
 
-  if bin_path == '' then return end
+  if bin_path == '' then
+    spinner.stop('Prettier Formatter not found')
+    return
+  end
 
   local prettier_path = bin_path .. '/prettier'
 
   -- Check if prettier executable exists
-  if vim.fn.filereadable(prettier_path) ~= 1 then return end
+  if vim.fn.filereadable(prettier_path) ~= 1 then
+    spinner.stop('Prettier Formatter not found')
+    return
+  end
 
   local current_file_path = vim.fn.expand('%:p')
 

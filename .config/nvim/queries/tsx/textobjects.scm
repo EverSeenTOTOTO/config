@@ -5,3 +5,5 @@
 (jsx_element) @tag.outer
 (jsx_self_closing_element) @tag.outer
 
+(jsx_attribute) @parameter.outer
+(pair) @parameter.outer

@@ -149,7 +149,7 @@ local options = {
               end)
 
               if not ok or vim.v.shell_error ~= 0 then
-                vim.notify('Error refreshing qflist: ' .. (lines or ''), vim.log.levels.ERROR)
+                vim.notify('Error refreshing qflist', vim.log.levels.ERROR)
                 return
               end
 
@@ -170,6 +170,7 @@ local options = {
                 end
               end
 
+              -- Check if we have any search results
               vim.fn.setqflist(qf_entries)
               vim.notify('Qflist for "' .. pattern .. '" updated', vim.log.levels.INFO)
 
