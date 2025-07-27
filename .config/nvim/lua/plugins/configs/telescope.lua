@@ -139,17 +139,33 @@ local options = {
             callback = function()
               local current_idx = vim.fn.getqflist({ idx = 0 }).idx
 
-              -- redo the search with the current pattern
+              -- redo the search with the current pattern and preserved search configuration
               local ok, lines = pcall(function()
-                local cmd = vim.deepcopy(rg_args)
-                table.insert(cmd, vim.fn.shellescape(pattern))
+                -- Extract search parameters from current picker
+                local cmd = {}
 
-                -- Execute ripgrep search
-                return vim.fn.systemlist(table.concat(cmd, ' '))
+                -- Use vimgrep_arguments from current picker or fallback to configured rg_args
+                local vimgrep_args = current_picker.vimgrep_arguments or rg_args
+                cmd = vim.deepcopy(vimgrep_args)
+
+                -- Add current working directory if available
+                if current_picker.cwd then
+                  table.insert(cmd, '--')
+                  table.insert(cmd, vim.fn.shellescape(pattern))
+                  table.insert(cmd, current_picker.cwd)
+                else
+                  table.insert(cmd, vim.fn.shellescape(pattern))
+                end
+
+                local full_cmd = table.concat(cmd, ' ')
+
+                return vim.fn.systemlist(full_cmd)
               end)
 
               if not ok or vim.v.shell_error ~= 0 then
-                vim.notify('Error refreshing qflist', vim.log.levels.ERROR)
+                vim.notify('Error refreshing qflist: ' .. (lines or 'unknown error'), vim.log.levels.ERROR, {
+                  title = 'Telescope QF Refresh',
+                })
                 return
               end
 
@@ -172,7 +188,10 @@ local options = {
 
               -- Check if we have any search results
               vim.fn.setqflist(qf_entries)
-              vim.notify('Qflist for "' .. pattern .. '" updated', vim.log.levels.INFO)
+
+              vim.notify('Qflist for "' .. pattern .. ' updated', vim.log.levels.INFO, {
+                title = 'Telescope QF Refresh',
+              })
 
               if current_idx <= #qf_entries then vim.fn.setqflist({}, 'a', { idx = current_idx }) end
             end,
@@ -183,7 +202,9 @@ local options = {
             callback = function()
               if vim.bo.filetype == 'qf' then
                 vim.api.nvim_del_augroup_by_name('TelescopeQFRefresh')
-                vim.notify('Stop auto update qflist', vim.log.levels.INFO)
+                vim.notify('Stop auto update qflist', vim.log.levels.INFO, {
+                  title = 'Telescope QF Refresh',
+                })
               end
             end,
             once = true,

@@ -118,6 +118,10 @@ setup('lua_ls', {
   },
 })
 
+-- python
+setup('ruff')
+setup('pyright')
+
 -- rust
 
 -- stylelint
@@ -134,7 +138,9 @@ setup('stylelint_lsp', {
 local bun_root = vim.fn.system('echo $BUN_INSTALL', nil):gsub('^%s*(.-)%s*$', '%1') .. '/install/global'
 
 if not bun_root or bun_root == '' then
-  vim.notify('No bun root found', vim.log.levels.ERROR)
+  vim.notify('No bun root found', vim.log.levels.ERROR, {
+    title = 'LSP Config',
+  })
   return
 end
 

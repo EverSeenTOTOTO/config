@@ -1,6 +1,5 @@
 local M = {}
 
--- copy from https://github.com/stevearc/dressing.nvim/blob/master/lua/dressing/select/init.lua
 local custom_kind = {
   codeaction = function(opts, defaults, items)
     local entry_display = require('telescope.pickers.entry_display')

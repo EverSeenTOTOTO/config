@@ -42,6 +42,8 @@ create_usercmd('ChangeEncodingAndReload', function()
     local original_enc = vim.opt.fileencoding:get()
     vim.cmd(':e ++enc=' .. enc)
     vim.opt.fileencoding = enc
-    vim.notify('Changing encoding from ' .. original_enc(' to ') .. enc, vim.log.levels.INFO)
+    vim.notify('Changing encoding from ' .. original_enc(' to ') .. enc, vim.log.levels.INFO, {
+      title = 'User Command',
+    })
   end)
 end, {})

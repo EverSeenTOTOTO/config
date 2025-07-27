@@ -13,6 +13,7 @@ local map = function(mode, keys, command, opt)
 
   vim.keymap.set(mode, keys, command, options)
 end
+local utils = require('core.utils')
 
 -- MAPPINGS
 
@@ -175,11 +176,6 @@ map('', '<leader><leader>', function()
   local sr, sc = node:start() -- 0-base
   local er, ec = node:end_() -- 0-base
 
-  -- vim.notify(
-  --   char .. ' ' .. node:type() .. ' ' .. sr .. ':' .. sc .. ' - ' .. er .. ':' .. ec .. ' ' .. row .. ':' .. col,
-  --   vim.log.levels.info
-  -- )
-
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
   else
@@ -208,29 +204,14 @@ if not vim.g.vscode then
   map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
   map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
   map('n', '<leader>q', function()
-    local delete = {
-      'PlenaryTestPopup',
-      'checkhealth',
-      'dbout',
-      'gitsigns-blame',
-      'grug-far',
-      'help',
-      'lspinfo',
-      'neotest-output',
-      'neotest-output-panel',
-      'neotest-summary',
-      'notify',
-      'qf',
-      'spectre_panel',
-      'startuptime',
-      'tsplayground',
-    }
+    if vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) then
+      vim.cmd(':bdelete!')
+      return
+    end
 
-    for _, ft in ipairs(delete) do
-      if vim.bo.filetype == ft then
-        vim.cmd(':bdelete!')
-        return
-      end
+    if vim.bo.buftype ~= '' then
+      vim.cmd(':bdelete!')
+      return
     end
 
     if vim.wo.winfixbuf then
@@ -257,11 +238,71 @@ if not vim.g.vscode then
   map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
 
   -- file explorer
+  map('', '<C-c>', function()
+    local api = require('nvim-tree.api')
+    local node = api.tree.get_node_under_cursor()
+
+    if node ~= nil then
+      if node.type == 'directory' then
+        vim.api.nvim_set_current_dir(node.absolute_path)
+        api.tree.change_root_to_node(node)
+      else
+        local abs_path = node == nil and api.tree.get_nodes().absolute_path or node.absolute_path
+        local parent_path = vim.fs.dirname(abs_path)
+
+        vim.api.nvim_set_current_dir(parent_path)
+        api.tree.change_root(parent_path)
+      end
+    end
+  end)
+
   map('', '<C-t>', function()
-    if require('nvim-tree.api').tree.is_visible() or vim.o.buftype == 'nofile' then
-      vim.cmd(':NvimTreeToggle')
+    local api = require('nvim-tree.api')
+
+    local function is_regular_file()
+      return not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
+    end
+    -- 检查tree中聚焦的文件是否为当前buffer
+    local function is_current_file_focused_in_tree()
+      local current_file = vim.api.nvim_buf_get_name(0)
+      if current_file == '' then return false end
+
+      -- 获取tree中当前选中的节点
+      local ok, node = pcall(api.tree.get_node_under_cursor)
+      if not ok or not node then return false end
+
+      -- 比较绝对路径
+      return node.absolute_path == current_file
+    end
+
+    local is_regular = is_regular_file()
+
+    if not api.tree.is_visible() then
+      if is_regular then
+        -- 常规文件且tree未打开时，打开tree并聚焦当前文件
+        api.tree.find_file({ focus = false, open = true })
+      else
+        -- 非常规文件且tree未打开时，直接打开tree
+        api.tree.toggle()
+      end
     else
-      vim.cmd(':NvimTreeFindFile')
+      if is_regular then
+        -- 常规文件且tree已打开时，如果当前指针在NvimTree菜单则关闭
+        if vim.o.filetype == 'NvimTree' then
+          api.tree.toggle()
+        else
+          if is_current_file_focused_in_tree() then
+            -- 常规文件且tree已打开且当前文件在tree中被聚焦时，关闭tree
+            api.tree.close()
+          else
+            -- 常规文件且tree已打开且当前文件不在tree中被聚焦时，聚焦当前文件
+            api.tree.find_file({ focus = false })
+          end
+        end
+      else
+        -- 非常规文件且tree已打开时，直接切换tree
+        api.tree.toggle()
+      end
     end
   end)
 

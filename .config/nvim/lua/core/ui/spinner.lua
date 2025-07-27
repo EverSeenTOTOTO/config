@@ -1,3 +1,7 @@
+local ok = pcall(require, 'noice')
+
+if not ok then return { start = function() end, stop = function() end } end
+
 local M = {}
 
 local Message = require('noice.message')

@@ -41,6 +41,8 @@ function M.lsp_format()
 end
 
 function M.prettier_format()
+  spinner.start('Formatting...')
+
   -- Store the buffer number at the beginning of the function
   local bufnr = vim.api.nvim_get_current_buf()
   local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
@@ -125,7 +127,6 @@ function M.prettier_format()
 end
 
 function M.format_all()
-  spinner.start('Formatting...')
   M.lsp_format()
   M.prettier_format()
 end
