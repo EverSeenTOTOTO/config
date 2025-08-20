@@ -199,6 +199,8 @@ if not vim.g.vscode then
   map({ 'n', 'v' }, '<Space><Space>', '<cmd> :Telescope command_history<CR>')
   map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
 
+  map('n', 'gb', function() require('dap').toggle_breakpoint() end)
+
   map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
   map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
   map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
@@ -209,7 +211,7 @@ if not vim.g.vscode then
       return
     end
 
-    require('core.bdelete').delete()
+    vim.cmd(':bdelete')
   end)
 
   -- 窗口

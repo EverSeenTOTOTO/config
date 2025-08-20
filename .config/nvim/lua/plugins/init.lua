@@ -209,6 +209,15 @@ require('lazy').setup({
     config = function() require('plugins.configs.theme') end,
   },
 
+  -- debug
+  {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      { 'igorlfs/nvim-dap-view', opts = {} },
+    },
+    config = function() require('plugins.configs.dap') end,
+  },
+
   -- theme similar to vscode default dark
   {
     'lunarvim/darkplus.nvim',

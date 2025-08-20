@@ -68,7 +68,7 @@ local options = {
       if entry.source.name == 'copilot' then
         local detail = (entry.completion_item.data or {}).detail
 
-        vim_item.kind = ''
+        vim_item.kind = ''
 
         if detail and detail:find('.*%%.*') then vim_item.kind = vim_item.kind .. ' ' .. detail end
 
@@ -92,6 +92,21 @@ local options = {
   },
   sorting = {
     priority_weight = 2,
+    comparators = {
+      require('copilot_cmp.comparators').prioritize,
+
+      -- Below is the default comparitor list and order for nvim-cmp
+      cmp.config.compare.offset,
+      -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+      cmp.config.compare.exact,
+      cmp.config.compare.score,
+      cmp.config.compare.recently_used,
+      cmp.config.compare.locality,
+      cmp.config.compare.kind,
+      cmp.config.compare.sort_text,
+      cmp.config.compare.length,
+      cmp.config.compare.order,
+    },
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
@@ -113,7 +128,6 @@ local options = {
         fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
       end
     end, { 'i', 's' }),
-
     ['<S-Tab>'] = cmp.mapping(function()
       if cmp.visible() then
         cmp.select_prev_item()
@@ -127,6 +141,24 @@ local options = {
     {
       name = 'nvim_lsp',
       keyword_length = 3,
+      --- see https://github.com/vuejs/language-tools/discussions/4495
+      ---@param entry cmp.Entry
+      ---@param ctx cmp.Context
+      entry_filter = function(entry, ctx)
+        -- Check if the buffer type is 'vue'
+        if ctx.filetype ~= 'vue' then return true end
+
+        local cursor_before_line = ctx.cursor_before_line
+        -- For events
+        if cursor_before_line:sub(-1) == '@' then
+          return entry.completion_item.label:match('^@')
+          -- For props also exclude events with `:on-` prefix
+        elseif cursor_before_line:sub(-1) == ':' then
+          return entry.completion_item.label:match('^:') and not entry.completion_item.label:match('^:on%-')
+        else
+          return true
+        end
+      end,
     },
     { name = 'vsnip' },
     {

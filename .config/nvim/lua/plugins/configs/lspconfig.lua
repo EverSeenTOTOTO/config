@@ -5,14 +5,6 @@ vim.keymap.del('n', 'grr')
 vim.keymap.del('n', 'gri')
 vim.keymap.del('n', 'gO')
 vim.keymap.del('i', '<C-S>')
-vim.api.nvim_create_autocmd('LspAttach', {
-  callback = function(args)
-    -- Unset 'formatexpr'
-    vim.bo[args.buf].formatexpr = nil
-    -- Unset 'omnifunc'
-    vim.bo[args.buf].omnifunc = nil
-  end,
-})
 
 vim.diagnostic.config({
   virtual_text = {
@@ -150,6 +142,9 @@ setup('stylelint_lsp', {
   },
 })
 
+-- toml
+setup('tombi')
+
 -- tsserver
 local bun_root = vim.fn.system('echo $BUN_INSTALL', nil):gsub('^%s*(.-)%s*$', '%1') .. '/install/global'
 
@@ -161,16 +156,34 @@ if not bun_root or bun_root == '' then
 end
 
 -- typescript
+local tsserver_filetypes = {
+  'javascript',
+  'javascriptreact',
+  'javascript.jsx',
+  'typescript',
+  'typescriptreact',
+  'typescript.tsx',
+  'vue',
+}
+local vue_plugin = {
+  name = '@vue/typescript-plugin',
+  location = bun_root .. '/@vue/language-server',
+  languages = { 'vue' },
+  configNamespace = 'typescript',
+  enableForWorkspaceTypeScriptVersions = true,
+}
+
+-- setup('ts_ls', {
+--   init_options = {
+--     plugins = {
+--       vue_plugin,
+--     },
+--   },
+--   filetypes = tsserver_filetypes,
+-- })
+
 setup('vtsls', {
-  filetypes = {
-    'javascript',
-    'javascriptreact',
-    'javascript.jsx',
-    'typescript',
-    'typescriptreact',
-    'typescript.tsx',
-    'vue',
-  },
+  filetypes = tsserver_filetypes,
   settings = {
     typescript = {
       updateImportsOnFileMove = 'always',
@@ -182,13 +195,7 @@ setup('vtsls', {
       enableMoveToFileCodeAction = true,
       tsserver = {
         globalPlugins = {
-          {
-            name = '@vue/typescript-plugin',
-            location = bun_root .. '/@vue/language-server',
-            languages = { 'vue' },
-            configNamespace = 'typescript',
-            enableForWorkspaceTypeScriptVersions = true,
-          },
+          vue_plugin,
         },
       },
     },
