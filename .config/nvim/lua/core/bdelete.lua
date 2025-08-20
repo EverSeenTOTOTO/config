@@ -2,30 +2,11 @@
 local M = {}
 
 --- Delete a buffer:
---- - either the current buffer if `buf` is not provided
---- - or the buffer `buf` if it is a number
---- - or every buffer for which `buf` returns true if it is a function
-function M.delete(opts)
-  opts = opts or {}
-  opts = type(opts) == 'number' and { buf = opts } or opts
-  opts = type(opts) == 'function' and { filter = opts } or opts
-
-  if type(opts.filter) == 'function' then
-    for _, b in ipairs(vim.tbl_filter(opts.filter, vim.api.nvim_list_bufs())) do
-      if vim.bo[b].buflisted then M.delete(vim.tbl_extend('force', {}, opts, { buf = b, filter = false })) end
-    end
-    return
-  end
-
-  local buf = opts.buf or 0
-  if opts.file then
-    buf = vim.fn.bufnr(opts.file)
-    if buf == -1 then return end
-  end
-  buf = buf == 0 and vim.api.nvim_get_current_buf() or buf
+function M.delete()
+  local buf = vim.api.nvim_get_current_buf()
 
   vim.api.nvim_buf_call(buf, function()
-    if vim.bo.modified and not opts.force then
+    if vim.bo.modified then
       local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
       if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
         return
@@ -54,7 +35,7 @@ function M.delete(opts)
         vim.api.nvim_win_set_buf(win, new_buf)
       end)
     end
-    if vim.api.nvim_buf_is_valid(buf) then pcall(vim.cmd, (opts.wipe and 'bwipeout! ' or 'bdelete! ') .. buf) end
+    if vim.api.nvim_buf_is_valid(buf) then pcall(vim.cmd, 'bdelete! ' .. buf) end
   end)
 end
 

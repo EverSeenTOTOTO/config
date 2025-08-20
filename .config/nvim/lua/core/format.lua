@@ -40,26 +40,11 @@ function M.lsp_format()
   })
 end
 
-function M.prettier_format()
+function M.prettier_format(prettier_path)
   spinner.start('Formatting...')
 
   -- Store the buffer number at the beginning of the function
   local bufnr = vim.api.nvim_get_current_buf()
-  local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
-
-  if bin_path == '' then
-    spinner.stop('Prettier Formatter not found')
-    return
-  end
-
-  local prettier_path = bin_path .. '/prettier'
-
-  -- Check if prettier executable exists
-  if vim.fn.filereadable(prettier_path) ~= 1 then
-    spinner.stop('Prettier Formatter not found')
-    return
-  end
-
   local current_file_path = vim.fn.expand('%:p')
 
   -- Save cursor position, marks
@@ -68,6 +53,7 @@ function M.prettier_format()
 
   local stderr_data = {}
   local stdout_data = {}
+
   local function collect_data(data, target)
     if not data then return end
     for _, line in ipairs(data) do
@@ -128,7 +114,11 @@ end
 
 function M.format_all()
   M.lsp_format()
-  M.prettier_format()
+
+  -- Only run prettier_format if prettier is available
+  local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
+  local prettier_path = bin_path .. '/prettier'
+  if bin_path ~= '' and vim.fn.filereadable(prettier_path) == 1 then M.prettier_format(prettier_path) end
 end
 
 return M

@@ -1,3 +1,19 @@
+-- see :h lsp-defaults
+vim.keymap.del('n', 'grn')
+vim.keymap.del('n', 'gra')
+vim.keymap.del('n', 'grr')
+vim.keymap.del('n', 'gri')
+vim.keymap.del('n', 'gO')
+vim.keymap.del('i', '<C-S>')
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    -- Unset 'formatexpr'
+    vim.bo[args.buf].formatexpr = nil
+    -- Unset 'omnifunc'
+    vim.bo[args.buf].omnifunc = nil
+  end,
+})
+
 vim.diagnostic.config({
   virtual_text = {
     spacing = 4,

@@ -84,7 +84,7 @@ autocmd('FileType', {
 })
 
 -- resize splits if window got resized
-vim.api.nvim_create_autocmd({ 'VimResized' }, {
+autocmd({ 'VimResized' }, {
   callback = function()
     local current_tab = vim.fn.tabpagenr()
     vim.cmd('tabdo wincmd =')
@@ -92,13 +92,13 @@ vim.api.nvim_create_autocmd({ 'VimResized' }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ 'FileType' }, {
+autocmd({ 'FileType' }, {
   pattern = { 'json', 'jsonc', 'json5' },
   callback = function() vim.opt_local.conceallevel = 0 end,
 })
 
 -- go to last loc when opening a buffer
-vim.api.nvim_create_autocmd('BufReadPost', {
+autocmd('BufReadPost', {
   callback = function(event)
     local exclude = { 'gitcommit' }
     local buf = event.buf
@@ -111,6 +111,17 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 autocmd({ 'BufRead', 'BufNewFile' }, {
+  callback = function()
+    local path = vim.fn.expand('%:p')
+    if vim.o.buftype == '' and path ~= '' then
+      local api = require('nvim-tree.api')
+
+      api.tree.find_file({ open = false, focus = false })
+    end
+  end,
+})
+
+autocmd('BufEnter', {
   callback = function()
     local path = vim.fn.expand('%:p')
     if vim.o.buftype == '' and path ~= '' then

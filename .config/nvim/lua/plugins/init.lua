@@ -197,16 +197,6 @@ require('lazy').setup({
     },
   },
 
-  -- session
-  {
-    'folke/persistence.nvim',
-    event = 'BufReadPre',
-    enabled = not vim.g.vscode,
-    opts = {
-      dir = vim.fn.stdpath('state') .. '/sessions/',
-    },
-  },
-
   -- enhance textobjects
   'tpope/vim-surround',
 

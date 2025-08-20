@@ -204,18 +204,8 @@ if not vim.g.vscode then
   map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
   map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
   map('n', '<leader>q', function()
-    if vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) then
+    if vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) or vim.bo.buftype ~= '' then
       vim.cmd(':bdelete!')
-      return
-    end
-
-    if vim.bo.buftype ~= '' then
-      vim.cmd(':bdelete!')
-      return
-    end
-
-    if vim.wo.winfixbuf then
-      vim.cmd(':bdelete')
       return
     end
 
@@ -259,11 +249,8 @@ if not vim.g.vscode then
   map('', '<C-t>', function()
     local api = require('nvim-tree.api')
 
-    local function is_regular_file()
-      return not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
-    end
-    -- 检查tree中聚焦的文件是否为当前buffer
-    local function is_current_file_focused_in_tree()
+    local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype ~= ''
+    local is_focused = (function()
       local current_file = vim.api.nvim_buf_get_name(0)
       if current_file == '' then return false end
 
@@ -273,9 +260,7 @@ if not vim.g.vscode then
 
       -- 比较绝对路径
       return node.absolute_path == current_file
-    end
-
-    local is_regular = is_regular_file()
+    end)()
 
     if not api.tree.is_visible() then
       if is_regular then
@@ -291,7 +276,7 @@ if not vim.g.vscode then
         if vim.o.filetype == 'NvimTree' then
           api.tree.toggle()
         else
-          if is_current_file_focused_in_tree() then
+          if is_focused then
             -- 常规文件且tree已打开且当前文件在tree中被聚焦时，关闭tree
             api.tree.close()
           else
@@ -309,9 +294,6 @@ if not vim.g.vscode then
   -- fold
   map('', '[z', function() require('ufo').goPreviousClosedFold() end)
   map('', ']z', function() require('ufo').goNextClosedFold() end)
-
-  -- session
-  vim.keymap.set('n', '<space>l', function() require('persistence').load() end)
 end
 
 -- vscode nvim
