@@ -88,6 +88,30 @@ map('n', '<leader>z', '$zf%')
 -- terminal
 map('t', 'vv', '<C-\\><C-n>')
 
+-- cycle cnext and cprevious
+map('n', ']q', function()
+  local qflist = vim.fn.getqflist({ items = 1 }).items or {}
+  local idx = vim.fn.getqflist({ idx = 0 }).idx or 1
+
+  if idx == #qflist then
+    vim.fn.setqflist({}, 'r', { idx = 1 })   -- reset idx to 1 if at the end
+    vim.cmd('cc')
+  else
+    vim.cmd('cnext')
+  end
+end)
+map('n', '[q', function()
+  local qflist = vim.fn.getqflist({ items = 1 }).items or {}
+  local idx = vim.fn.getqflist({ idx = 0 }).idx or #qflist
+
+  if idx == 1 then
+    vim.fn.setqflist({}, 'r', { idx = #qflist })
+    vim.cmd('cc')
+  else
+    vim.cmd('cprevious')
+  end
+end)
+
 -- plugin mappings
 
 -- Import formatting utilities
