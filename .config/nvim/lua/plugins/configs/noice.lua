@@ -28,6 +28,25 @@ require('noice').setup({
     {
       filter = {
         event = 'msg_show',
+        find = 'qflist'
+      },
+      view = 'mini',
+      opts = {
+        replace = true,
+        stop = true, -- stop filter chain
+      },
+    },
+    -- reroute long notifications to splits
+    {
+      filter = {
+        event = "notify",
+        min_height = 15
+      },
+      view = 'split'
+    },
+    {
+      filter = {
+        event = 'msg_show',
         find = 'lines moved',
       },
       opts = { skip = true },
@@ -36,6 +55,14 @@ require('noice').setup({
       filter = {
         event = 'msg_show',
         find = 'lines indented',
+      },
+      opts = { skip = true },
+    },
+    {
+      filter = {
+        event = "msg_show",
+        kind = "",
+        find = "written",
       },
       opts = { skip = true },
     },

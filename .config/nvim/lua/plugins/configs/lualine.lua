@@ -10,7 +10,13 @@ lualine.setup({
   sections = {
     lualine_a = { 'mode' },
     lualine_b = {
-      { 'branch', separator = { right = '' } },
+      { 'branch' },
+      {
+        require("noice").api.statusline.mode.get,
+        cond = require("noice").api.statusline.mode.has,
+        color = { fg = "#ff9e64" },
+        separator = { right = '' }
+      },
     },
     lualine_c = {},
     lualine_x = {
@@ -39,7 +45,7 @@ lualine.setup({
               server.message or '',
               server.percentage or 0
             )
-          or ''
+            or ''
       end,
     },
     lualine_y = {

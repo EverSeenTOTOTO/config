@@ -2,7 +2,6 @@ local present, telescope = pcall(require, 'telescope')
 
 if not present then return end
 
-local telescope_actions = require('telescope.actions.set')
 local actions = require('telescope.actions')
 
 local rg_args = {
@@ -32,8 +31,6 @@ local function send_to_qflist(prompt_bufnr)
     group = qf_refresh_group,
     pattern = '*',
     callback = function()
-      local current_idx = vim.fn.getqflist({ idx = 0 }).idx
-
       -- redo the search with the current pattern and preserved search configuration
       local ok, lines = pcall(function()
         -- Extract search parameters from current picker
@@ -45,7 +42,6 @@ local function send_to_qflist(prompt_bufnr)
 
         -- Add current working directory if available
         if current_picker.cwd then
-          table.insert(cmd, '--')
           table.insert(cmd, vim.fn.shellescape(pattern))
           table.insert(cmd, current_picker.cwd)
         else
@@ -58,10 +54,7 @@ local function send_to_qflist(prompt_bufnr)
       end)
 
       if not ok or vim.v.shell_error ~= 0 then
-        print(vim.inspect(lines))
-        vim.notify('Error refreshing qflist', vim.log.levels.ERROR, {
-          title = 'Telescope QF Refresh',
-        })
+        print('Error update qflist')
         return
       end
 
@@ -82,64 +75,107 @@ local function send_to_qflist(prompt_bufnr)
         end
       end
 
-      -- Check if we have any search results
-      vim.fn.setqflist(qf_entries)
-
-      vim.notify('Qflist for "' .. pattern .. ' updated', vim.log.levels.INFO, {
-        title = 'Telescope QF Refresh',
-      })
-
-      if current_idx <= #qf_entries then vim.fn.setqflist({}, 'a', { idx = current_idx }) end
+      -- Sort qf_entries by filename and lnum
+      table.sort(qf_entries, function(a, b)
+        if a.filename == b.filename then
+          return a.lnum < b.lnum
+        else
+          return a.filename < b.filename
+        end
+      end)
+      vim.api.nvim_exec_autocmds("QuickFixCmdPre", {})
+      vim.fn.setqflist(qf_entries, "r")
+      vim.api.nvim_exec_autocmds("QuickFixCmdPost", {})
+      print('Updated qflist for "' .. pattern)
     end,
   })
 
   -- Open the quickfix window and get its buffer number
   vim.cmd('copen')
-
-  local qf_bufnr = vim.fn.getqflist({ winid = 0 }).winid
-  if qf_bufnr ~= 0 then qf_bufnr = vim.fn.winbufnr(qf_bufnr) end
-
-  -- Create autocommand to clean up when the quickfix buffer is closed
-  if qf_bufnr and qf_bufnr > 0 then
-    vim.api.nvim_create_autocmd('BufUnload', {
-      group = qf_refresh_group,
-      buffer = qf_bufnr,
-      callback = function()
-        vim.api.nvim_del_augroup_by_name('TelescopeQFRefresh')
-        vim.notify('Stop auto update qflist', vim.log.levels.INFO, {
-          title = 'Telescope QF Refresh',
-        })
-      end,
-      once = true,
-    })
-  else
-    -- Fallback to the original method if we can't get the buffer number
-    vim.api.nvim_create_autocmd('QuitPre', {
-      group = qf_refresh_group,
-      callback = function()
-        if vim.bo.filetype == 'qf' then
-          vim.api.nvim_del_augroup_by_name('TelescopeQFRefresh')
-          vim.notify('Stop auto update qflist', vim.log.levels.INFO, {
-            title = 'Telescope QF Refresh',
-          })
-        end
-      end,
-      once = true,
-    })
-  end
+  vim.keymap.set('n', 'gq', function()
+    vim.api.nvim_del_keymap('n', 'gq')
+    vim.api.nvim_del_augroup_by_id(qf_refresh_group)
+    print('Stop auto update qflist')
+  end)
 end
 
 local options = {
   defaults = {
     preview = {
       filesize_limit = 1, -- MB
+      treesitter = false,
     },
-    mappings = {
+    default_mappings = {
       i = {
-        ['vv'] = actions.close,
+        ["<LeftMouse>"] = {
+          actions.mouse_click,
+          type = "action",
+          opts = { expr = true },
+        },
+        ["<2-LeftMouse>"] = {
+          actions.double_mouse_click,
+          type = "action",
+          opts = { expr = true },
+        },
+        ['<esc>'] = actions.close,
+        ['<leader>q'] = actions.close,
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
+        ["<CR>"] = actions.select_default,
+        ["<C-v>"] = actions.select_vertical,
+        ["<C-t>"] = actions.select_tab,
         ['<C-u>'] = actions.results_scrolling_up,
         ['<C-d>'] = actions.results_scrolling_down,
+        ['<C-r><C-u>'] = actions.preview_scrolling_up,
+        ['<C-r><C-d>'] = actions.preview_scrolling_down,
+        ["<C-r><C-h>"] = actions.preview_scrolling_left,
+        ["<C-r><C-l>"] = actions.preview_scrolling_right,
+        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['œ'] = actions.send_selected_to_qflist + actions.open_qflist, -- mac keyboard alt+q
+        ["<C-/>"] = actions.which_key,
+        ["<C-_>"] = actions.which_key,
+        ["<C-w>"] = { "<c-s-w>", type = "command" },
       },
+      n = {
+        ["<LeftMouse>"] = {
+          actions.mouse_click,
+          type = "action",
+          opts = { expr = true },
+        },
+        ["<2-LeftMouse>"] = {
+          actions.double_mouse_click,
+          type = "action",
+          opts = { expr = true },
+        },
+        ['vv'] = actions.close,
+        ['<esc>'] = actions.close,
+        ['<leader>q'] = actions.close,
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
+        ["j"] = actions.move_selection_next,
+        ["k"] = actions.move_selection_previous,
+        ["gg"] = actions.move_to_top,
+        ["G"] = actions.move_to_bottom,
+        ["<CR>"] = actions.select_default,
+        ["<C-v>"] = actions.select_vertical,
+        ["<C-t>"] = actions.select_tab,
+        ['<C-u>'] = actions.results_scrolling_up,
+        ['<C-d>'] = actions.results_scrolling_down,
+        ['<C-r><C-u>'] = actions.preview_scrolling_up,
+        ['<C-r><C-d>'] = actions.preview_scrolling_down,
+        ["<C-r><C-h>"] = actions.preview_scrolling_left,
+        ["<C-r><C-l>"] = actions.preview_scrolling_right,
+        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['œ'] = actions.send_selected_to_qflist + actions.open_qflist, -- mac keyboard alt+q
+        ["<C-/>"] = actions.which_key,
+        ["<C-_>"] = actions.which_key,
+      }
     },
     sorting_strategy = 'ascending',
     layout_strategy = 'horizontal',
@@ -175,11 +211,9 @@ local options = {
     git_files = {
       hidden = true,
       show_untracked = true,
-      layout_strategy = 'horizontal',
     },
     live_grep = {
       only_sort_text = true,
-      layout_strategy = 'horizontal',
       attach_mappings = function(prompt_bufnr, map)
         -- Add <C-q> mapping to send all results to quickfix list
         map('i', '<C-q>', function() send_to_qflist(prompt_bufnr) end)
@@ -187,13 +221,6 @@ local options = {
       end,
     },
     find_files = {
-      layout_strategy = 'horizontal',
-      attach_mappings = function(_)
-        telescope_actions.select:enhance({
-          post = function() vim.cmd(':normal! zx') end,
-        })
-        return true
-      end,
       find_command = { 'fd', '-LH', '-tf', '--strip-cwd-prefix' },
     },
   },
@@ -205,3 +232,5 @@ local options = {
 telescope.setup(options)
 
 vim.ui.select = require('core.ui.select').select
+vim.ui.select = require('core.ui.select').select
+

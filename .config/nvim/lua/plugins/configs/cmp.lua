@@ -22,6 +22,26 @@ local source_mapping = {
   vsnip = '[Snippet]',
 }
 
+local comparators = {
+
+  -- Below is the default comparitor list and order for nvim-cmp
+  cmp.config.compare.offset,
+  -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+  cmp.config.compare.exact,
+  cmp.config.compare.score,
+  cmp.config.compare.recently_used,
+  cmp.config.compare.locality,
+  cmp.config.compare.kind,
+  cmp.config.compare.sort_text,
+  cmp.config.compare.length,
+  cmp.config.compare.order,
+}
+
+if not vim.env.HEADLESS and not vim.g.vscode then
+  table.insert(comparators, 1,
+    require('copilot_cmp.comparators').prioritize)
+end
+
 local lspkind = require('lspkind')
 
 local has_words_before = function()
@@ -43,14 +63,25 @@ local options = {
       vim.fn['vsnip#anonymous'](args.body) -- For `vsnip` users.
     end,
   },
-  preselect = cmp.PreselectMode.None,
+  -- preselect = cmp.PreselectMode.None,
+  performance = {
+    debounce = 150,
+  },
+  view = {
+    docs = {
+      auto_open = true
+    },
+    entries = {
+      selection_order = 'near_cursor',
+      follow_cursor = true,
+    }
+  },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
   },
   experimental = {
-    ghost_text = false,
-    native_menu = false,
+    ghost_text = true,
   },
   window = {
     completion = {
@@ -92,30 +123,19 @@ local options = {
   },
   sorting = {
     priority_weight = 2,
-    comparators = {
-      require('copilot_cmp.comparators').prioritize,
-
-      -- Below is the default comparitor list and order for nvim-cmp
-      cmp.config.compare.offset,
-      -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-      cmp.config.compare.exact,
-      cmp.config.compare.score,
-      cmp.config.compare.recently_used,
-      cmp.config.compare.locality,
-      cmp.config.compare.kind,
-      cmp.config.compare.sort_text,
-      cmp.config.compare.length,
-      cmp.config.compare.order,
-    },
+    comparators ,
   },
-  mapping = cmp.mapping.preset.insert({
+  mapping = {
     ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-d>'] = cmp.mapping.scroll_docs(4),
     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<CR>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = false,
+    ['<CR>'] = cmp.mapping({
+      i = cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = false,
+      }),
+      c = cmp.mapping.confirm({ select = false })
     }),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -135,12 +155,13 @@ local options = {
         feedkey('<Plug>(vsnip-jump-prev)', '')
       end
     end, { 'i', 's' }),
-  }),
+  },
   sources = {
-    { name = 'copilot' },
+    { name = 'copilot', group_index = 1 },
     {
       name = 'nvim_lsp',
-      keyword_length = 3,
+      keyword_length = 2,
+      group_index = 1,
       --- see https://github.com/vuejs/language-tools/discussions/4495
       ---@param entry cmp.Entry
       ---@param ctx cmp.Context
@@ -164,6 +185,7 @@ local options = {
     {
       name = 'buffer',
       keyword_length = 3,
+      group_index = 2
     },
     {
       name = 'path',

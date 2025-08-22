@@ -73,14 +73,14 @@ map('v', 'p', 'p:let @+=@0<CR>')
 map('n', '<Esc>', '<cmd>:noh<CR>')
 
 -- move cursor within insert mode
-map('i', '<C-a>', '<Home>')
-map('i', '<C-b>', '<esc>bi')
-map('i', '<C-e>', '<End>')
-map('i', '<C-f>', '<esc>ea')
-map({ 'i', 'v' }, '<C-h>', '<Left>')
+map({ 'i', 'c' }, '<C-a>', '<Home>')
+map({ 'i' }, '<C-b>', '<esc>bi')
+map({ 'i', 'c' }, '<C-e>', '<End>')
+map({ 'i' }, '<C-f>', '<esc>ea')
+map({ 'i', 'v', 'c' }, '<C-h>', '<Left>')
 map({ 'i', 'v' }, '<C-j>', '<Down>')
 map({ 'i', 'v' }, '<C-k>', '<Up>')
-map({ 'i', 'v' }, '<C-l>', '<Right>')
+map({ 'i', 'v', 'c' }, '<C-l>', '<Right>')
 map('i', '<C-o>', '<esc>O')
 
 map('n', '<leader>z', '$zf%')
@@ -174,7 +174,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_() -- 0-base
+  local er, ec = node:end_()  -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -206,13 +206,43 @@ if not vim.g.vscode then
   map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
   map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
   map('n', '<leader>q', function()
-    if vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) or vim.bo.buftype ~= '' then
-      vim.cmd(':bdelete!')
-      return
-    end
+    local buf = vim.api.nvim_get_current_buf()
 
-    vim.cmd(':bdelete')
+    -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
+    vim.api.nvim_buf_call(buf, function()
+      if vim.bo.modified then
+        local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
+        if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
+          return
+        end
+        if choice == 1 then -- Yes
+          vim.cmd.write()
+        end
+      end
+
+      for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+        vim.api.nvim_win_call(win, function()
+          if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
+          -- Try using alternate buffer
+          local alt = vim.fn.bufnr('#')
+          if alt ~= buf and vim.fn.buflisted(alt) == 1 then
+            vim.api.nvim_win_set_buf(win, alt)
+            return
+          end
+
+          -- Try using previous buffer
+          local has_previous = pcall(vim.cmd, 'bprevious')
+          if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
+
+          -- Create new listed buffer
+          local new_buf = vim.api.nvim_create_buf(true, false)
+          vim.api.nvim_win_set_buf(win, new_buf)
+        end)
+      end
+      if vim.api.nvim_buf_is_valid(buf) then pcall(vim.cmd, 'bdelete! ' .. buf) end
+    end)
   end)
+
 
   -- 窗口
   map('', '<up>', function() require('smart-splits').resize_up() end)
@@ -251,45 +281,16 @@ if not vim.g.vscode then
   map('', '<C-t>', function()
     local api = require('nvim-tree.api')
 
-    local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype ~= ''
-    local is_focused = (function()
-      local current_file = vim.api.nvim_buf_get_name(0)
-      if current_file == '' then return false end
-
-      -- 获取tree中当前选中的节点
-      local ok, node = pcall(api.tree.get_node_under_cursor)
-      if not ok or not node then return false end
-
-      -- 比较绝对路径
-      return node.absolute_path == current_file
-    end)()
+    local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
 
     if not api.tree.is_visible() then
       if is_regular then
-        -- 常规文件且tree未打开时，打开tree并聚焦当前文件
-        api.tree.find_file({ focus = false, open = true })
+        api.tree.find_file({ open = true, focus = false })
       else
-        -- 非常规文件且tree未打开时，直接打开tree
         api.tree.toggle()
       end
     else
-      if is_regular then
-        -- 常规文件且tree已打开时，如果当前指针在NvimTree菜单则关闭
-        if vim.o.filetype == 'NvimTree' then
-          api.tree.toggle()
-        else
-          if is_focused then
-            -- 常规文件且tree已打开且当前文件在tree中被聚焦时，关闭tree
-            api.tree.close()
-          else
-            -- 常规文件且tree已打开且当前文件不在tree中被聚焦时，聚焦当前文件
-            api.tree.find_file({ focus = false })
-          end
-        end
-      else
-        -- 非常规文件且tree已打开时，直接切换tree
-        api.tree.toggle()
-      end
+      api.tree.close()
     end
   end)
 

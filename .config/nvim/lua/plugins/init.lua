@@ -8,7 +8,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
-      { out, 'WarningMsg' },
+      { out,                            'WarningMsg' },
       { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
@@ -50,7 +50,8 @@ require('lazy').setup({
   {
     'nvim-telescope/telescope-fzf-native.nvim',
     enabled = not vim.g.vscode,
-    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+    build =
+    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
     config = function() require('telescope').load_extension('fzf') end,
   },
   {
@@ -137,7 +138,7 @@ require('lazy').setup({
     'mrcjkb/rustaceanvim',
     enabled = not vim.g.vscode,
     version = '^6', -- Recommended
-    lazy = false, -- This plugin is already lazy
+    lazy = false,   -- This plugin is already lazy
   },
 
   -- Completion
@@ -155,6 +156,7 @@ require('lazy').setup({
       'hrsh7th/cmp-vsnip',
       'hrsh7th/vim-vsnip',
       'kdheepak/cmp-latex-symbols',
+      'zbirenbaum/copilot-cmp'
     },
   },
 
