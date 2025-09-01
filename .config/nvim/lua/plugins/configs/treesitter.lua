@@ -4,6 +4,7 @@ configs.setup({
   ensure_installed = {
     'bash',
     'c',
+    'css',
     'cpp',
     'html',
     'javascript',
@@ -13,6 +14,7 @@ configs.setup({
     'python',
     'regex',
     'rust',
+    'scss',
     'tsx',
     'typescript',
     'vim',
@@ -58,7 +60,6 @@ configs.setup({
         [']p'] = '@parameter.outer',
         [']t'] = '@tag.outer',
       },
-      goto_next_end = {},
       goto_previous_start = {
         ['[f'] = '@function.outer',
         ['[c'] = '@class.outer',
@@ -69,7 +70,8 @@ configs.setup({
         ['[p'] = '@parameter.outer',
         ['[t'] = '@tag.outer',
       },
-      goto_previous_end = {},
     },
   },
 })
+
+vim.treesitter.language.register('scss', 'less')

@@ -23,7 +23,7 @@ map('', '<space>', ':', { silent = false })
 map({ 'n', 'i' }, 'vv', '<esc>')
 
 -- 行号
-map('n', '<F2>', ':se nu! nu?<CR>')
+map('n', '<F4>', ':se nu! nu?<CR>')
 
 -- 防止缩进取消选择
 map('v', '<', '<gv')
@@ -94,7 +94,7 @@ map('n', ']q', function()
   local idx = vim.fn.getqflist({ idx = 0 }).idx or 1
 
   if idx == #qflist then
-    vim.fn.setqflist({}, 'r', { idx = 1 })   -- reset idx to 1 if at the end
+    vim.fn.setqflist({}, 'r', { idx = 1 }) -- reset idx to 1 if at the end
     vim.cmd('cc')
   else
     vim.cmd('cnext')
@@ -120,18 +120,8 @@ local format = require('core.format')
 map('n', '<leader>f', function() format.format_all() end)
 
 map('n', '<leader>h', function()
-  local winid = require('ufo').peekFoldedLinesUnderCursor()
-  if winid then
-    local bufnr = vim.api.nvim_win_get_buf(winid)
-    local keys = { 'a', 'i', 'o', 'A', 'I', 'O', 'gd', 'gr' }
-    for _, k in ipairs(keys) do
-      -- Add a prefix key to fire `trace` action,
-      vim.keymap.set('n', k, '<CR>' .. k, { noremap = false, buffer = bufnr })
-    end
-  else
-    vim.lsp.buf.hover()
-    vim.lsp.buf.hover() -- call twice to jump to float window
-  end
+  vim.lsp.buf.hover()
+  vim.defer_fn(vim.lsp.buf.hover, 300)
 end)
 
 map('n', '<leader>n', function() vim.lsp.buf.rename() end)
@@ -155,6 +145,23 @@ end)
 -- treesitter
 local ts_utils = require('nvim-treesitter.ts_utils')
 
+local node_with_range = {
+  block = true,
+  class_definition = true,
+  function_definition = true,
+  arrow_function = true,
+  if_statement = true,
+  switch_statement = true,
+  for_statement = true,
+  while_statement = true,
+  element = true,
+  jsx_element = true,
+  jsx_self_closing_element = true,
+  script_element = true,
+  string = true,
+  template_string = true,
+}
+
 map('', '<leader><leader>', function()
   local _row, col = unpack(vim.api.nvim_win_get_cursor(0)) -- row(1-base), col(0-base)
   local row = _row - 1
@@ -175,30 +182,15 @@ map('', '<leader><leader>', function()
   end
 
   local node = ts_utils.get_node_at_cursor()
-  local wanted = {
-    block = true,
-    class_definition = true,
-    function_definition = true,
-    arrow_function = true,
-    if_statement = true,
-    switch_statement = true,
-    for_statement = true,
-    while_statement = true,
-    element = true,
-    jsx_element = true,
-    script_element = true,
-    string = true,
-    template_string = true,
-  }
 
-  while node and not wanted[node:type()] do
+  while node and not node_with_range[node:type()] do
     node = node:parent()
   end
 
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_()  -- 0-base
+  local er, ec = node:end_() -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -207,6 +199,53 @@ map('', '<leader><leader>', function()
   end
   if sr == er then vim.api.nvim_win_set_cursor(0, { er + 1, col == sc and ec or sc }) end
 end)
+
+-- Jump to next or previous sibling node with circular queue behavior
+local sibling_target = {
+  p = {
+    argments = true,
+    field = true,
+    jsx_attribute = true,
+    keyword_argument = true,
+    pair = true,
+    property_signature = true,
+    required_parameter = true,
+    shorthand_property_identifier = true,
+  },
+  t = {
+    element = true,
+    jsx_element = true,
+    jsx_self_closing_element = true,
+    script_element = true,
+  },
+}
+
+local function jump_to_sibling_node(query, direction)
+  local target_types = sibling_target[query]
+  local current_node = ts_utils.get_node_at_cursor()
+
+  if not current_node then return end
+
+  -- Find the first parent node that matches one of our target types
+  local target_node = current_node
+  while target_node and not target_types[target_node:type()] do
+    ---@diagnostic disable-next-line: cast-local-type
+    target_node = target_node:parent()
+  end
+
+  if not target_node then
+    vim.notify('No target node with query ' .. query .. ' found', vim.log.levels.WARN)
+    return
+  end
+
+  ts_utils.goto_node(direction == 'next' and target_node:next_named_sibling() or target_node:prev_named_sibling())
+end
+
+map('n', ']]p', function() jump_to_sibling_node('p', 'next') end)
+map('n', ']]t', function() jump_to_sibling_node('t', 'next') end)
+
+map('n', '[[p', function() jump_to_sibling_node('p', 'prev') end)
+map('n', '[[t', function() jump_to_sibling_node('t', 'prev') end)
 
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
@@ -223,7 +262,48 @@ if not vim.g.vscode then
   map({ 'n', 'v' }, '<Space><Space>', '<cmd> :Telescope command_history<CR>')
   map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
 
-  map('n', 'gb', function() require('dap').toggle_breakpoint() end)
+  local dap_command_actions = {
+    continue = function() require('dap').continue() end,
+    run = function() vim.cmd('DapNew') end,
+    run_last = function() require('dap').run_last() end,
+    restart = function() require('dap').restart() end,
+    terminate = function() require('dap').terminate() end,
+    toggle_breakpoint = function() require('dap').toggle_breakpoint() end,
+    list_breakpoints = function()
+      require('dap').list_breakpoints()
+      require('telescope.builtin').quickfix({
+        prompt_title = 'Breakpoints',
+      })
+    end,
+    clear_breakpoints = function() require('dap').clear_breakpoints() end,
+    step_over = function() require('dap').step_over() end,
+    step_into = function() require('dap').step_into() end,
+    step_out = function() require('dap').step_out() end,
+    step_back = function() require('dap').step_back() end,
+    up = function() require('dap').up() end,
+    down = function() require('dap').down() end,
+    run_to_cursor = function() require('dap').run_to_cursor() end,
+    toggle_repl = function() require('dap').repl.toggle() end,
+    disconnect = function() require('dap').disconnect() end,
+    close = function() require('dap').close() end,
+    launch = function() vim.notify('Not implemented yet', vim.log.levels.WARN) end,
+    attach = function() require('dap').attach() end,
+  }
+
+  local dap_commands = {}
+  for key in pairs(dap_command_actions) do
+    table.insert(dap_commands, key)
+  end
+
+  map('n', '<leader>g', function()
+    require('core.ui.select').select(dap_commands, {
+      prompt = 'Select debug action:',
+    }, function(choice)
+      local action = dap_command_actions[choice]
+      if action == nil then return end
+      action()
+    end)
+  end)
 
   map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
   map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
@@ -245,6 +325,13 @@ if not vim.g.vscode then
       end
 
       for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+        -- special filetypes that just close the window
+        if vim.tbl_contains(utils.exclude_filetypes, vim.bo[buf].filetype) then
+          vim.cmd('bdelete ' .. buf)
+          return
+        end
+
+        -- else keep layout
         vim.api.nvim_win_call(win, function()
           if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
           -- Try using alternate buffer
@@ -255,7 +342,7 @@ if not vim.g.vscode then
           end
 
           -- Try using previous buffer
-          local has_previous = pcall(vim.cmd, 'bprevious')
+          local has_previous = vim.cmd('bprevious')
           if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
 
           -- Create new listed buffer
@@ -263,10 +350,9 @@ if not vim.g.vscode then
           vim.api.nvim_win_set_buf(win, new_buf)
         end)
       end
-      if vim.api.nvim_buf_is_valid(buf) then pcall(vim.cmd, 'bdelete! ' .. buf) end
+      if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
     end)
   end)
-
 
   -- 窗口
   map('', '<up>', function() require('smart-splits').resize_up() end)
@@ -317,10 +403,6 @@ if not vim.g.vscode then
       api.tree.close()
     end
   end)
-
-  -- fold
-  map('', '[z', function() require('ufo').goPreviousClosedFold() end)
-  map('', ']z', function() require('ufo').goNextClosedFold() end)
 end
 
 -- vscode nvim

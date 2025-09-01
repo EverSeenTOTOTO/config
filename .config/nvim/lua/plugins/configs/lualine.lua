@@ -10,15 +10,47 @@ lualine.setup({
   sections = {
     lualine_a = { 'mode' },
     lualine_b = {
-      { 'branch' },
       {
-        require("noice").api.statusline.mode.get,
-        cond = require("noice").api.statusline.mode.has,
-        color = { fg = "#ff9e64" },
-        separator = { right = '' }
+        'branch',
+        separator = { right = '' },
       },
     },
-    lualine_c = {},
+    lualine_c = {
+      {
+        color = { fg = '#bf764a' },
+        -- show current treesitter node type
+        function()
+          local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+          row = row - 1 -- treesitter uses 0-based indexing
+
+          local parser = vim.treesitter.get_parser()
+
+          local tree = parser:parse()[1]
+          local node = tree:root():named_descendant_for_range(row, col, row, col)
+
+          if node then return string.format('󰉿 %s', node:type()) end
+          return ''
+        end,
+        cond = function()
+          local buf = vim.api.nvim_get_current_buf()
+          local ft = vim.bo[buf].filetype
+
+          local lang = vim.treesitter.language.get_lang(ft)
+          if not lang then return false end
+          local ok, parser = pcall(vim.treesitter.get_parser, buf, lang)
+          return ok and parser ~= nil
+        end,
+      },
+      {
+        -- recording @x
+        require('noice').api.statusline.mode.get,
+        cond = require('noice').api.statusline.mode.has,
+        color = {
+          fg = '#FF6B6B',
+          gui = 'bold',
+        },
+      },
+    },
     lualine_x = {
       {
         'diagnostics',
@@ -32,20 +64,6 @@ lualine.setup({
           table.insert(buf_client_names, client.name)
         end
         return table.concat(buf_client_names, ', ')
-      end,
-      function()
-        local server = vim.lsp.status()[1]
-        return server
-            and string.format(
-              ' %%<%s %s %s (%s%%%%) ',
-              ((server.percentage or 0) >= 70 and { '', '', '' } or { '', '', '' })[math.floor(
-                vim.uv.hrtime() / 12e7
-              ) % 3 + 1],
-              server.title or '',
-              server.message or '',
-              server.percentage or 0
-            )
-            or ''
       end,
     },
     lualine_y = {

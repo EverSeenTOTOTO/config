@@ -23,7 +23,7 @@ local entry_to_qf = function(entry)
   local text = entry.text
 
   if not text then
-    if type(entry.value) == "table" then
+    if type(entry.value) == 'table' then
       text = entry.value.text
     else
       text = entry.value
@@ -32,7 +32,7 @@ local entry_to_qf = function(entry)
 
   return {
     bufnr = entry.bufnr,
-    filename = require("telescope.from_entry").path(entry, false, false),
+    filename = require('telescope.from_entry').path(entry, false, false),
     lnum = vim.F.if_nil(entry.lnum, 1),
     col = vim.F.if_nil(entry.col, 1),
     text = text,
@@ -41,12 +41,8 @@ local entry_to_qf = function(entry)
 end
 
 local entry_sorter = function(a, b)
-  if a.filename ~= b.filename then
-    return a.filename < b.filename
-  end
-  if a.lnum ~= b.lnum then
-    return a.lnum < b.lnum
-  end
+  if a.filename ~= b.filename then return a.filename < b.filename end
+  if a.lnum ~= b.lnum then return a.lnum < b.lnum end
   return a.col < b.col
 end
 
@@ -63,11 +59,11 @@ local send_selected_to_qf = function(prompt_bufnr, mode)
   local prompt = picker:_get_prompt()
   actions.close(prompt_bufnr)
 
-  vim.api.nvim_exec_autocmds("QuickFixCmdPre", {})
+  vim.api.nvim_exec_autocmds('QuickFixCmdPre', {})
   local qf_title = string.format([[%s (%s)]], picker.prompt_title, prompt)
   vim.fn.setqflist(qf_entries, mode)
-  vim.fn.setqflist({}, "a", { title = qf_title })
-  vim.api.nvim_exec_autocmds("QuickFixCmdPost", {})
+  vim.fn.setqflist({}, 'a', { title = qf_title })
+  vim.api.nvim_exec_autocmds('QuickFixCmdPost', {})
 end
 
 local send_all_to_qf = function(prompt_bufnr, mode)
@@ -79,18 +75,19 @@ local send_all_to_qf = function(prompt_bufnr, mode)
     table.insert(qf_entries, entry_to_qf(entry))
   end
 
-  table.sort(qf_entries, function(a, b)
-    return a.filename < b.filename or (a.filename == b.filename and a.lnum < b.lnum)
-  end)
+  table.sort(
+    qf_entries,
+    function(a, b) return a.filename < b.filename or (a.filename == b.filename and a.lnum < b.lnum) end
+  )
 
   local prompt = picker:_get_prompt()
   actions.close(prompt_bufnr)
 
-  vim.api.nvim_exec_autocmds("QuickFixCmdPre", {})
+  vim.api.nvim_exec_autocmds('QuickFixCmdPre', {})
   local qf_title = string.format([[%s (%s)]], picker.prompt_title, prompt)
   vim.fn.setqflist(qf_entries, mode)
-  vim.fn.setqflist({}, "a", { title = qf_title })
-  vim.api.nvim_exec_autocmds("QuickFixCmdPost", {})
+  vim.fn.setqflist({}, 'a', { title = qf_title })
+  vim.api.nvim_exec_autocmds('QuickFixCmdPost', {})
 end
 
 local function send_to_qflist(prompt_bufnr)
@@ -124,9 +121,7 @@ local function send_to_qflist(prompt_bufnr)
         cmd = vim.deepcopy(vimgrep_args)
 
         -- Add current working directory if available
-        if current_picker.cwd then
-          table.insert(cmd, 1, string.format('cd %s &&', current_picker.cwd))
-        end
+        if current_picker.cwd then table.insert(cmd, 1, string.format('cd %s &&', current_picker.cwd)) end
         table.insert(cmd, vim.fn.shellescape(pattern))
 
         local full_cmd = table.concat(cmd, ' ')
@@ -158,29 +153,25 @@ local function send_to_qflist(prompt_bufnr)
 
       table.sort(qf_entries, entry_sorter)
 
-      vim.api.nvim_exec_autocmds("QuickFixCmdPre", {})
-      vim.fn.setqflist(qf_entries, "r")
+      vim.api.nvim_exec_autocmds('QuickFixCmdPre', {})
+      vim.fn.setqflist(qf_entries, 'r')
 
       -- check if current buffer is still there
       if entry then
         local entry_filename = vim.fn.bufname(entry.bufnr)
-        local new_idx = vim.fn.indexof(qf_entries, function(_, item)
-          return item.filename == entry_filename
-        end)
+        local new_idx = vim.fn.indexof(qf_entries, function(_, item) return item.filename == entry_filename end)
         if new_idx == -1 then
           if idx - 1 <= 1 then
-            vim.fn.setqflist({}, "r", { idx = 1 })
+            vim.fn.setqflist({}, 'r', { idx = 1 })
           else
-            vim.fn.setqflist({}, "r", { idx = idx - 1 })
+            vim.fn.setqflist({}, 'r', { idx = idx - 1 })
           end
         else
-          vim.fn.setqflist({}, "r", { idx = new_idx })
+          vim.fn.setqflist({}, 'r', { idx = new_idx })
         end
       end
-      vim.api.nvim_exec_autocmds("QuickFixCmdPost", {})
-      vim.defer_fn(function()
-        vim.cmd('cc')
-      end, 0)
+      vim.api.nvim_exec_autocmds('QuickFixCmdPost', {})
+      vim.defer_fn(function() vim.cmd('cc') end, 0)
       print('Updated qflist for "' .. pattern)
     end,
   })
@@ -202,75 +193,75 @@ local options = {
     },
     default_mappings = {
       i = {
-        ["<LeftMouse>"] = {
+        ['<LeftMouse>'] = {
           actions.mouse_click,
-          type = "action",
+          type = 'action',
           opts = { expr = true },
         },
-        ["<2-LeftMouse>"] = {
+        ['<2-LeftMouse>'] = {
           actions.double_mouse_click,
-          type = "action",
+          type = 'action',
           opts = { expr = true },
         },
         ['<esc>'] = actions.close,
         ['<leader>q'] = actions.close,
-        ["<C-n>"] = actions.move_selection_next,
-        ["<C-p>"] = actions.move_selection_previous,
-        ["<CR>"] = actions.select_default,
-        ["<C-v>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<C-n>'] = actions.move_selection_next,
+        ['<C-p>'] = actions.move_selection_previous,
+        ['<CR>'] = actions.select_default,
+        ['<C-v>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
         ['<C-u>'] = actions.results_scrolling_up,
         ['<C-d>'] = actions.results_scrolling_down,
+        ['<C-r><C-h>'] = actions.results_scrolling_left,
+        ['<C-r><C-l>'] = actions.results_scrolling_right,
         ['<C-r><C-u>'] = actions.preview_scrolling_up,
         ['<C-r><C-d>'] = actions.preview_scrolling_down,
-        ["<C-r><C-h>"] = actions.preview_scrolling_left,
-        ["<C-r><C-l>"] = actions.preview_scrolling_right,
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
         ['œ'] = actions.send_selected_to_qflist + actions.open_qflist, -- mac keyboard alt+q
-        ["<C-/>"] = actions.which_key,
-        ["<C-_>"] = actions.which_key,
-        ["<C-w>"] = { "<c-s-w>", type = "command" },
+        ['<C-/>'] = actions.which_key,
+        ['<C-_>'] = actions.which_key,
+        ['<C-w>'] = { '<c-s-w>', type = 'command' },
       },
       n = {
-        ["<LeftMouse>"] = {
+        ['<LeftMouse>'] = {
           actions.mouse_click,
-          type = "action",
+          type = 'action',
           opts = { expr = true },
         },
-        ["<2-LeftMouse>"] = {
+        ['<2-LeftMouse>'] = {
           actions.double_mouse_click,
-          type = "action",
+          type = 'action',
           opts = { expr = true },
         },
         ['vv'] = actions.close,
         ['<esc>'] = actions.close,
         ['<leader>q'] = actions.close,
-        ["<C-n>"] = actions.move_selection_next,
-        ["<C-p>"] = actions.move_selection_previous,
-        ["j"] = actions.move_selection_next,
-        ["k"] = actions.move_selection_previous,
-        ["gg"] = actions.move_to_top,
-        ["G"] = actions.move_to_bottom,
-        ["<CR>"] = actions.select_default,
-        ["<C-v>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<C-n>'] = actions.move_selection_next,
+        ['<C-p>'] = actions.move_selection_previous,
+        ['j'] = actions.move_selection_next,
+        ['k'] = actions.move_selection_previous,
+        ['gg'] = actions.move_to_top,
+        ['G'] = actions.move_to_bottom,
+        ['<CR>'] = actions.select_default,
+        ['<C-v>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
         ['<C-u>'] = actions.results_scrolling_up,
         ['<C-d>'] = actions.results_scrolling_down,
         ['<C-r><C-u>'] = actions.preview_scrolling_up,
         ['<C-r><C-d>'] = actions.preview_scrolling_down,
-        ["<C-r><C-h>"] = actions.preview_scrolling_left,
-        ["<C-r><C-l>"] = actions.preview_scrolling_right,
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<C-r><C-h>'] = actions.preview_scrolling_left,
+        ['<C-r><C-l>'] = actions.preview_scrolling_right,
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
         ['œ'] = actions.send_selected_to_qflist + actions.open_qflist, -- mac keyboard alt+q
-        ["<C-/>"] = actions.which_key,
-        ["<C-_>"] = actions.which_key,
-      }
+        ['<C-/>'] = actions.which_key,
+        ['<C-_>'] = actions.which_key,
+      },
     },
     sorting_strategy = 'ascending',
     layout_strategy = 'horizontal',
@@ -327,4 +318,3 @@ local options = {
 telescope.setup(options)
 
 vim.ui.select = require('core.ui.select').select
-

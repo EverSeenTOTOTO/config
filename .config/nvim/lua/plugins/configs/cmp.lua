@@ -38,8 +38,7 @@ local comparators = {
 }
 
 if not vim.env.HEADLESS and not vim.g.vscode then
-  table.insert(comparators, 1,
-    require('copilot_cmp.comparators').prioritize)
+  table.insert(comparators, 1, require('copilot_cmp.comparators').prioritize)
 end
 
 local lspkind = require('lspkind')
@@ -69,12 +68,12 @@ local options = {
   },
   view = {
     docs = {
-      auto_open = true
+      auto_open = true,
     },
     entries = {
       selection_order = 'near_cursor',
       follow_cursor = true,
-    }
+    },
   },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
@@ -123,7 +122,7 @@ local options = {
   },
   sorting = {
     priority_weight = 2,
-    comparators ,
+    comparators,
   },
   mapping = {
     ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
@@ -135,7 +134,7 @@ local options = {
         behavior = cmp.ConfirmBehavior.Replace,
         select = false,
       }),
-      c = cmp.mapping.confirm({ select = false })
+      c = cmp.mapping.confirm({ select = false }),
     }),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -185,7 +184,7 @@ local options = {
     {
       name = 'buffer',
       keyword_length = 3,
-      group_index = 2
+      group_index = 2,
     },
     {
       name = 'path',

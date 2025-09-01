@@ -1,36 +1,36 @@
 local opt = vim.opt
 
 -- General Settings
-opt.encoding = 'utf-8'                                  -- Set default encoding
-opt.backspace = 'indent,eol,start'                      -- Make backspace work as expected
+opt.encoding = 'utf-8' -- Set default encoding
+opt.backspace = 'indent,eol,start' -- Make backspace work as expected
 opt.clipboard = vim.env.SSH_TTY and '' or 'unnamedplus' -- Use system clipboard
-opt.hidden = true                                       -- Enable background buffers
-opt.mouse = 'a'                                         -- Enable mouse in all modes
-opt.timeoutlen = 400                                    -- Time to wait for a mapped sequence to complete (in milliseconds)
+opt.hidden = true -- Enable background buffers
+opt.mouse = 'a' -- Enable mouse in all modes
+opt.timeoutlen = 400 -- Time to wait for a mapped sequence to complete (in milliseconds)
 
 -- UI Settings
-opt.cmdheight = 1      -- Command line height
-opt.confirm = true     -- Ask for confirmation instead of erroring
-opt.cursorline = true  -- Highlight current line
-opt.laststatus = 3     -- Global statusline
-opt.showmode = false   -- Don't show mode in command line
+opt.cmdheight = 1 -- Command line height
+opt.confirm = true -- Ask for confirmation instead of erroring
+opt.cursorline = true -- Highlight current line
+opt.laststatus = 3 -- Global statusline
+opt.showmode = false -- Don't show mode in command line
 opt.signcolumn = 'yes' -- Always show sign column
-opt.title = true       -- Set window title
+opt.title = true -- Set window title
 
 -- Numbers
-opt.number = true          -- Show line numbers
-opt.numberwidth = 2        -- Width of line number column
+opt.number = true -- Show line numbers
+opt.numberwidth = 2 -- Width of line number column
 opt.relativenumber = false -- Disable relative line numbers
-opt.ruler = false          -- Hide ruler
+opt.ruler = false -- Hide ruler
 
 -- Indentation and Formatting
-opt.expandtab = true      -- Use spaces instead of tabs
+opt.expandtab = true -- Use spaces instead of tabs
 opt.preserveindent = true -- Preserve indent structure when reindenting
-opt.shiftwidth = 2        -- Number of spaces for each indentation level
-opt.smartindent = true    -- Smart autoindenting when starting a new line
-opt.tabstop = 2           -- Number of spaces that a <Tab> counts for
-opt.softtabstop = 2       -- Number of spaces that a <Tab> counts for while editing
-opt.copyindent = true     -- Copy indent from current line when starting a new line
+opt.shiftwidth = 2 -- Number of spaces for each indentation level
+opt.smartindent = true -- Smart autoindenting when starting a new line
+opt.tabstop = 2 -- Number of spaces that a <Tab> counts for
+opt.softtabstop = 2 -- Number of spaces that a <Tab> counts for while editing
+opt.copyindent = true -- Copy indent from current line when starting a new line
 
 opt.showmode = false
 opt.pumblend = 10 -- Popup blend
@@ -40,7 +40,7 @@ opt.sidescrolloff = 8
 
 opt.fillchars = {
   diff = '╱', -- alternatives = ⣿ ░ ─
-  eob = ' ',  -- suppress ~ at EndOfBuffer
+  eob = ' ', -- suppress ~ at EndOfBuffer
   fold = ' ',
   foldclose = '▸',
   foldopen = '▾',
@@ -75,26 +75,26 @@ opt.ignorecase = true
 opt.smartcase = true
 
 opt.shortmess = {
-  t = true,   -- truncate file messages at start
-  A = true,   -- ignore annoying swap file messages
-  o = true,   -- file-read message overwrites previous
-  O = true,   -- file-read message overwrites previous
-  T = true,   -- truncate non-file messages in middle
-  f = true,   -- (file x of x) instead of just (x of x
-  F = true,   -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
-  s = true,   -- don't give "search hit BOTTOM, continuing at TOP" message
-  c = true,   -- don't give |ins-completion-menu| messages
-  W = true,   -- Don't show [w] or written when writing
+  t = true, -- truncate file messages at start
+  A = true, -- ignore annoying swap file messages
+  o = true, -- file-read message overwrites previous
+  O = true, -- file-read message overwrites previous
+  T = true, -- truncate non-file messages in middle
+  f = true, -- (file x of x) instead of just (x of x
+  F = true, -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
+  s = true, -- don't give "search hit BOTTOM, continuing at TOP" message
+  c = true, -- don't give |ins-completion-menu| messages
+  W = true, -- Don't show [w] or written when writing
 }
 opt.formatoptions = {
   ['1'] = true,
   ['2'] = true, -- Use indent from 2nd line of a paragraph
-  q = true,     -- continue comments with gq"
-  c = true,     -- Auto-wrap comments using textwidth
-  r = true,     -- Continue comments when pressing Enter
-  n = true,     -- Recognize numbered lists
-  t = false,    -- autowrap lines using text width value
-  j = true,     -- remove a comment leader when joining lines.
+  q = true, -- continue comments with gq"
+  c = true, -- Auto-wrap comments using textwidth
+  r = true, -- Continue comments when pressing Enter
+  n = true, -- Recognize numbered lists
+  t = false, -- autowrap lines using text width value
+  j = true, -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -109,7 +109,7 @@ opt.listchars = {
   tab = '│ ',
   extends = '›', -- Alternatives: … »
   precedes = '‹', -- Alternatives: … «
-  trail = '•',  -- BULLET (U+2022, UTF-8: E2 80 A2)
+  trail = '•', -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 
 opt.signcolumn = 'yes'
@@ -121,11 +121,11 @@ opt.termguicolors = true
 opt.timeoutlen = 400
 opt.undofile = true
 
-opt.undofile = true       -- Enable persistent undo
+opt.undofile = true -- Enable persistent undo
 opt.updatetime = 300
-opt.swapfile = false      -- Disable swap files
-opt.writebackup = false   -- Disable backup files
-opt.winminwidth = 5       -- Minimum window width
+opt.swapfile = false -- Disable swap files
+opt.writebackup = false -- Disable backup files
+opt.winminwidth = 5 -- Minimum window width
 opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 
 -- go to previous/next line with h,l,left arrow and right arrow
@@ -138,9 +138,11 @@ opt.wrap = true
 local default_foldopen = vim.opt.foldopen:get()
 if vim.tbl_contains(default_foldopen, 'block') then vim.opt.foldopen:remove('block') end
 vim.opt.foldlevelstart = 99 -- Start with all folds open
-vim.o.foldcolumn = '1'      -- '0' is not bad
-vim.o.foldlevel = 99        -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldenable = true
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- disable some builtin vim plugins
 

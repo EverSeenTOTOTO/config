@@ -1,29 +1,9 @@
 local dap = require('dap')
-local dap_view = require('dap-view')
 
-dap_view.setup({
-  winbar = {
-    default_section = 'scopes',
-    sections = { 'watches', 'scopes', 'exceptions', 'breakpoints', 'threads', 'repl', 'console' },
-  },
-})
-
-dap.listeners.after['event_process']['my_keymap_plugin'] = function()
-  vim.keymap.set('n', 'gc', dap.continue, { desc = 'DAP: Continue' })
-  vim.keymap.set('n', 'gi', dap.step_into, { desc = 'DAP: Step Into' })
-  vim.keymap.set('n', 'go', dap.step_out, { desc = 'DAP: Step Out' })
-  vim.keymap.set('n', 'gg', dap.step_over, { desc = 'DAP: Step Over' })
-  vim.keymap.set('n', 'gt', dap.terminate, { desc = 'DAP: Terminate' })
-  vim.keymap.set('n', 'gs', '<cmd> :DapViewToggle <CR>')
-end
-dap.listeners.before['event_terminated']['my-keymap-plugin'] = function()
-  vim.keymap.del('n', 'gc')
-  vim.keymap.del('n', 'gi')
-  vim.keymap.del('n', 'go')
-  vim.keymap.del('n', 'gg')
-  vim.keymap.del('n', 'gt')
-  vim.keymap.del('n', 'gs')
-end
+-- dap.listeners.after['event_initialized']['my_keymap_plugin'] = function()
+-- end
+-- dap.listeners.before['event_terminated']['my_keymap_plugin'] = function()
+-- end
 
 local function get_python_binary()
   local cwd = vim.fn.getcwd()

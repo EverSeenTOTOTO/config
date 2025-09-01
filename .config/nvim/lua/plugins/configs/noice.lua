@@ -10,9 +10,6 @@ require('noice').setup({
       ['vim.lsp.util.stylize_markdown'] = true,
       ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
     },
-    hover = {
-      enabled = false,
-    },
   },
   routes = {
     {
@@ -28,7 +25,7 @@ require('noice').setup({
     {
       filter = {
         event = 'msg_show',
-        find = 'qflist'
+        find = 'qflist',
       },
       view = 'mini',
       opts = {
@@ -39,10 +36,10 @@ require('noice').setup({
     -- reroute long notifications to splits
     {
       filter = {
-        event = "notify",
-        min_height = 15
+        event = 'notify',
+        min_height = 15,
       },
-      view = 'split'
+      view = 'split',
     },
     {
       filter = {
@@ -60,9 +57,9 @@ require('noice').setup({
     },
     {
       filter = {
-        event = "msg_show",
-        kind = "",
-        find = "written",
+        event = 'msg_show',
+        kind = '',
+        find = 'written',
       },
       opts = { skip = true },
     },
