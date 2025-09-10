@@ -16,6 +16,13 @@ M.exclude_filetypes = {
   'spectre_panel',
   'startuptime',
   'tsplayground',
+  'noice',
+  'dapui-scopes',
+  'dapui-breakpoints',
+  'dapui-watches',
+  'dap-repl',
+  'dapui-console',
+  'dapui-stacks',
 }
 
 -- Save cursor position and marks for a buffer

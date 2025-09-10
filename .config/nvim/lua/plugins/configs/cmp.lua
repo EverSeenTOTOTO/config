@@ -70,10 +70,6 @@ local options = {
     docs = {
       auto_open = true,
     },
-    entries = {
-      selection_order = 'near_cursor',
-      follow_cursor = true,
-    },
   },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,

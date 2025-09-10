@@ -5,6 +5,20 @@ local dap = require('dap')
 -- dap.listeners.before['event_terminated']['my_keymap_plugin'] = function()
 -- end
 
+require('dapui').setup({
+  floating = {
+    mappings = { 'q', '<leader>q', '<esc>' },
+  },
+  mappings = {
+    edit = 'e',
+    expand = 'o',
+    open = { '<CR>', '<2-LeftMouse>' },
+    remove = 'd',
+    repl = 'r',
+    toggle = 't',
+  },
+})
+
 local function get_python_binary()
   local cwd = vim.fn.getcwd()
   if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then

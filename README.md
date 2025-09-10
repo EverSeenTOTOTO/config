@@ -6,6 +6,25 @@
 > zx README.md
 > ```
 
+## Prerequisites
+
+```javascript
+echo(`----- Starting: ${chalk.cyan('Checking prerequisites')} -----`);
+
+const requiredTools = ['git', 'curl', 'wget', 'gcc', 'make', 'tar', 'cmake', 'node', 'bun'];
+
+for (const tool of requiredTools) {
+  try {
+    await which(tool);
+  } catch {
+    echo(`${chalk.red(`Error: ${tool} is not installed. Please install it before proceeding.`)}`);
+    process.exit(1);
+  }
+}
+
+echo(`----- Completed: ${chalk.cyan('Checking prerequisites')} -----`);
+```
+
 ## Copy dot files
 
 ```javascript
@@ -62,7 +81,7 @@ echo(`----- Starting: ${chalk.cyan('Install fzf')} -----`);
 
 if (!fs.existsSync(path.resolve(os.homedir(), '.fzf'))) {
   await $`git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf`;
-  await $`~/.fzf/install`;
+  await $`~/.fzf/install --all`;
 }
 
 echo(`----- Completed: ${chalk.cyan('Install fzf')} -----\n\n`);
@@ -85,7 +104,25 @@ echo(`----- Completed: ${chalk.cyan('Install z command')} -----\n\n`);
 echo(`----- Starting: ${chalk.cyan('Install bun globals')} -----`);
 
 const data = await $`bun pm ls -g`;
-const installed = data.stdout.split('\n').map(pkg => pkg.trim());
+
+function extractPackageNames(input) {
+  return input
+    .split('\n')
+    .filter(line => line.includes('├──') || line.includes('└──'))
+    .map(line => {
+      // Remove the tree characters and trim
+      const cleaned = line.replace(/.*[├└]── /, '').trim();
+
+      // Find the last @ which indicates the version
+      const lastAtIndex = cleaned.lastIndexOf('@');
+
+      // Extract package name (everything before the last @)
+      return cleaned.substring(0, lastAtIndex);
+    });
+}
+
+const installed = extractPackageNames(data.stdout)
+
 const required = [
   'commitizen',
   'cz-conventional-changelog',
@@ -111,6 +148,7 @@ for (const pkg of required) {
 await $`echo '{ "path": "cz-conventional-changelog" }' > ${path.resolve(os.homedir(), '.czrc')}`;
 
 echo(`----- Completed: ${chalk.cyan('Install bun globals')} -----\n\n`);
+
 ```
 
 ## Install Lua 5.1
@@ -171,6 +209,20 @@ try {
 
 echo('----- Installing modern Linux commands with cargo... -----\n\n');
 await $`cargo install ripgrep lsd bat fd-find du-dust stylua cargo-expand`;
+```
+
+## Install `uv`
+
+```javascript
+echo(`----- Starting: ${chalk.cyan('Install uv')} -----`);
+
+try {
+  await which('uv');
+} catch {
+  await $`curl -LsSf https://astral.sh/uv/install.sh | sh`;
+}
+
+echo(`----- Completed: ${chalk.cyan('Install uv')} -----\n\n`);
 ```
 
 ## Install FiraCode (Nerd Fonts patched version)

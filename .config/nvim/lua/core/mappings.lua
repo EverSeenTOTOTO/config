@@ -200,53 +200,6 @@ map('', '<leader><leader>', function()
   if sr == er then vim.api.nvim_win_set_cursor(0, { er + 1, col == sc and ec or sc }) end
 end)
 
--- Jump to next or previous sibling node with circular queue behavior
-local sibling_target = {
-  p = {
-    argments = true,
-    field = true,
-    jsx_attribute = true,
-    keyword_argument = true,
-    pair = true,
-    property_signature = true,
-    required_parameter = true,
-    shorthand_property_identifier = true,
-  },
-  t = {
-    element = true,
-    jsx_element = true,
-    jsx_self_closing_element = true,
-    script_element = true,
-  },
-}
-
-local function jump_to_sibling_node(query, direction)
-  local target_types = sibling_target[query]
-  local current_node = ts_utils.get_node_at_cursor()
-
-  if not current_node then return end
-
-  -- Find the first parent node that matches one of our target types
-  local target_node = current_node
-  while target_node and not target_types[target_node:type()] do
-    ---@diagnostic disable-next-line: cast-local-type
-    target_node = target_node:parent()
-  end
-
-  if not target_node then
-    vim.notify('No target node with query ' .. query .. ' found', vim.log.levels.WARN)
-    return
-  end
-
-  ts_utils.goto_node(direction == 'next' and target_node:next_named_sibling() or target_node:prev_named_sibling())
-end
-
-map('n', ']]p', function() jump_to_sibling_node('p', 'next') end)
-map('n', ']]t', function() jump_to_sibling_node('t', 'next') end)
-
-map('n', '[[p', function() jump_to_sibling_node('p', 'prev') end)
-map('n', '[[t', function() jump_to_sibling_node('t', 'prev') end)
-
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
 
@@ -263,31 +216,30 @@ if not vim.g.vscode then
   map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
 
   local dap_command_actions = {
+    attach = function() require('dap').attach() end,
+    clear_breakpoints = function() require('dap').clear_breakpoints() end,
+    close = function() require('dap').close() end,
     continue = function() require('dap').continue() end,
-    run = function() vim.cmd('DapNew') end,
-    run_last = function() require('dap').run_last() end,
-    restart = function() require('dap').restart() end,
-    terminate = function() require('dap').terminate() end,
-    toggle_breakpoint = function() require('dap').toggle_breakpoint() end,
+    disconnect = function() require('dap').disconnect() end,
+    down = function() require('dap').down() end,
+    eval = function() require('dapui').eval() end,
+    launch = function() vim.notify('Not implemented yet', vim.log.levels.WARN) end,
     list_breakpoints = function()
       require('dap').list_breakpoints()
-      require('telescope.builtin').quickfix({
-        prompt_title = 'Breakpoints',
-      })
+      require('telescope.builtin').quickfix({ prompt_title = 'Breakpoints' })
     end,
-    clear_breakpoints = function() require('dap').clear_breakpoints() end,
-    step_over = function() require('dap').step_over() end,
+    restart = function() require('dap').restart() end,
+    run = function() vim.cmd('DapNew') end,
+    run_last = function() require('dap').run_last() end,
+    run_to_cursor = function() require('dap').run_to_cursor() end,
+    step_back = function() require('dap').step_back() end,
     step_into = function() require('dap').step_into() end,
     step_out = function() require('dap').step_out() end,
-    step_back = function() require('dap').step_back() end,
+    step_over = function() require('dap').step_over() end,
+    terminate = function() vim.cmd('DapTerminate') end,
+    toggle_breakpoint = function() require('dap').toggle_breakpoint() end,
+    toggle_repl = function() require('dapui').toggle() end,
     up = function() require('dap').up() end,
-    down = function() require('dap').down() end,
-    run_to_cursor = function() require('dap').run_to_cursor() end,
-    toggle_repl = function() require('dap').repl.toggle() end,
-    disconnect = function() require('dap').disconnect() end,
-    close = function() require('dap').close() end,
-    launch = function() vim.notify('Not implemented yet', vim.log.levels.WARN) end,
-    attach = function() require('dap').attach() end,
   }
 
   local dap_commands = {}
@@ -304,6 +256,12 @@ if not vim.g.vscode then
       action()
     end)
   end)
+
+  map('n', 'gb', dap_command_actions.toggle_breakpoint)
+  map('n', 'gc', dap_command_actions.continue)
+  map('n', 'gi', dap_command_actions.step_into)
+  map('n', 'gv', dap_command_actions.step_out)
+  map('n', 'go', dap_command_actions.step_over)
 
   map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
   map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
