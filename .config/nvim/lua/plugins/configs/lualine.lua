@@ -25,9 +25,6 @@ lualine.setup({
           gui = 'bold',
         },
       },
-      {
-        require('dap').status,
-      },
     },
     lualine_x = {
       {
@@ -50,6 +47,10 @@ lualine.setup({
     lualine_z = {
       'location',
     },
+  },
+  tabline = {
+    lualine_a = { 'buffers' },
+    lualine_z = { 'tabs' }
   },
   extensions = {
     'fzf',

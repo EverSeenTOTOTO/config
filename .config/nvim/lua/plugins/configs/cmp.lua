@@ -37,7 +37,7 @@ local comparators = {
   cmp.config.compare.order,
 }
 
-if not vim.env.HEADLESS and not vim.g.vscode then
+if not vim.env.HEADLESS then
   table.insert(comparators, 1, require('copilot_cmp.comparators').prioritize)
 end
 

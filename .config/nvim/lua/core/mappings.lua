@@ -190,7 +190,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_() -- 0-base
+  local er, ec = node:end_()  -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -203,184 +203,112 @@ end)
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
 
-if not vim.g.vscode then
-  map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
-  map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
-  map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
-  map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
-  map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
-  map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
-  map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
-  map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
-  map({ 'n', 'v' }, '<Space><Space>', '<cmd> :Telescope command_history<CR>')
-  map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
+map({ 'n', 'v' }, '<TAB>', '<cmd> :bnext <CR>')
+map({ 'n', 'v' }, '<S-Tab>', '<cmd> :bprevious <CR>')
+map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
+map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
+map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
+map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
+map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
+map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
+map({ 'n', 'v' }, '<Space><Space>', '<cmd> :Telescope command_history<CR>')
+map('i', '<C-r>', '<cmd> :Telescope registers<CR>')
 
-  local dap_command_actions = {
-    attach = function() require('dap').attach() end,
-    clear_breakpoints = function() require('dap').clear_breakpoints() end,
-    close = function() require('dap').close() end,
-    continue = function() require('dap').continue() end,
-    disconnect = function() require('dap').disconnect() end,
-    down = function() require('dap').down() end,
-    eval = function() require('dapui').eval() end,
-    launch = function() vim.notify('Not implemented yet', vim.log.levels.WARN) end,
-    list_breakpoints = function()
-      require('dap').list_breakpoints()
-      require('telescope.builtin').quickfix({ prompt_title = 'Breakpoints' })
-    end,
-    restart = function() require('dap').restart() end,
-    run = function() vim.cmd('DapNew') end,
-    run_last = function() require('dap').run_last() end,
-    run_to_cursor = function() require('dap').run_to_cursor() end,
-    step_back = function() require('dap').step_back() end,
-    step_into = function() require('dap').step_into() end,
-    step_out = function() require('dap').step_out() end,
-    step_over = function() require('dap').step_over() end,
-    terminate = function() vim.cmd('DapTerminate') end,
-    toggle_breakpoint = function() require('dap').toggle_breakpoint() end,
-    toggle_repl = function() require('dapui').toggle() end,
-    up = function() require('dap').up() end,
-  }
+map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
+map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
+map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
+map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
+map('n', '<leader>q', function()
+  local buf = vim.api.nvim_get_current_buf()
 
-  local dap_commands = {}
-  for key in pairs(dap_command_actions) do
-    table.insert(dap_commands, key)
-  end
-
-  map('n', '<leader>g', function()
-    require('core.ui.select').select(dap_commands, {
-      prompt = 'Select debug action:',
-    }, function(choice)
-      local action = dap_command_actions[choice]
-      if action == nil then return end
-      action()
-    end)
-  end)
-
-  map('n', 'gb', dap_command_actions.toggle_breakpoint)
-  map('n', 'gc', dap_command_actions.continue)
-  map('n', 'gi', dap_command_actions.step_into)
-  map('n', 'gv', dap_command_actions.step_out)
-  map('n', 'go', dap_command_actions.step_over)
-
-  map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
-  map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
-  map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
-  map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
-  map('n', '<leader>q', function()
-    local buf = vim.api.nvim_get_current_buf()
-
-    -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
-    vim.api.nvim_buf_call(buf, function()
-      if vim.bo.modified then
-        local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
-        if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
-          return
-        end
-        if choice == 1 then -- Yes
-          vim.cmd.write()
-        end
+  -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
+  vim.api.nvim_buf_call(buf, function()
+    if vim.bo.modified then
+      local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
+      if not ok or choice == 0 or choice == 3 then   -- 0 for <Esc>/<C-c> and 3 for Cancel
+        return
       end
-
-      for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-        -- special filetypes that just close the window
-        if vim.tbl_contains(utils.exclude_filetypes, vim.bo[buf].filetype) then
-          vim.cmd('bdelete ' .. buf)
-          return
-        end
-
-        -- else keep layout
-        vim.api.nvim_win_call(win, function()
-          if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
-          -- Try using alternate buffer
-          local alt = vim.fn.bufnr('#')
-          if alt ~= buf and vim.fn.buflisted(alt) == 1 then
-            vim.api.nvim_win_set_buf(win, alt)
-            return
-          end
-
-          -- Try using previous buffer
-          local has_previous = vim.cmd('bprevious')
-          if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
-
-          -- Create new listed buffer
-          local new_buf = vim.api.nvim_create_buf(true, false)
-          vim.api.nvim_win_set_buf(win, new_buf)
-        end)
-      end
-      if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
-    end)
-  end)
-
-  -- 窗口
-  map('', '<up>', function() require('smart-splits').resize_up() end)
-  map('', '<down>', function() require('smart-splits').resize_down() end)
-  map('', '<left>', function() require('smart-splits').resize_left() end)
-  map('', '<right>', function() require('smart-splits').resize_right() end)
-  map('n', '<C-h>', function() require('smart-splits').move_cursor_left() end)
-  map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
-  map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
-  map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
-
-  map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
-  map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
-  map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
-  map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
-
-  -- file explorer
-  map('', '<C-c>', function()
-    local api = require('nvim-tree.api')
-    local node = api.tree.get_node_under_cursor()
-
-    if node ~= nil then
-      if node.type == 'directory' then
-        vim.api.nvim_set_current_dir(node.absolute_path)
-        api.tree.change_root_to_node(node)
-      else
-        local abs_path = node == nil and api.tree.get_nodes().absolute_path or node.absolute_path
-        local parent_path = vim.fs.dirname(abs_path)
-
-        vim.api.nvim_set_current_dir(parent_path)
-        api.tree.change_root(parent_path)
+      if choice == 1 then   -- Yes
+        vim.cmd.write()
       end
     end
-  end)
 
-  map('', '<C-t>', function()
-    local api = require('nvim-tree.api')
-
-    local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
-
-    if not api.tree.is_visible() then
-      if is_regular then
-        api.tree.find_file({ open = true, focus = false })
-      else
-        api.tree.toggle()
+    for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+      -- special filetypes that just close the window
+      if vim.tbl_contains(utils.exclude_filetypes, vim.bo[buf].filetype) then
+        vim.cmd('bdelete ' .. buf)
+        return
       end
+
+      -- else keep layout
+      vim.api.nvim_win_call(win, function()
+        if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
+        -- Try using alternate buffer
+        local alt = vim.fn.bufnr('#')
+        if alt ~= buf and vim.fn.buflisted(alt) == 1 then
+          vim.api.nvim_win_set_buf(win, alt)
+          return
+        end
+
+        -- Try using previous buffer
+        local has_previous = vim.cmd('bprevious')
+        if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
+
+        -- Create new listed buffer
+        local new_buf = vim.api.nvim_create_buf(true, false)
+        vim.api.nvim_win_set_buf(win, new_buf)
+      end)
+    end
+    if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
+  end)
+end)
+
+-- 窗口
+map('', '<up>', function() require('smart-splits').resize_up() end)
+map('', '<down>', function() require('smart-splits').resize_down() end)
+map('', '<left>', function() require('smart-splits').resize_left() end)
+map('', '<right>', function() require('smart-splits').resize_right() end)
+map('n', '<C-h>', function() require('smart-splits').move_cursor_left() end)
+map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
+map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
+map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
+
+map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
+map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
+map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
+map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
+
+-- file explorer
+map('', '<C-c>', function()
+  local api = require('nvim-tree.api')
+  local node = api.tree.get_node_under_cursor()
+
+  if node ~= nil then
+    if node.type == 'directory' then
+      vim.api.nvim_set_current_dir(node.absolute_path)
+      api.tree.change_root_to_node(node)
     else
-      api.tree.close()
+      local abs_path = node == nil and api.tree.get_nodes().absolute_path or node.absolute_path
+      local parent_path = vim.fs.dirname(abs_path)
+
+      vim.api.nvim_set_current_dir(parent_path)
+      api.tree.change_root(parent_path)
     end
-  end)
-end
+  end
+end)
 
--- vscode nvim
-if vim.g.vscode then
-  local vscode = require('vscode')
-  map('n', '<leader>a', function() vscode.action('editor.action.quickFix') end)
+map('', '<C-t>', function()
+  local api = require('nvim-tree.api')
 
-  map('n', '<leader>f', function() vscode.action('editor.action.formatDocument') end)
+  local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
 
-  map('n', '<leader>[', function() vscode.action('editor.action.marker.next') end)
-
-  map('n', '<leader>]', function() vscode.action('editor.action.marker.prev') end)
-
-  map('n', '<Tab>', function() vscode.action('workbench.action.nextEditor') end)
-
-  map('n', '<S-Tab>', function() vscode.action('workbench.action.previousEditor') end)
-
-  map('n', 'ss', function() vscode.action('workbench.action.findInFiles') end)
-
-  map('n', '//', function() vscode.action('actions.find') end)
-
-  map('n', '<leader>q', function() vscode.action('workbench.action.closeActiveEditor') end)
-end
+  if not api.tree.is_visible() then
+    if is_regular then
+      api.tree.find_file({ open = true, focus = false })
+    else
+      api.tree.toggle()
+    end
+  else
+    api.tree.close()
+  end
+end)

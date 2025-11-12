@@ -282,7 +282,6 @@ local options = {
     file_ignore_patterns = {
       '.git/',
       '.cache/',
-      '.vscode/',
       'dist/',
       'build/',
       'target/',

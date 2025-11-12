@@ -21,7 +21,7 @@ configs.setup({
     'vue',
   },
   sync_install = false,
-  highlight = { enable = not vim.g.vscode },
+  highlight = { enable = true },
   indent = { enable = true },
   textobjects = {
     select = {

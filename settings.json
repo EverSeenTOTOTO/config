@@ -49,14 +49,6 @@
     "suggestionActions": true,
     "inlineSuggest": true,
     "inlineSuggest.showToolbar": true
-  },
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  },
-  "vscode-neovim.compositeKeys": {
-    "vv": {
-      "command": "vscode-neovim.escape"
-    }
   }
 }
 
