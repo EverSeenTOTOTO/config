@@ -27,7 +27,7 @@ autocmd({ 'BufRead', 'BufNewFile' }, {
 })
 
 -- File extension specific tabbing
-autocmd('Filetype', {
+autocmd('FileType', {
   pattern = 'python',
   callback = function()
     vim.opt_local.expandtab = true
@@ -130,4 +130,9 @@ autocmd('BufEnter', {
       api.tree.find_file({ open = false, focus = false })
     end
   end,
+})
+
+autocmd('FileType', {
+  pattern = 'grug-far',
+  callback = function() vim.g.maplocalleader = ';' end,
 })

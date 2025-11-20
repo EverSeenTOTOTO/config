@@ -23,6 +23,8 @@ M.exclude_filetypes = {
   'dap-repl',
   'dapui-console',
   'dapui-stacks',
+  'NvimTree',
+  'Telescope',
 }
 
 -- Save cursor position and marks for a buffer

@@ -47,3 +47,69 @@ create_usercmd('ChangeEncodingAndReload', function()
     })
   end)
 end, {})
+
+-- Close all buffers to the left of the current buffer
+create_usercmd('BufferCloseLeft', function()
+  local bufs = vim.api.nvim_list_bufs()
+  local cur_buf = vim.api.nvim_get_current_buf()
+  local found_cur = false
+
+  for _, buf in ipairs(bufs) do
+    if buf == cur_buf then
+      found_cur = true
+    elseif
+      not found_cur
+      and vim.api.nvim_buf_is_loaded(buf)
+      and vim.api.nvim_buf_is_valid(buf)
+      and vim.api.nvim_get_option_value('buflisted', {
+        buf = buf,
+      })
+    then
+      -- Buffer is to the left of current buffer
+      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+    end
+  end
+end, {})
+
+-- Close all buffers to the right of the current buffer
+create_usercmd('BufferCloseRight', function()
+  local bufs = vim.api.nvim_list_bufs()
+  local cur_buf = vim.api.nvim_get_current_buf()
+  local found_cur = false
+
+  for _, buf in ipairs(bufs) do
+    if buf == cur_buf then
+      found_cur = true
+    elseif
+      found_cur
+      and buf ~= cur_buf
+      and vim.api.nvim_buf_is_loaded(buf)
+      and vim.api.nvim_buf_is_valid(buf)
+      and vim.api.nvim_get_option_value('buflisted', {
+        buf = buf,
+      })
+    then
+      -- Buffer is to the right of current buffer
+      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+    end
+  end
+end, {})
+
+-- Close all buffers except the current one
+create_usercmd('BufferCloseOthers', function()
+  local bufs = vim.api.nvim_list_bufs()
+  local cur_buf = vim.api.nvim_get_current_buf()
+
+  for _, buf in ipairs(bufs) do
+    if
+      buf ~= cur_buf
+      and vim.api.nvim_buf_is_loaded(buf)
+      and vim.api.nvim_buf_is_valid(buf)
+      and vim.api.nvim_get_option_value('buflisted', {
+        buf = buf,
+      })
+    then
+      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+    end
+  end
+end, {})

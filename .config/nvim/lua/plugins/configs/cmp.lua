@@ -37,9 +37,7 @@ local comparators = {
   cmp.config.compare.order,
 }
 
-if not vim.env.HEADLESS then
-  table.insert(comparators, 1, require('copilot_cmp.comparators').prioritize)
-end
+if not vim.env.HEADLESS then table.insert(comparators, 1, require('copilot_cmp.comparators').prioritize) end
 
 local lspkind = require('lspkind')
 

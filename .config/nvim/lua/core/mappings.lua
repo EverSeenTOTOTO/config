@@ -190,7 +190,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_()  -- 0-base
+  local er, ec = node:end_() -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -205,9 +205,13 @@ map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) 
 
 map({ 'n', 'v' }, '<TAB>', '<cmd> :bnext <CR>')
 map({ 'n', 'v' }, '<S-Tab>', '<cmd> :bprevious <CR>')
-map({ 'n', 'v' }, 'ss', '<cmd> :Telescope live_grep<CR>')
+map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope live_grep<CR>')
 map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
-map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find <CR>')
+map(
+  { 'n', 'v' },
+  '//',
+  function() require('grug-far').with_visual_selection({ prefills = { paths = vim.fn.expand('%') } }) end
+)
 map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
 map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
 map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
@@ -225,10 +229,10 @@ map('n', '<leader>q', function()
   vim.api.nvim_buf_call(buf, function()
     if vim.bo.modified then
       local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
-      if not ok or choice == 0 or choice == 3 then   -- 0 for <Esc>/<C-c> and 3 for Cancel
+      if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
         return
       end
-      if choice == 1 then   -- Yes
+      if choice == 1 then -- Yes
         vim.cmd.write()
       end
     end
@@ -262,6 +266,7 @@ map('n', '<leader>q', function()
     if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
   end)
 end)
+map('n', '<C-x>', '<cmd> :BufferCloseOthers<CR>')
 
 -- 窗口
 map('', '<up>', function() require('smart-splits').resize_up() end)

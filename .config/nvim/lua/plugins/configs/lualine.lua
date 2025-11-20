@@ -49,12 +49,15 @@ lualine.setup({
     },
   },
   tabline = {
-    lualine_a = { 'buffers' },
-    lualine_z = { 'tabs' }
+    lualine_a = {
+      'buffers',
+    },
+    lualine_z = { 'tabs' },
   },
   extensions = {
     'fzf',
     'lazy',
     'nvim-tree',
+    'quickfix',
   },
 })

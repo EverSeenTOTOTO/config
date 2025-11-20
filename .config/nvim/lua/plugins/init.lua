@@ -8,7 +8,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
-      { out,                            'WarningMsg' },
+      { out, 'WarningMsg' },
       { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
@@ -46,13 +46,15 @@ require('lazy').setup({
   },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    build =
-    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
     config = function() require('telescope').load_extension('fzf') end,
   },
   {
     'nvim-telescope/telescope-frecency.nvim',
     config = function() require('telescope').load_extension('frecency') end,
+  },
+  {
+    'MagicDuck/grug-far.nvim',
   },
 
   -- icon
@@ -112,7 +114,7 @@ require('lazy').setup({
   {
     'mrcjkb/rustaceanvim',
     version = '^6', -- Recommended
-    lazy = false,   -- This plugin is already lazy
+    lazy = false, -- This plugin is already lazy
   },
 
   -- Completion
@@ -172,7 +174,7 @@ require('lazy').setup({
   },
 
   {
-    "cocopon/iceberg.vim",
+    'cocopon/iceberg.vim',
     lazy = false,
     priority = 1000,
     config = function() require('plugins.configs.theme') end,
@@ -183,5 +185,5 @@ require('lazy').setup({
     'lunarvim/darkplus.nvim',
     lazy = false,
     priority = 1000,
-  }
+  },
 })
