@@ -190,7 +190,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_() -- 0-base
+  local er, ec = node:end_()  -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -205,7 +205,12 @@ map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) 
 
 map({ 'n', 'v' }, '<TAB>', '<cmd> :bnext <CR>')
 map({ 'n', 'v' }, '<S-Tab>', '<cmd> :bprevious <CR>')
-map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope live_grep<CR>')
+map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope grep_string<CR>')
+map(
+  { 'n', 'v' },
+  'ss',
+  function() require('grug-far').open({ prefills = { search = vim.fn.expand('<cword>'), flags = '-.' } }) end
+)
 map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
 map(
   { 'n', 'v' },
