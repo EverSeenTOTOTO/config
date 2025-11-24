@@ -27,67 +27,181 @@ M.exclude_filetypes = {
   'Telescope',
 }
 
--- Save cursor position and marks for a buffer
-function M.save_bufstate(bufnr)
+-- Generate content hash for buffer integrity checking
+local function generate_content_hash(bufnr)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local content = table.concat(lines, '\n')
+  return vim.fn.sha256(content)
+end
+
+-- Lightweight version: save only current window state (recommended for formatting)
+function M.save_bufstate_lite(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  -- Save cursor positions for all windows displaying this buffer
-  local windows = {}
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_win_get_buf(win) == bufnr then windows[win] = vim.api.nvim_win_get_cursor(win) end
-  end
-
-  -- Save marks
-  local marks = {}
-
-  -- Local marks (a-z)
-  for i = string.byte('a'), string.byte('z') do
-    local mark_name = string.char(i)
-    local mark_pos = vim.api.nvim_buf_get_mark(bufnr, mark_name)
-    if mark_pos and mark_pos[1] > 0 then -- if mark exists
-      marks[mark_name] = mark_pos
-    end
-  end
-
-  -- Capital marks (A-Z) that might be in this buffer
-  for i = string.byte('A'), string.byte('Z') do
-    local mark_name = string.char(i)
-    local mark_pos = vim.api.nvim_buf_get_mark(bufnr, mark_name)
-    if mark_pos and mark_pos[1] > 0 then -- if mark exists in this buffer
-      marks[mark_name] = mark_pos
-    end
-  end
-
-  -- Special marks
-  local special_marks = { '"', "'", '[', ']', '<', '>' }
-  for _, mark_name in ipairs(special_marks) do
-    local mark_pos = vim.api.nvim_buf_get_mark(bufnr, mark_name)
-    if mark_pos and mark_pos[1] > 0 then -- if mark exists
-      marks[mark_name] = mark_pos
-    end
-  end
-
-  -- Save fold state for windows displaying this buffer
-  local folds = {}
-  for win in pairs(windows) do
-    if vim.api.nvim_win_is_valid(win) then
-      local win_view = vim.api.nvim_win_call(win, vim.fn.winsaveview)
-      folds[win] = win_view
-    end
-  end
-
   return {
-    windows = windows,
-    marks = marks,
-    folds = folds,
+    bufnr = bufnr,
+    view = vim.fn.winsaveview(),
+    content_hash = generate_content_hash(bufnr),
+    timestamp = vim.uv.hrtime(),
   }
 end
 
--- Restore cursor position and marks for a buffer
-function M.restore_bufstate(bufnr, saved_state)
-  if not saved_state then return end
-
+-- Full version: save comprehensive state (use only when needed)
+function M.save_bufstate(bufnr, options)
+  options = options or {}
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  local state = {
+    bufnr = bufnr,
+    content_hash = generate_content_hash(bufnr),
+    timestamp = vim.uv.hrtime(),
+  }
+
+  -- Always save current window view
+  state.view = vim.fn.winsaveview()
+
+  -- Save all windows only if explicitly requested
+  if options.save_all_windows then
+    state.windows = {}
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+        state.windows[win] = vim.api.nvim_win_get_cursor(win)
+      end
+    end
+  end
+
+  -- Save marks only if explicitly requested
+  if options.save_marks then
+    state.marks = {}
+
+    -- Only save marks that actually exist to avoid unnecessary iterations
+    local mark_ranges = {
+      { string.byte('a'), string.byte('z') }, -- local marks
+    }
+
+    if options.save_global_marks then
+      table.insert(mark_ranges, { string.byte('A'), string.byte('Z') }) -- global marks
+    end
+
+    for _, range in ipairs(mark_ranges) do
+      for i = range[1], range[2] do
+        local mark_name = string.char(i)
+        local mark_pos = vim.api.nvim_buf_get_mark(bufnr, mark_name)
+        if mark_pos and mark_pos[1] > 0 then state.marks[mark_name] = mark_pos end
+      end
+    end
+
+    -- Save important special marks if requested
+    if options.save_special_marks then
+      local special_marks = { '"', "'", '[', ']', '<', '>' }
+      for _, mark_name in ipairs(special_marks) do
+        local mark_pos = vim.api.nvim_buf_get_mark(bufnr, mark_name)
+        if mark_pos and mark_pos[1] > 0 then state.marks[mark_name] = mark_pos end
+      end
+    end
+  end
+
+  return state
+end
+
+-- Smart buffer close function
+-- Handles modified buffers, special filetypes, and maintains window layout
+function M.close_buffer(buf)
+  buf = buf or vim.api.nvim_get_current_buf()
+
+  -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
+  vim.api.nvim_buf_call(buf, function()
+    if vim.bo.modified then
+      local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
+      if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
+        return
+      end
+      if choice == 1 then -- Yes
+        vim.cmd.write()
+      end
+    end
+
+    for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+      -- special filetypes that just close the window
+      if vim.tbl_contains(M.exclude_filetypes, vim.bo[buf].filetype) then
+        vim.cmd('bdelete ' .. buf)
+        return
+      end
+
+      -- else keep layout
+      vim.api.nvim_win_call(win, function()
+        if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
+        -- Try using alternate buffer
+        local alt = vim.fn.bufnr('#')
+        if alt ~= buf and vim.fn.buflisted(alt) == 1 then
+          vim.api.nvim_win_set_buf(win, alt)
+          return
+        end
+
+        -- Try using previous buffer
+        local has_previous = vim.cmd('bprevious')
+        if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
+
+        -- Create new listed buffer
+        local new_buf = vim.api.nvim_create_buf(true, false)
+        vim.api.nvim_win_set_buf(win, new_buf)
+      end)
+    end
+    if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
+  end)
+end
+
+-- Lightweight restore: restore only view state with integrity check
+function M.restore_bufstate_lite(saved_state)
+  if not saved_state or not saved_state.view then return false, 'Invalid saved state' end
+
+  local bufnr = saved_state.bufnr or vim.api.nvim_get_current_buf()
+
+  -- Verify buffer is still valid and hasn't changed
+  if not vim.api.nvim_buf_is_valid(bufnr) then return false, 'Buffer no longer valid' end
+
+  -- Check content integrity if hash is available
+  if saved_state.content_hash then
+    local current_hash = generate_content_hash(bufnr)
+    if current_hash ~= saved_state.content_hash then return false, 'Buffer content has changed' end
+  end
+
+  -- Restore view with safety checks
+  local view = vim.tbl_deep_extend('keep', saved_state.view, {
+    lnum = 1,
+    col = 0,
+    topline = 1,
+  })
+
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+  view.lnum = math.max(1, math.min(view.lnum, line_count))
+  view.topline = math.max(1, math.min(view.topline, line_count))
+
+  vim.fn.winrestview(view)
+  return true, 'State restored successfully'
+end
+
+-- Full restore: restore comprehensive state with integrity check
+function M.restore_bufstate(bufnr, saved_state, options)
+  options = options or {}
+
+  if not saved_state then return false, 'No saved state provided' end
+
+  bufnr = bufnr or saved_state.bufnr or vim.api.nvim_get_current_buf()
+
+  -- Verify buffer is still valid
+  if not vim.api.nvim_buf_is_valid(bufnr) then return false, 'Buffer no longer valid' end
+
+  -- Check content integrity if hash is available and not disabled
+  if not options.skip_integrity_check and saved_state.content_hash then
+    local current_hash = generate_content_hash(bufnr)
+    if current_hash ~= saved_state.content_hash then
+      if not options.force_restore then
+        return false, 'Buffer content has changed, use force_restore=true to override'
+      end
+    end
+  end
+
   local line_count = vim.api.nvim_buf_line_count(bufnr)
 
   -- Helper function to clamp position to buffer bounds
@@ -98,7 +212,21 @@ function M.restore_bufstate(bufnr, saved_state)
     return { line, col }
   end
 
-  -- Restore cursor positions for all windows
+  -- Restore view state (primary method)
+  if saved_state.view then
+    local view = vim.tbl_deep_extend('keep', saved_state.view, {
+      lnum = 1,
+      col = 0,
+      topline = 1,
+    })
+
+    view.lnum = math.max(1, math.min(view.lnum, line_count))
+    view.topline = math.max(1, math.min(view.topline, line_count))
+
+    vim.fn.winrestview(view)
+  end
+
+  -- Restore cursor positions for all windows (legacy support)
   if saved_state.windows then
     for win, cursor in pairs(saved_state.windows) do
       if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
@@ -108,7 +236,7 @@ function M.restore_bufstate(bufnr, saved_state)
     end
   end
 
-  -- Restore fold state
+  -- Restore fold state (legacy support)
   if saved_state.folds then
     for win, win_view in pairs(saved_state.folds) do
       if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
@@ -125,9 +253,14 @@ function M.restore_bufstate(bufnr, saved_state)
   if saved_state.marks then
     for mark_name, pos in pairs(saved_state.marks) do
       local clamped_pos = clamp_position(pos)
-      vim.api.nvim_buf_set_mark(bufnr, mark_name, clamped_pos[1], clamped_pos[2], {})
+      local ok, err = pcall(vim.api.nvim_buf_set_mark, bufnr, mark_name, clamped_pos[1], clamped_pos[2], {})
+      if not ok and options.warn_on_mark_failure then
+        vim.notify("Failed to restore mark '" .. mark_name .. "': " .. err, vim.log.levels.WARN)
+      end
     end
   end
+
+  return true, 'State restored successfully'
 end
 
 return M

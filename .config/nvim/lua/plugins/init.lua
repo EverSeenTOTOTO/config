@@ -55,6 +55,7 @@ require('lazy').setup({
   },
   {
     'MagicDuck/grug-far.nvim',
+    config = function() require('plugins.configs.grug-far') end,
   },
 
   -- icon

@@ -47,8 +47,8 @@ function M.prettier_format(prettier_path)
   local bufnr = vim.api.nvim_get_current_buf()
   local current_file_path = vim.fn.expand('%:p')
 
-  -- Save cursor position, marks
-  local state = utils.save_bufstate(bufnr)
+  -- Save state using lightweight API
+  local state = utils.save_bufstate_lite(bufnr)
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 
   local stderr_data = {}
@@ -93,15 +93,24 @@ function M.prettier_format(prettier_path)
       end
 
       if content_changed then
-        spinner.stop('Formatting cancelled: dirty buffer')
+        spinner.stop('Formatting cancelled: buffer was modified')
         return
       end
 
+      -- Apply formatted content
       vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
 
-      -- Restore cursor and marks
-      utils.restore_bufstate(bufnr, state)
-      spinner.stop('Formatted')
+      -- Restore cursor and view state with error handling
+      local success, msg = utils.restore_bufstate_lite(state)
+      if success then
+        spinner.stop('Formatted')
+      else
+        -- Fallback to basic cursor positioning if restore fails
+        local line_count = vim.api.nvim_buf_line_count(bufnr)
+        local safe_line = math.max(1, math.min(state.view.lnum or 1, line_count))
+        vim.api.nvim_win_set_cursor(0, { safe_line, state.view.col or 0 })
+        spinner.stop('Formatted (cursor position approximated)')
+      end
     end,
     stdout_buffered = true,
     stderr_buffered = true,

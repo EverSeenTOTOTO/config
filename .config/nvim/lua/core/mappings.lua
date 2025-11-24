@@ -125,7 +125,6 @@ map('n', '<leader>h', function()
 end)
 
 map('n', '<leader>n', function() vim.lsp.buf.rename() end)
-
 map('n', '<leader>a', function() vim.lsp.buf.code_action() end)
 
 map('n', '<leader>[', function()
@@ -134,7 +133,6 @@ map('n', '<leader>[', function()
     float = true,
   })
 end)
-
 map('n', '<leader>]', function()
   vim.diagnostic.jump({
     count = 1,
@@ -190,7 +188,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_()  -- 0-base
+  local er, ec = node:end_() -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -205,18 +203,14 @@ map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) 
 
 map({ 'n', 'v' }, '<TAB>', '<cmd> :bnext <CR>')
 map({ 'n', 'v' }, '<S-Tab>', '<cmd> :bprevious <CR>')
-map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope grep_string<CR>')
-map(
-  { 'n', 'v' },
-  'ss',
-  function() require('grug-far').open({ prefills = { search = vim.fn.expand('<cword>'), flags = '-.' } }) end
-)
+map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope live_grep<CR>')
 map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
 map(
   { 'n', 'v' },
-  '//',
-  function() require('grug-far').with_visual_selection({ prefills = { paths = vim.fn.expand('%') } }) end
+  'ss',
+  function() require('grug-far').open({ prefills = { flags = '-.', paths = vim.fn.expand('%') } }) end
 )
+map({ 'n', 'v' }, '//', '<cmd> :Telescope current_buffer_fuzzy_find<CR>')
 map({ 'n', 'v' }, '<C-p>', '<cmd> :Telescope commands <CR>')
 map({ 'n', 'v' }, '<C-f>', '<cmd> :Telescope find_files<CR>')
 map({ 'n', 'v' }, '<C-q>', '<cmd> :Telescope quickfix<CR>')
@@ -227,50 +221,7 @@ map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
 map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
 map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
 map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
-map('n', '<leader>q', function()
-  local buf = vim.api.nvim_get_current_buf()
-
-  -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
-  vim.api.nvim_buf_call(buf, function()
-    if vim.bo.modified then
-      local ok, choice = pcall(vim.fn.confirm, ('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
-      if not ok or choice == 0 or choice == 3 then -- 0 for <Esc>/<C-c> and 3 for Cancel
-        return
-      end
-      if choice == 1 then -- Yes
-        vim.cmd.write()
-      end
-    end
-
-    for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-      -- special filetypes that just close the window
-      if vim.tbl_contains(utils.exclude_filetypes, vim.bo[buf].filetype) then
-        vim.cmd('bdelete ' .. buf)
-        return
-      end
-
-      -- else keep layout
-      vim.api.nvim_win_call(win, function()
-        if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
-        -- Try using alternate buffer
-        local alt = vim.fn.bufnr('#')
-        if alt ~= buf and vim.fn.buflisted(alt) == 1 then
-          vim.api.nvim_win_set_buf(win, alt)
-          return
-        end
-
-        -- Try using previous buffer
-        local has_previous = vim.cmd('bprevious')
-        if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
-
-        -- Create new listed buffer
-        local new_buf = vim.api.nvim_create_buf(true, false)
-        vim.api.nvim_win_set_buf(win, new_buf)
-      end)
-    end
-    if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
-  end)
-end)
+map('n', '<leader>q', utils.close_buffer)
 map('n', '<C-x>', '<cmd> :BufferCloseOthers<CR>')
 
 -- 窗口
@@ -283,10 +234,36 @@ map('n', '<C-j>', function() require('smart-splits').move_cursor_down() end)
 map('n', '<C-k>', function() require('smart-splits').move_cursor_up() end)
 map('n', '<C-l>', function() require('smart-splits').move_cursor_right() end)
 
-map('', 'd<up>', ':wincmd k<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<down>', ':wincmd j<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<left>', ':wincmd h<cr>:wincmd c<cr>:wincmd p<cr>')
-map('', 'd<right>', ':wincmd l<cr>:wincmd c<cr>:wincmd p<cr>')
+-- 智能关闭分屏：关闭分屏的同时，如果该分屏的buffer与当前面板不一致，则同时关闭该buffer
+local function smart_close_split(direction)
+  local current_buf = vim.api.nvim_get_current_buf()
+  local current_win = vim.api.nvim_get_current_win()
+
+  -- 移动到目标分屏
+  vim.cmd('wincmd ' .. direction)
+
+  -- 检查是否成功移动到了另一个窗口
+  if vim.api.nvim_get_current_win() ~= current_win then
+    local target_buf = vim.api.nvim_get_current_buf()
+
+    -- 如果目标分屏的buffer与原来的不同，则关闭它
+    if target_buf ~= current_buf then
+      -- 先关闭窗口，再关闭buffer（避免layout问题）
+      vim.cmd('wincmd c')
+      vim.cmd('wincmd p') -- 返回原窗口
+      utils.close_buffer(target_buf)
+    else
+      -- 只关闭窗口
+      vim.cmd('wincmd c')
+      vim.cmd('wincmd p')
+    end
+  end
+end
+
+map('', 'd<up>', function() smart_close_split('k') end)
+map('', 'd<down>', function() smart_close_split('j') end)
+map('', 'd<left>', function() smart_close_split('h') end)
+map('', 'd<right>', function() smart_close_split('l') end)
 
 -- file explorer
 map('', '<C-c>', function()

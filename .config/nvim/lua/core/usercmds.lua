@@ -1,4 +1,5 @@
 local create_usercmd = vim.api.nvim_create_user_command
+local utils = require('core.utils')
 
 create_usercmd('TsOrganizeImports', function()
   for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
@@ -66,7 +67,7 @@ create_usercmd('BufferCloseLeft', function()
       })
     then
       -- Buffer is to the left of current buffer
-      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+      utils.close_buffer(buf)
     end
   end
 end, {})
@@ -90,7 +91,7 @@ create_usercmd('BufferCloseRight', function()
       })
     then
       -- Buffer is to the right of current buffer
-      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+      utils.close_buffer(buf)
     end
   end
 end, {})
@@ -109,7 +110,7 @@ create_usercmd('BufferCloseOthers', function()
         buf = buf,
       })
     then
-      pcall(vim.api.nvim_buf_delete, buf, { force = false })
+      utils.close_buffer(buf)
     end
   end
 end, {})
