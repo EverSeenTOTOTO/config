@@ -201,8 +201,8 @@ end)
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)
 
-map({ 'n', 'v' }, '<TAB>', '<cmd> :bnext <CR>')
-map({ 'n', 'v' }, '<S-Tab>', '<cmd> :bprevious <CR>')
+map({ 'n', 'v' }, '<TAB>', '<cmd> :BufferLineCycleNext <CR>')
+map({ 'n', 'v' }, '<S-Tab>', '<cmd> :BufferLineCyclePrev <CR>')
 map({ 'n', 'v' }, '<C-s>', '<cmd> :Telescope live_grep<CR>')
 map({ 'n', 'v' }, '<C-b>', '<cmd> :Telescope buffers<CR>')
 map(
@@ -244,11 +244,24 @@ local function smart_close_split(direction)
 
   -- 检查是否成功移动到了另一个窗口
   if vim.api.nvim_get_current_win() ~= current_win then
+    local target_win = vim.api.nvim_get_current_win()
     local target_buf = vim.api.nvim_get_current_buf()
+
+    -- 检查是否是特殊窗口类型
+    local win_config = vim.api.nvim_win_get_config(target_win)
+    local is_special_win = win_config.relative ~= '' -- floating window
+    local buftype = vim.bo[target_buf].buftype
+
+    -- 特殊窗口直接关闭，不处理 buffer
+    if is_special_win or buftype ~= '' or utils.is_special_filetype(target_buf) then
+      vim.cmd('wincmd c')
+      vim.cmd('wincmd p')
+      return
+    end
 
     -- 如果目标分屏的buffer与原来的不同，则关闭它
     if target_buf ~= current_buf then
-      -- 先关闭窗口，再关闭buffer（避免layout问题）
+      -- 先关闭窗口，再关闭buffer
       vim.cmd('wincmd c')
       vim.cmd('wincmd p') -- 返回原窗口
       utils.close_buffer(target_buf)

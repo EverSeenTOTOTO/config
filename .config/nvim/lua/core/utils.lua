@@ -27,6 +27,8 @@ M.exclude_filetypes = {
   'Telescope',
 }
 
+M.is_special_filetype = function(buf) return vim.tbl_contains(M.exclude_filetypes, vim.bo[buf].filetype) end
+
 -- Generate content hash for buffer integrity checking
 local function generate_content_hash(bufnr)
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -109,6 +111,11 @@ end
 function M.close_buffer(buf)
   buf = buf or vim.api.nvim_get_current_buf()
 
+  if M.is_special_filetype(buf) then
+    vim.api.nvim_buf_delete(buf, { force = true })
+    return
+  end
+
   -- copy from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
   vim.api.nvim_buf_call(buf, function()
     if vim.bo.modified then
@@ -122,15 +129,9 @@ function M.close_buffer(buf)
     end
 
     for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-      -- special filetypes that just close the window
-      if vim.tbl_contains(M.exclude_filetypes, vim.bo[buf].filetype) then
-        vim.cmd('bdelete ' .. buf)
-        return
-      end
-
-      -- else keep layout
       vim.api.nvim_win_call(win, function()
         if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then return end
+
         -- Try using alternate buffer
         local alt = vim.fn.bufnr('#')
         if alt ~= buf and vim.fn.buflisted(alt) == 1 then
@@ -139,7 +140,7 @@ function M.close_buffer(buf)
         end
 
         -- Try using previous buffer
-        local has_previous = vim.cmd('bprevious')
+        local has_previous = pcall(vim.cmd, 'bprevious')
         if has_previous and buf ~= vim.api.nvim_win_get_buf(win) then return end
 
         -- Create new listed buffer
@@ -147,7 +148,8 @@ function M.close_buffer(buf)
         vim.api.nvim_win_set_buf(win, new_buf)
       end)
     end
-    if vim.api.nvim_buf_is_valid(buf) then vim.cmd('bdelete! ' .. buf) end
+
+    if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end
   end)
 end
 

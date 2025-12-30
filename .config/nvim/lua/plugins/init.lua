@@ -81,6 +81,13 @@ require('lazy').setup({
     cmd = 'NvimTreeToggle',
     config = function() require('plugins.configs.nvim-tree') end,
   },
+
+  -- manage buffers
+  {
+    'akinsho/bufferline.nvim',
+    config = function() require('plugins.configs.bufferline') end,
+  },
+
   -- indent tracing
   {
     'lukas-reineke/indent-blankline.nvim',
