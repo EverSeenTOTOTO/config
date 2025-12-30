@@ -1,36 +1,35 @@
 local opt = vim.opt
 
 -- General Settings
-opt.encoding = 'utf-8' -- Set default encoding
+opt.encoding = 'utf-8'             -- Set default encoding
 opt.backspace = 'indent,eol,start' -- Make backspace work as expected
-opt.clipboard = vim.env.SSH_TTY and '' or 'unnamedplus' -- Use system clipboard
-opt.hidden = true -- Enable background buffers
-opt.mouse = 'a' -- Enable mouse in all modes
-opt.timeoutlen = 400 -- Time to wait for a mapped sequence to complete (in milliseconds)
+opt.hidden = true                  -- Enable background buffers
+opt.mouse = 'a'                    -- Enable mouse in all modes
+opt.timeoutlen = 400               -- Time to wait for a mapped sequence to complete (in milliseconds)
 
 -- UI Settings
-opt.cmdheight = 1 -- Command line height
-opt.confirm = true -- Ask for confirmation instead of erroring
-opt.cursorline = true -- Highlight current line
-opt.laststatus = 3 -- Global statusline
-opt.showmode = false -- Don't show mode in command line
+opt.cmdheight = 1      -- Command line height
+opt.confirm = true     -- Ask for confirmation instead of erroring
+opt.cursorline = true  -- Highlight current line
+opt.laststatus = 3     -- Global statusline
+opt.showmode = false   -- Don't show mode in command line
 opt.signcolumn = 'yes' -- Always show sign column
-opt.title = true -- Set window title
+opt.title = true       -- Set window title
 
 -- Numbers
-opt.number = true -- Show line numbers
-opt.numberwidth = 2 -- Width of line number column
+opt.number = true          -- Show line numbers
+opt.numberwidth = 2        -- Width of line number column
 opt.relativenumber = false -- Disable relative line numbers
-opt.ruler = false -- Hide ruler
+opt.ruler = false          -- Hide ruler
 
 -- Indentation and Formatting
-opt.expandtab = true -- Use spaces instead of tabs
+opt.expandtab = true      -- Use spaces instead of tabs
 opt.preserveindent = true -- Preserve indent structure when reindenting
-opt.shiftwidth = 2 -- Number of spaces for each indentation level
-opt.smartindent = true -- Smart autoindenting when starting a new line
-opt.tabstop = 2 -- Number of spaces that a <Tab> counts for
-opt.softtabstop = 2 -- Number of spaces that a <Tab> counts for while editing
-opt.copyindent = true -- Copy indent from current line when starting a new line
+opt.shiftwidth = 2        -- Number of spaces for each indentation level
+opt.smartindent = true    -- Smart autoindenting when starting a new line
+opt.tabstop = 2           -- Number of spaces that a <Tab> counts for
+opt.softtabstop = 2       -- Number of spaces that a <Tab> counts for while editing
+opt.copyindent = true     -- Copy indent from current line when starting a new line
 
 opt.showmode = false
 opt.pumblend = 10 -- Popup blend
@@ -40,7 +39,7 @@ opt.sidescrolloff = 8
 
 opt.fillchars = {
   diff = '╱', -- alternatives = ⣿ ░ ─
-  eob = ' ', -- suppress ~ at EndOfBuffer
+  eob = ' ',  -- suppress ~ at EndOfBuffer
   fold = ' ',
   foldclose = '▸',
   foldopen = '▾',
@@ -89,12 +88,12 @@ opt.shortmess = {
 opt.formatoptions = {
   ['1'] = true,
   ['2'] = true, -- Use indent from 2nd line of a paragraph
-  q = true, -- continue comments with gq"
-  c = true, -- Auto-wrap comments using textwidth
-  r = true, -- Continue comments when pressing Enter
-  n = true, -- Recognize numbered lists
-  t = false, -- autowrap lines using text width value
-  j = true, -- remove a comment leader when joining lines.
+  q = true,     -- continue comments with gq"
+  c = true,     -- Auto-wrap comments using textwidth
+  r = true,     -- Continue comments when pressing Enter
+  n = true,     -- Recognize numbered lists
+  t = false,    -- autowrap lines using text width value
+  j = true,     -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -109,7 +108,7 @@ opt.listchars = {
   tab = '│ ',
   extends = '›', -- Alternatives: … »
   precedes = '‹', -- Alternatives: … «
-  trail = '•', -- BULLET (U+2022, UTF-8: E2 80 A2)
+  trail = '•',  -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 
 opt.signcolumn = 'yes'
@@ -121,11 +120,11 @@ opt.termguicolors = true
 opt.timeoutlen = 400
 opt.undofile = true
 
-opt.undofile = true -- Enable persistent undo
+opt.undofile = true       -- Enable persistent undo
 opt.updatetime = 300
-opt.swapfile = false -- Disable swap files
-opt.writebackup = false -- Disable backup files
-opt.winminwidth = 5 -- Minimum window width
+opt.swapfile = false      -- Disable swap files
+opt.writebackup = false   -- Disable backup files
+opt.winminwidth = 5       -- Minimum window width
 opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 
 -- go to previous/next line with h,l,left arrow and right arrow
@@ -138,8 +137,8 @@ opt.wrap = true
 local default_foldopen = vim.opt.foldopen:get()
 if vim.tbl_contains(default_foldopen, 'block') then vim.opt.foldopen:remove('block') end
 vim.opt.foldlevelstart = 99 -- Start with all folds open
-vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldcolumn = '1'      -- '0' is not bad
+vim.o.foldlevel = 99        -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldenable = true
 vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -188,6 +187,72 @@ end
 opt.smoothscroll = true
 
 vim.g.markdown_recommended_style = 0
+
+-- clipboard
+local function setup_clipboard()
+  local has_mac = vim.fn.has('mac') == 1
+  local has_wsl = vim.fn.has('wsl') == 1 or vim.fn.executable('clip.exe') == 1
+  local has_x11 = vim.env.DISPLAY ~= nil and vim.fn.executable('xclip') == 1
+  local has_wayland = vim.env.WAYLAND_DISPLAY ~= nil and vim.fn.executable('wl-copy') == 1
+  local has_tmux = vim.env.TMUX ~= nil
+
+  vim.g.clipboard = {
+    name = 'custom',
+    copy = {
+      ['+'] = function(lines)
+        local text = table.concat(lines, '\n')
+
+        -- 复制到系统剪贴板
+        if has_mac then
+          vim.fn.system('pbcopy', text)
+        elseif has_wayland then
+          vim.fn.system('wl-copy', text)
+        elseif has_x11 then
+          vim.fn.system('xclip -i -sel c', text)
+        elseif has_wsl then
+          vim.fn.system('clip.exe', text)
+        end
+
+        -- 同步到 tmux
+        if has_tmux then
+          vim.fn.system('tmux set-buffer -- ' .. vim.fn.shellescape(text))
+        end
+      end,
+      ['*'] = function(lines)
+        vim.g.clipboard.copy['+'](lines)
+      end,
+    },
+    paste = {
+      ['+'] = function()
+        local text = ''
+        if has_mac then
+          text = vim.fn.system('reattach-to-user-namespace pbpaste')
+        elseif has_wayland then
+          text = vim.fn.system('wl-paste --no-newline')
+        elseif has_x11 then
+          text = vim.fn.system('xclip -o -sel c')
+        elseif has_wsl then
+          text = vim.fn.system('powershell.exe -command "Get-Clipboard"')
+        end
+
+        -- ssh session
+        if has_tmux and vim.env.XDG_SESSION_TYPE == 'tty' then
+          text = vim.fn.system('tmux show-buffer')
+        end
+
+        return vim.split(text, '\n')
+      end,
+      ['*'] = function()
+        return vim.g.clipboard.paste['+']()
+      end,
+    },
+    cache_enabled = 0
+  }
+
+  vim.opt.clipboard = 'unnamedplus'
+end
+
+setup_clipboard()
 
 -- vsnip
 vim.g.vsnip_filetypes = {

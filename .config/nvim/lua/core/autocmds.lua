@@ -46,25 +46,10 @@ autocmd('BufWritePre', {
   end,
 })
 
-local has_mac = vim.fn.has('mac') == 1
-local xdg_session_type = vim.env.XDG_SESSION_TYPE
-local is_x11 = xdg_session_type == 'x11' and vim.fn.executable('xclip') == 1
-local is_wayland = xdg_session_type == 'wayland' and vim.fn.executable('wl-copy') == 1
 
 autocmd('TextYankPost', {
   pattern = '*',
   callback = function()
-    -- Handle system clipboard integration
-    if has_mac then
-      vim.fn.system('pbcopy && tmux set-buffer "$(reattach-to-user-namespace pbpaste)"', vim.fn.getreg('"'))
-    elseif is_x11 then
-      -- xclip
-      vim.fn.system('xclip -i -sel c && tmux set-buffer $(xclip -o -sel c)', vim.fn.getreg('"'))
-    elseif is_wayland then
-      -- wl-clipboard
-      vim.fn.system('wl-copy && tmux set-buffer $(wl-paste)', vim.fn.getreg('"'))
-    end
-
     -- highlight yanked text for 700ms
     vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 700 })
   end,
