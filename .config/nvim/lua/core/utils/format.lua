@@ -1,6 +1,5 @@
 local M = {}
 local spinner = require('core.ui.spinner')
-local utils = require('core.utils')
 
 -- Define formatters in priority order (highest priority first)
 local formatters_priority = {
@@ -13,11 +12,14 @@ for i, formatter in ipairs(formatters_priority) do
   priority_map[formatter] = i
 end
 
-function M.lsp_format()
+local lsp_format = function(callback)
   local buf = vim.api.nvim_get_current_buf()
   local active_clients = vim.lsp.get_clients({ bufnr = buf })
 
-  if #active_clients == 0 then return end
+  if #active_clients == 0 then
+    callback('No lsp clients')
+    return
+  end
 
   vim.lsp.buf.format({
     async = false,
@@ -36,19 +38,36 @@ function M.lsp_format()
       -- Only use this client if it has the best available priority
       return client_priority <= best_priority
     end,
-    timeout_ms = 5000,
+    5000,
   })
+
+  for _, client in ipairs(active_clients) do
+    if client.name == 'vtsls' then
+      client:request('workspace/executeCommand', {
+        command = 'typescript.organizeImports',
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = '',
+      }, callback)
+      return
+    end
+  end
+
+  callback()
 end
 
-function M.prettier_format(prettier_path)
-  spinner.start('Formatting...')
+local prettier_format = function(callback)
+  local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
+  local prettier_path = bin_path .. '/prettier'
+
+  if not (bin_path ~= '' and vim.fn.filereadable(prettier_path) == 1) then
+    callback()
+    return
+  end
 
   -- Store the buffer number at the beginning of the function
   local bufnr = vim.api.nvim_get_current_buf()
   local current_file_path = vim.fn.expand('%:p')
 
-  -- Save state using lightweight API
-  local state = utils.save_bufstate_lite(bufnr)
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 
   local stderr_data = {}
@@ -69,12 +88,12 @@ function M.prettier_format(prettier_path)
         -- Show error notification
         local error_msg = table.concat(stderr_data, '\n')
         vim.notify('Prettier error: ' .. error_msg, vim.log.levels.ERROR)
-        spinner.stop('Formatting failed')
+        callback('Formatting failed')
         return
       end
 
       if not vim.api.nvim_buf_is_valid(bufnr) then
-        spinner.stop('Formatting cancelled: invalid buffer')
+        callback('Formatting cancelled: invalid buffer')
         return
       end
 
@@ -93,24 +112,37 @@ function M.prettier_format(prettier_path)
       end
 
       if content_changed then
-        spinner.stop('Formatting cancelled: buffer was modified')
+        callback('Formatting cancelled: buffer was modified')
         return
+      end
+
+      -- save and restore local marks since they get deleted by nvim_buf_set_lines, see: vim.lsp.util.apply_text_edits
+      local marks = {}
+      for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+        if m.mark:match("^'[a-z]$") then
+          marks[m.mark:sub(2, 2)] = { m.pos[2], m.pos[3] - 1 } -- api-indexed
+        end
       end
 
       -- Apply formatted content
       vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
 
-      -- Restore cursor and view state with error handling
-      local success, msg = utils.restore_bufstate_lite(state)
-      if success then
-        spinner.stop('Formatted')
-      else
-        -- Fallback to basic cursor positioning if restore fails
-        local line_count = vim.api.nvim_buf_line_count(bufnr)
-        local safe_line = math.max(1, math.min(state.view.lnum or 1, line_count))
-        vim.api.nvim_win_set_cursor(0, { safe_line, state.view.col or 0 })
-        spinner.stop('Formatted (cursor position approximated)')
+      -- no need to restore marks that still exist
+      local max = vim.api.nvim_buf_line_count(bufnr)
+      for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+        marks[m.mark:sub(2, 2)] = nil
       end
+      -- restore marks
+      for mark, pos in pairs(marks) do
+        if pos then
+          -- make sure we don't go out of bounds
+          pos[1] = math.min(pos[1], max)
+          pos[2] = math.min(pos[2], #(vim.lsp.util.get_line(bufnr, pos[1] - 1) or ''))
+          vim.api.nvim_buf_set_mark(bufnr or 0, mark, pos[1], pos[2], {})
+        end
+      end
+
+      callback()
     end,
     stdout_buffered = true,
     stderr_buffered = true,
@@ -121,13 +153,22 @@ function M.prettier_format(prettier_path)
   vim.fn.chanclose(job, 'stdin')
 end
 
-function M.format_all()
-  M.lsp_format()
+M.format = function()
+  spinner.start('Formatting')
 
-  -- Only run prettier_format if prettier is available
-  local bin_path = vim.fn.finddir('node_modules/.bin', vim.fn.getcwd() .. ';')
-  local prettier_path = bin_path .. '/prettier'
-  if bin_path ~= '' and vim.fn.filereadable(prettier_path) == 1 then M.prettier_format(prettier_path) end
+  lsp_format(function(lsp_error)
+    if lsp_error then
+      spinner.stop(lsp_error)
+    else
+      prettier_format(function(prettier_error)
+        if prettier_error then
+          spinner.stop(prettier_error)
+        else
+          spinner.stop('Formated')
+        end
+      end)
+    end
+  end)
 end
 
 return M

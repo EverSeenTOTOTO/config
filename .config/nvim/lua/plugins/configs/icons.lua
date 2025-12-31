@@ -2,7 +2,7 @@ local present, devicons = pcall(require, 'nvim-web-devicons')
 
 if not present then return end
 
-local colors = require('core.colors')
+local colors = require('core.utils.colors')
 
 local options = {
   override = {

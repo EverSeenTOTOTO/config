@@ -1,3 +1,4 @@
+local utils = require('core.utils')
 -- Helper function for mapping keys
 local map = function(mode, keys, command, opt)
   local options = { silent = true }
@@ -13,7 +14,6 @@ local map = function(mode, keys, command, opt)
 
   vim.keymap.set(mode, keys, command, options)
 end
-local utils = require('core.utils')
 
 -- MAPPINGS
 
@@ -47,7 +47,7 @@ map({ 'v', 'n' }, 'H', 'g^')
 map({ 'v', 'n' }, 'L', 'g$')
 
 -- redo
-map('n', 'U', '<C-r>')
+map('n', 'U', '<C-r>', { noremap = true })
 
 -- Alt + jk move lines
 if vim.fn.has('mac') ~= 0 then
@@ -91,6 +91,9 @@ map('t', 'vv', '<C-\\><C-n>')
 -- cycle cnext and cprevious
 map('n', ']q', function()
   local qflist = vim.fn.getqflist({ items = 1 }).items or {}
+
+  if #qflist == 0 then return end
+
   local idx = vim.fn.getqflist({ idx = 0 }).idx or 1
 
   if idx == #qflist then
@@ -102,6 +105,9 @@ map('n', ']q', function()
 end)
 map('n', '[q', function()
   local qflist = vim.fn.getqflist({ items = 1 }).items or {}
+
+  if #qflist == 0 then return end
+
   local idx = vim.fn.getqflist({ idx = 0 }).idx or #qflist
 
   if idx == 1 then
@@ -111,13 +117,37 @@ map('n', '[q', function()
     vim.cmd('cprevious')
   end
 end)
+map('n', ']l', function()
+  local loclist = vim.fn.getloclist(0, { items = 1 }).items or {}
+
+  if #loclist == 0 then return end
+
+  local idx = vim.fn.getloclist(0, { idx = 0 }).idx or 1
+
+  if idx == #loclist then
+    vim.fn.setloclist(0, {}, 'r', { idx = 1 }) -- reset idx to 1 if at the end
+    vim.cmd('ll')
+  else
+    vim.cmd('lnext')
+  end
+end)
+map('n', '[l', function()
+  local loclist = vim.fn.getloclist(0, { items = 1 }).items or {}
+
+  if #loclist == 0 then return end
+
+  local idx = vim.fn.getloclist(0, { idx = 0 }).idx or #loclist
+
+  if idx == 1 then
+    vim.fn.setloclist(0, {}, 'r', { idx = #loclist })
+    vim.cmd('ll')
+  else
+    vim.cmd('lprevious')
+  end
+end)
 
 -- plugin mappings
-
--- Import formatting utilities
-local format = require('core.format')
-
-map('n', '<leader>f', function() format.format_all() end)
+map('n', '<leader>f', require('core.utils.format').format)
 
 map('n', '<leader>h', function()
   vim.lsp.buf.hover()
@@ -222,7 +252,7 @@ map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
 map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
 map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
 map('n', '<leader>q', utils.close_buffer)
-map('n', '<C-x>', '<cmd> :BufferCloseOthers<CR>')
+map('n', '<C-x>', '<cmd> :BufferLineCloseOthers<CR>')
 
 -- 窗口
 map('', '<up>', function() require('smart-splits').resize_up() end)
@@ -300,10 +330,8 @@ end)
 map('', '<C-t>', function()
   local api = require('nvim-tree.api')
 
-  local is_regular = not vim.tbl_contains(utils.exclude_filetypes, vim.bo.filetype) and vim.bo.buftype == ''
-
   if not api.tree.is_visible() then
-    if is_regular then
+    if not utils.is_special_filetype() and vim.bo.buftype == '' then
       api.tree.find_file({ open = true, focus = false })
     else
       api.tree.toggle()

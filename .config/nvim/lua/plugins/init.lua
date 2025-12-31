@@ -99,7 +99,7 @@ require('lazy').setup({
 
   -- highlight colors
   {
-    'norcalli/nvim-colorizer.lua',
+    'catgoose/nvim-colorizer.lua',
     event = 'BufRead',
     config = function() require('plugins.configs.colorizer') end,
   },
@@ -136,8 +136,6 @@ require('lazy').setup({
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
-      'hrsh7th/cmp-vsnip',
-      'hrsh7th/vim-vsnip',
       'kdheepak/cmp-latex-symbols',
       'zbirenbaum/copilot-cmp',
     },
