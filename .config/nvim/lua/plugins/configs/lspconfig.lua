@@ -1,10 +1,19 @@
--- see :h lsp-defaults
 vim.keymap.del('n', 'grn')
-vim.keymap.del('n', 'gra')
+vim.keymap.del('n', 'grt')
+vim.keymap.del({ 'n', 'x' }, 'gra')
 vim.keymap.del('n', 'grr')
 vim.keymap.del('n', 'gri')
 vim.keymap.del('n', 'gO')
-vim.keymap.del('i', '<C-S>')
+vim.keymap.del('i', '<C-s>')
+
+-- see :h lsp-defaults
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    vim.bo[args.buf].formatexpr = nil
+    vim.bo[args.buf].omnifunc = nil
+    pcall(function() vim.keymap.del('n', 'K', { buffer = args.buf }) end)
+  end,
+})
 
 vim.diagnostic.config({
   virtual_text = {

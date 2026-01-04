@@ -19,11 +19,10 @@ local source_mapping = {
   buffer = '[Buffer]',
   nvim_lsp = '[LSP]',
   path = '[Path]',
-  vsnip = '[Snippet]',
+  snippet = '[Snippet]',
 }
 
 local comparators = {
-
   -- Below is the default comparitor list and order for nvim-cmp
   cmp.config.compare.offset,
   -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
@@ -50,15 +49,16 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-
 local options = {
+  enabled = function()
+    local disabled = false
+    disabled = disabled or (vim.fn.reg_recording() ~= '')
+    disabled = disabled or (vim.fn.reg_executing() ~= '')
+    disabled = disabled or require('cmp.config.context').in_treesitter_capture('comment')
+    return not disabled
+  end,
   snippet = {
-    expand = function(args)
-      vim.fn['vsnip#anonymous'](args.body) -- For `vsnip` users.
-    end,
+    expand = function(args) vim.snippet.expand(args.body) end,
   },
   -- preselect = cmp.PreselectMode.None,
   performance = {
@@ -133,8 +133,6 @@ local options = {
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif vim.fn['vsnip#available'](1) == 1 then
-        feedkey('<Plug>(vsnip-expand-or-jump)', '')
       elseif has_words_before() then
         cmp.complete()
       else
@@ -142,22 +140,15 @@ local options = {
       end
     end, { 'i', 's' }),
     ['<S-Tab>'] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-        feedkey('<Plug>(vsnip-jump-prev)', '')
-      end
+      if cmp.visible() then cmp.select_prev_item() end
     end, { 'i', 's' }),
   },
   sources = {
-    { name = 'copilot', group_index = 1 },
+    { name = 'copilot' },
     {
       name = 'nvim_lsp',
       keyword_length = 2,
-      group_index = 1,
       --- see https://github.com/vuejs/language-tools/discussions/4495
-      ---@param entry cmp.Entry
-      ---@param ctx cmp.Context
       entry_filter = function(entry, ctx)
         -- Check if the buffer type is 'vue'
         if ctx.filetype ~= 'vue' then return true end
@@ -174,11 +165,10 @@ local options = {
         end
       end,
     },
-    { name = 'vsnip' },
     {
       name = 'buffer',
       keyword_length = 3,
-      group_index = 2,
+      max_item_count = 2,
     },
     {
       name = 'path',

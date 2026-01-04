@@ -4,27 +4,6 @@ if not present then return end
 
 local api = require('nvim-tree.api')
 
-local function telescope_live_grep()
-  local ok, _ = pcall(require, 'telescope')
-
-  if not ok then return end
-
-  local node = api.tree.get_node_under_cursor()
-  local is_folder = node.fs_stat and node.fs_stat.type == 'directory' or false
-
-  if not is_folder then return end
-
-  local basedir = node.absolute_path
-
-  if node.name == '..' then basedir = require('nvim-tree.core').get_cwd() end
-
-  return require('telescope.builtin').live_grep({
-    cwd = basedir,
-    search_dirs = { basedir },
-    prompt_title = 'Live Grep in ' .. node.name,
-  })
-end
-
 file_explorer.setup({
   filters = {
     custom = {
@@ -68,7 +47,49 @@ file_explorer.setup({
     end, {
       buffer = bufnr,
     })
-    vim.keymap.set('n', 'ss', telescope_live_grep, {
+    vim.keymap.set('n', 'ss', function()
+      local node = api.tree.get_node_under_cursor()
+
+      return require('grug-far').open({ prefills = { flags = '-.', paths = node.absolute_path } })
+    end, {
+      buffer = bufnr,
+      desc = 'Advanced search',
+    })
+    vim.keymap.set('n', '<C-s>', function()
+      local node = api.tree.get_node_under_cursor()
+      local is_folder = node.fs_stat and node.fs_stat.type == 'directory' or false
+
+      if not is_folder then
+        vim.notify('Not a folder')
+        return
+      end
+
+      local relpath = vim.fs.relpath(vim.fn.getcwd(), node.absolute_path)
+
+      return require('telescope.builtin').live_grep({
+        cwd = node.absolute_path,
+        search_dirs = { node.absolute_path },
+        prompt_title = 'Live Grep in ' .. relpath,
+      })
+    end, {
+      buffer = bufnr,
+    })
+    vim.keymap.set('n', '//', function()
+      local node = api.tree.get_node_under_cursor()
+      local is_folder = node.fs_stat and node.fs_stat.type == 'directory' or false
+
+      if is_folder then
+        vim.notify('Not a file')
+        return
+      end
+
+      local relpath = vim.fs.relpath(vim.fn.getcwd(), node.absolute_path)
+
+      return require('telescope.builtin').live_grep({
+        search_dirs = { node.absolute_path },
+        prompt_title = 'Current Buffer Fuzzy in ' .. relpath,
+      })
+    end, {
       buffer = bufnr,
     })
   end,
