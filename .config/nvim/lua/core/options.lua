@@ -198,11 +198,9 @@ local function setup_clipboard()
 
   local has_external_clipboard = has_mac or has_wsl or has_x11 or has_wayland
 
+  vim.opt.clipboard = 'unnamedplus'
   -- 如果没有外部工具，使用 nvim 默认剪贴板
-  if not has_external_clipboard then
-    vim.opt.clipboard = 'unnamedplus'
-    return
-  end
+  if not has_external_clipboard then return end
 
   vim.g.clipboard = {
     name = 'custom',
@@ -251,8 +249,6 @@ local function setup_clipboard()
     },
     cache_enabled = 0,
   }
-
-  vim.opt.clipboard = 'unnamedplus'
 end
 
 setup_clipboard()
