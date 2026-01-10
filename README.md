@@ -33,7 +33,7 @@ echo(`----- Starting: ${chalk.cyan('Copy dot files')} -----`);
 const files = fs.readdirSync('.');
 
 for (const file of files) {
-  if (!/^\.git|\.ssh|\.bak|\.json|\.md|\.mjs$/.test(file)) {
+  if (!/^\.git$|\.ssh|\.bak|\.json|\.md|\.mjs$/.test(file)) {
     await $`cp -r ${file} ~/`;
   }
 }
@@ -126,6 +126,7 @@ const installed = extractPackageNames(data.stdout)
 const required = [
   'commitizen',
   'cz-conventional-changelog',
+  'git-split-diffs',
   'pm2',
   'stylelint-lsp',
   'typescript',
