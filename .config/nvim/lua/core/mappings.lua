@@ -218,7 +218,7 @@ map('', '<leader><leader>', function()
   if not node then return end
 
   local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_() -- 0-base
+  local er, ec = node:end_()  -- 0-base
 
   if row == sr then
     vim.api.nvim_win_set_cursor(0, { er + 1, ec })
@@ -282,24 +282,20 @@ local function smart_close_split(direction)
     local is_special_win = win_config.relative ~= '' -- floating window
     local buftype = vim.bo[target_buf].buftype
 
-    -- 特殊窗口直接关闭，不处理 buffer
-    if is_special_win or buftype ~= '' or utils.is_special_filetype(target_buf) then
+    -- 特殊窗口直接关闭
+    if is_special_win or buftype ~= '' or utils.is_special_filetype(target_buf)
+        -- 如果目标分屏的buffer与原来的不同，也直接关闭
+        or target_buf ~= current_buf
+    then
       vim.cmd('wincmd c')
       vim.cmd('wincmd p')
+      utils.close_buffer(target_buf)
       return
     end
 
-    -- 如果目标分屏的buffer与原来的不同，则关闭它
-    if target_buf ~= current_buf then
-      -- 先关闭窗口，再关闭buffer
-      vim.cmd('wincmd c')
-      vim.cmd('wincmd p') -- 返回原窗口
-      utils.close_buffer(target_buf)
-    else
-      -- 只关闭窗口
-      vim.cmd('wincmd c')
-      vim.cmd('wincmd p')
-    end
+    -- 只关闭窗口
+    vim.cmd('wincmd c')
+    vim.cmd('wincmd p')
   end
 end
 
