@@ -159,6 +159,7 @@ require('lazy').setup({
     build = ':TSUpdate',
     event = 'BufReadPre',
     config = function() require('plugins.configs.treesitter') end,
+    branch = 'master',
   },
 
   -- extra text objects

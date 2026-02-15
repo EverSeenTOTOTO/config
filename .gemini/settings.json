@@ -1,0 +1,29 @@
+{
+  "general": {
+    "disableAutoUpdate": true,
+    "preferredEditor": "neovim",
+    "vimMode": false,
+    "enableAutoUpdate": false
+  },
+  "ui": {
+    "hideTips": true,
+    "hideBanner": true,
+    "theme": "Default",
+    "inlineThinkingMode": "full",
+    "footer": {
+      "hideContextPercentage": false
+    }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "openai"
+    },
+    "disableYoloMode": true
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "advanced": {
+    "autoConfigureMemory": true
+  }
+}
