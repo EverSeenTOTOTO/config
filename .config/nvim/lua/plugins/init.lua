@@ -141,19 +141,6 @@ require('lazy').setup({
     },
   },
 
-  -- copilot
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    enabled = not vim.env.HEADLESS,
-    config = function() require('plugins.configs.copilot') end,
-  },
-  {
-    'zbirenbaum/copilot-cmp',
-    enabled = not vim.env.HEADLESS,
-    config = function() require('copilot_cmp').setup() end,
-  },
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
