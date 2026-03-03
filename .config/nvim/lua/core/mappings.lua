@@ -251,6 +251,19 @@ map('n', '<leader>d', '<cmd> :Telescope lsp_definitions <CR>')
 map('n', '<leader>i', '<cmd> :Telescope lsp_implementations <CR>')
 map('n', '<leader>r', '<cmd> :Telescope lsp_references <CR>')
 map('n', '<leader>t', '<cmd> :Telescope lsp_type_definitions <CR>')
+-- Ctrl+G: 显示并复制当前文件路径（相对项目根目录）
+map('n', '<C-g>', function()
+  local path = vim.fn.expand('%:p')
+  if path == '' then
+    vim.notify('No file path', vim.log.levels.WARN)
+    return
+  end
+  local root = utils.get_root()
+  local rel_path = vim.fs.relpath(root, path) or path
+  vim.fn.setreg('+', rel_path)
+  vim.notify('Copied: ' .. rel_path, vim.log.levels.INFO)
+end)
+
 map('n', '<leader>q', utils.close_buffer)
 map('n', '<C-x>', '<cmd> :BufferLineCloseOthers<CR>')
 

@@ -15,7 +15,6 @@ local function border(hl_name)
 end
 
 local source_mapping = {
-  copilot = '[Copilot]',
   buffer = '[Buffer]',
   nvim_lsp = '[LSP]',
   path = '[Path]',
@@ -35,8 +34,6 @@ local comparators = {
   cmp.config.compare.length,
   cmp.config.compare.order,
 }
-
-if not vim.env.HEADLESS then table.insert(comparators, 1, require('copilot_cmp.comparators').prioritize) end
 
 local lspkind = require('lspkind')
 
@@ -90,16 +87,6 @@ local options = {
       vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = 'symbol' })
       vim_item.menu = source_mapping[entry.source.name]
 
-      if entry.source.name == 'copilot' then
-        local detail = (entry.completion_item.data or {}).detail
-
-        vim_item.kind = ''
-
-        if detail and detail:find('.*%%.*') then vim_item.kind = vim_item.kind .. ' ' .. detail end
-
-        if (entry.completion_item.data or {}).multiline then vim_item.kind = vim_item.kind .. ' ' .. '[ML]' end
-      end
-
       if entry.source.name == 'path' then
         local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
 
@@ -145,7 +132,6 @@ local options = {
     end, { 'i', 's' }),
   },
   sources = {
-    { name = 'copilot' },
     {
       name = 'nvim_lsp',
       keyword_length = 2,

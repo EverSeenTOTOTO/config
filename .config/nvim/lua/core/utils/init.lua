@@ -1,5 +1,15 @@
 local M = {}
 
+M.root_markers = { '.git', 'package.json', 'Cargo.toml', 'go.mod', 'pyproject.toml', 'Makefile' }
+
+--- Get project root directory
+--- @param buf number? buffer number, defaults to current buffer
+--- @return string root directory path
+function M.get_root(buf)
+  buf = buf or 0
+  return vim.fs.root(buf, M.root_markers) or vim.fn.getcwd()
+end
+
 M.exclude_filetypes = {
   'PlenaryTestPopup',
   'checkhealth',

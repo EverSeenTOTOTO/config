@@ -137,7 +137,6 @@ require('lazy').setup({
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
       'kdheepak/cmp-latex-symbols',
-      'zbirenbaum/copilot-cmp',
     },
   },
 
