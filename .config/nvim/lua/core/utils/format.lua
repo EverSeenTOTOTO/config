@@ -12,6 +12,99 @@ for i, formatter in ipairs(formatters_priority) do
   priority_map[formatter] = i
 end
 
+-- Save view state: cursor, folds, marks
+local function save_state(bufnr)
+  -- Save local marks
+  local marks = {}
+  for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+    if m.mark:match("^'[a-z]$") then
+      marks[m.mark:sub(2, 2)] = { m.pos[2], m.pos[3] - 1 } -- api-indexed
+    end
+  end
+
+  -- Save fold state: for each fold, store [start, end] pairs
+  local folds = {}
+  local foldmethod = vim.wo.foldmethod
+  if foldmethod == 'manual' or foldmethod == 'marker' then
+    local line_count = vim.api.nvim_buf_line_count(bufnr)
+    local i = 1
+    while i <= line_count do
+      local fold_start = vim.fn.foldclosed(i)
+      if fold_start ~= -1 then
+        -- Line is inside a closed fold, find the end
+        local fold_end = vim.fn.foldclosedend(i)
+        table.insert(folds, { fold_start, fold_end })
+        i = fold_end + 1
+      else
+        i = i + 1
+      end
+    end
+  end
+
+  -- Use winsaveview for comprehensive view state
+  local view = vim.fn.winsaveview()
+
+  return {
+    marks = marks,
+    folds = folds,
+    view = view,
+    foldmethod = foldmethod,
+  }
+end
+
+-- Restore view state after formatting
+local function restore_state(bufnr, state, old_line_count)
+  local new_line_count = vim.api.nvim_buf_line_count(bufnr)
+
+  -- Restore marks with line adjustment
+  local marks_still_exist = {}
+  for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+    marks_still_exist[m.mark:sub(2, 2)] = true
+  end
+
+  for mark, pos in pairs(state.marks) do
+    if not marks_still_exist[mark] and pos then
+      -- Scale line number proportionally if total lines changed
+      local new_line = pos[1]
+      if old_line_count > 0 and new_line_count ~= old_line_count then
+        new_line = math.floor(pos[1] * new_line_count / old_line_count)
+      end
+      new_line = math.max(1, math.min(new_line, new_line_count))
+      local line_text = vim.api.nvim_buf_get_lines(bufnr, new_line - 1, new_line, false)[1] or ''
+      local new_col = math.min(pos[2], #line_text)
+      vim.api.nvim_buf_set_mark(bufnr, mark, new_line, new_col, {})
+    end
+  end
+
+  -- Adjust view cursor position proportionally
+  local view = state.view
+  if old_line_count > 0 and new_line_count ~= old_line_count then
+    view.lnum = math.max(1, math.min(math.floor(view.lnum * new_line_count / old_line_count), new_line_count))
+    view.topline = math.max(1, math.min(math.floor(view.topline * new_line_count / old_line_count), new_line_count))
+  end
+
+  -- Restore view (cursor, topline, etc.) without adding to jumplist
+  -- winrestview doesn't add to jumplist, so it's safe to use
+  vim.fn.winrestview(view)
+
+  -- Restore folds for manual/marker foldmethod
+  if (state.foldmethod == 'manual' or state.foldmethod == 'marker') and #state.folds > 0 then
+    -- Clear existing folds first
+    vim.cmd('normal! zE')
+    -- Recreate folds with proportional line adjustment
+    for _, fold in ipairs(state.folds) do
+      local new_start = fold[1]
+      local new_end = fold[2]
+      if old_line_count > 0 and new_line_count ~= old_line_count then
+        new_start = math.max(1, math.floor(fold[1] * new_line_count / old_line_count))
+        new_end = math.min(new_line_count, math.floor(fold[2] * new_line_count / old_line_count))
+      end
+      if new_start < new_end then vim.cmd(string.format('%d,%dfold', new_start, new_end)) end
+    end
+  end
+  -- For indent/expr/syntax foldmethod, folds are recalculated automatically
+end
+
 local lsp_format = function(callback)
   local buf = vim.api.nvim_get_current_buf()
   local active_clients = vim.lsp.get_clients({ bufnr = buf })
@@ -21,35 +114,45 @@ local lsp_format = function(callback)
     return
   end
 
+  -- Find the single best formatter
+  local best_client = nil
+  local best_priority = #formatters_priority + 1
+
+  for _, client in ipairs(active_clients) do
+    local p = priority_map[client.name] or (#formatters_priority + 1)
+    if p < best_priority then
+      best_priority = p
+      best_client = client
+    end
+  end
+
+  if not best_client then
+    callback('No suitable formatter found')
+    return
+  end
+
+  -- Save state before formatting
+  local old_line_count = vim.api.nvim_buf_line_count(buf)
+  local state = save_state(buf)
+
   vim.lsp.buf.format({
     async = false,
     bufnr = buf,
-    filter = function(client)
-      -- If client is not in priority list, give it lowest priority
-      local client_priority = priority_map[client.name] or (#formatters_priority + 1)
-
-      -- Find the highest priority formatter that's actually available
-      local best_priority = #formatters_priority + 1
-      for _, c in ipairs(active_clients) do
-        local p = priority_map[c.name] or (#formatters_priority + 1)
-        if p < best_priority then best_priority = p end
-      end
-
-      -- Only use this client if it has the best available priority
-      return client_priority <= best_priority
-    end,
-    5000,
+    filter = function(client) return client.name == best_client.name end,
+    timeout_ms = 5000,
   })
 
-  for _, client in ipairs(active_clients) do
-    if client.name == 'vtsls' then
-      client:request('workspace/executeCommand', {
-        command = 'typescript.organizeImports',
-        arguments = { vim.api.nvim_buf_get_name(0) },
-        title = '',
-      }, callback)
-      return
-    end
+  -- Restore state after formatting
+  restore_state(buf, state, old_line_count)
+
+  -- Only run organizeImports if vtsls is the chosen formatter (not eslint/biome)
+  if best_client.name == 'vtsls' then
+    best_client:request('workspace/executeCommand', {
+      command = 'typescript.organizeImports',
+      arguments = { vim.api.nvim_buf_get_name(0) },
+      title = '',
+    }, callback)
+    return
   end
 
   callback()
@@ -69,6 +172,8 @@ local prettier_format = function(callback)
   local current_file_path = vim.fn.expand('%:p')
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local old_line_count = #lines
+  local state = save_state(bufnr)
 
   local stderr_data = {}
   local stdout_data = {}
@@ -116,31 +221,11 @@ local prettier_format = function(callback)
         return
       end
 
-      -- save and restore local marks since they get deleted by nvim_buf_set_lines, see: vim.lsp.util.apply_text_edits
-      local marks = {}
-      for _, m in pairs(vim.fn.getmarklist(bufnr)) do
-        if m.mark:match("^'[a-z]$") then
-          marks[m.mark:sub(2, 2)] = { m.pos[2], m.pos[3] - 1 } -- api-indexed
-        end
-      end
-
       -- Apply formatted content
       vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stdout_data)
 
-      -- no need to restore marks that still exist
-      local max = vim.api.nvim_buf_line_count(bufnr)
-      for _, m in pairs(vim.fn.getmarklist(bufnr)) do
-        marks[m.mark:sub(2, 2)] = nil
-      end
-      -- restore marks
-      for mark, pos in pairs(marks) do
-        if pos then
-          -- make sure we don't go out of bounds
-          pos[1] = math.min(pos[1], max)
-          pos[2] = math.min(pos[2], #(vim.lsp.util.get_line(bufnr, pos[1] - 1) or ''))
-          vim.api.nvim_buf_set_mark(bufnr or 0, mark, pos[1], pos[2], {})
-        end
-      end
+      -- Restore state after formatting
+      restore_state(bufnr, state, old_line_count)
 
       callback()
     end,

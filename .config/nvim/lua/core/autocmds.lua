@@ -104,25 +104,29 @@ autocmd('BufReadPost', {
   end,
 })
 
-autocmd({ 'BufRead', 'BufNewFile' }, {
+-- nvim-tree: sync tree with current buffer
+vim.api.nvim_create_augroup('nvimtree', { clear = true })
+
+autocmd({ 'BufRead', 'BufEnter' }, {
+  group = 'nvimtree',
   callback = function()
     local path = vim.fn.expand('%:p')
     if vim.o.buftype == '' and path ~= '' then
-      local api = require('nvim-tree.api')
-
-      api.tree.find_file({ open = false, focus = false })
+      local ok, api = pcall(require, 'nvim-tree.api')
+      if ok then api.tree.find_file({ open = false, focus = false }) end
     end
   end,
 })
 
+-- nvim-tree: close when it's the only window left
 autocmd('BufEnter', {
+  group = 'nvimtree',
   callback = function()
-    local path = vim.fn.expand('%:p')
-    if vim.o.buftype == '' and path ~= '' then
-      local api = require('nvim-tree.api')
-
-      api.tree.find_file({ open = false, focus = false })
-    end
+    local ok, api = pcall(require, 'nvim-tree.api')
+    if not ok then return end
+    local wins = vim.api.nvim_list_wins()
+    local valid_wins = vim.tbl_filter(function(w) return vim.api.nvim_win_get_config(w).relative == '' end, wins)
+    if #valid_wins == 1 and api.tree.is_visible() then api.tree.close() end
   end,
 })
 

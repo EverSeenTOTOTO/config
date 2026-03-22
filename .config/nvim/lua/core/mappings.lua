@@ -325,7 +325,7 @@ map('', '<C-c>', function()
   local api = require('nvim-tree.api')
   local node = api.tree.get_node_under_cursor()
 
-  if node ~= nil then
+  if vim.bo.filetype == 'NvimTree' and node ~= nil then
     if node.type == 'directory' then
       vim.api.nvim_set_current_dir(node.absolute_path)
       api.tree.change_root_to_node(node)

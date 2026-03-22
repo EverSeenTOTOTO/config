@@ -95,16 +95,20 @@ file_explorer.setup({
   end,
 })
 
--- restore window size when openning nvim-tree
+-- nvim-tree: restore width on reopen
 vim.api.nvim_create_autocmd('WinResized', {
-  pattern = '*',
+  group = 'nvimtree',
   callback = function()
+    local ok, api = pcall(require, 'nvim-tree.api')
+    if not ok then return end
     local winid = api.tree.winid()
     if winid ~= nil and vim.tbl_contains(vim.v.event['windows'], winid) then
       vim.t['filetree_width'] = vim.api.nvim_win_get_width(winid)
     end
   end,
 })
+
+-- restore window size when opening nvim-tree
 api.events.subscribe(api.events.Event.TreeOpen, function()
   if vim.t['filetree_width'] ~= nil then
     local winid = api.tree.winid()
