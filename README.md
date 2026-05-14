@@ -66,6 +66,34 @@ await $`rm -f README.md.mjs README.md-*.mjs`;
 log.done('Copy dot files');
 ```
 
+## Agent: Claude Code Skills
+
+```javascript
+if (await confirm('Claude Code Skills')) {
+  log.start('Claude Code Skills');
+
+  const skillsSrc = resolveHome('.agents/skills');
+  const skillsDst = resolveHome('.claude/skills');
+
+  ensureDir(skillsDst);
+
+  for (const skill of fs.readdirSync(skillsSrc)) {
+    const src = path.join(skillsSrc, skill);
+    const dst = path.join(skillsDst, skill);
+    if (fs.existsSync(dst)) {
+      log.skip(`${skill} already linked`);
+    } else {
+      await $`ln -s ${src} ${dst}`;
+      log.ok(`${skill} → ${dst}`);
+    }
+  }
+
+  log.done('Claude Code Skills');
+} else {
+  log.skip('Claude Code Skills');
+}
+```
+
 ## Shell: Oh My Zsh
 
 ```javascript
