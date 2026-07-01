@@ -140,8 +140,8 @@ vim.opt.foldlevelstart = 99 -- Start with all folds open
 vim.o.foldcolumn = '1' -- '0' is not bad
 vim.o.foldlevel = 99 -- feel free to decrease the value
 vim.o.foldenable = true
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldmethod = 'indent'
+-- vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- disable some builtin vim plugins
 

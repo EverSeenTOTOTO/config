@@ -170,63 +170,7 @@ map('n', '<leader>]', function()
   })
 end)
 
--- treesitter
-local ts_utils = require('nvim-treesitter.ts_utils')
-
-local node_with_range = {
-  block = true,
-  class_definition = true,
-  function_definition = true,
-  arrow_function = true,
-  if_statement = true,
-  switch_statement = true,
-  for_statement = true,
-  while_statement = true,
-  element = true,
-  jsx_element = true,
-  jsx_self_closing_element = true,
-  script_element = true,
-  string = true,
-  template_string = true,
-}
-
-map('', '<leader><leader>', function()
-  local _row, col = unpack(vim.api.nvim_win_get_cursor(0)) -- row(1-base), col(0-base)
-  local row = _row - 1
-  local line = vim.api.nvim_get_current_line()
-  local char = line:sub(col + 1, col + 1) -- 光标下字符
-  local defaults = {
-    ['('] = true,
-    [')'] = true,
-    ['['] = true,
-    [']'] = true,
-    ['{'] = true,
-    ['}'] = true,
-  }
-
-  if defaults[char] then
-    vim.cmd('normal! %')
-    return
-  end
-
-  local node = ts_utils.get_node_at_cursor()
-
-  while node and not node_with_range[node:type()] do
-    node = node:parent()
-  end
-
-  if not node then return end
-
-  local sr, sc = node:start() -- 0-base
-  local er, ec = node:end_() -- 0-base
-
-  if row == sr then
-    vim.api.nvim_win_set_cursor(0, { er + 1, ec })
-  else
-    vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
-  end
-  if sr == er then vim.api.nvim_win_set_cursor(0, { er + 1, col == sc and ec or sc }) end
-end)
+map('', '<leader><leader>', '%')
 
 -- redirect command line output
 map('c', '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end)

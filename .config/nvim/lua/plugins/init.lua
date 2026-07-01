@@ -140,22 +140,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    event = 'BufReadPre',
-    config = function() require('plugins.configs.treesitter') end,
-    branch = 'master',
-  },
-
-  -- extra text objects
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-    },
-  },
-
   -- enhance textobjects
   'tpope/vim-surround',
 

@@ -66,10 +66,10 @@ await $`rm -f README.md.mjs README.md-*.mjs`;
 log.done('Copy dot files');
 ```
 
-## Agent: Claude Code Skills
+## Agent: Skills
 
 ```javascript
-if (await confirm('Claude Code Skills')) {
+if (await confirm('Link Claude Code Skills')) {
   log.start('Claude Code Skills');
 
   const skillsSrc = resolveHome('.agents/skills');
@@ -187,31 +187,6 @@ if (await confirm('Bun globals')) {
   log.done('Bun globals');
 } else {
   log.skip('Bun globals');
-}
-```
-
-## Agent: Skills
-
-```javascript
-if (await confirm('Agent skills')) {
-  log.start('Agent skills');
-
-  const skillsDir = resolveHome('.agents/skills');
-  const isEmpty = !fs.existsSync(skillsDir) || fs.readdirSync(skillsDir).length === 0;
-
-  if (isEmpty) {
-    const skills = ['lobehub/lobehub', 'obra/superpowers', 'anthropics/skills'];
-    for (const skill of skills) {
-      echo(`Adding ${chalk.yellow(skill)}...`);
-      await $`npx skills add ${skill}`;
-    }
-  } else {
-    log.skip('.agents/skills already populated');
-  }
-
-  log.done('Agent skills');
-} else {
-  log.skip('Agent skills');
 }
 ```
 
