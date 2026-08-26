@@ -226,7 +226,7 @@ local function setup_clipboard()
         ['+'] = function()
           local text = ''
           if has_mac then
-            text = vim.fn.system('reattach-to-user-namespace pbpaste')
+            text = vim.fn.system('pbpaste')
           elseif has_wayland then
             text = vim.fn.system('wl-paste --no-newline')
           elseif has_x11 then

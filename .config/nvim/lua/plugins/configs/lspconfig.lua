@@ -145,8 +145,8 @@ setup('pyright')
 setup('stylelint_lsp', {
   filetypes = { 'css', 'less', 'scss', 'sugarss', 'vue', 'wxss' },
   settings = {
-    stylelintplus = {
-      autoFixOnFormat = true,
+    stylelint = {
+      validate = { 'css', 'less', 'postcss', 'scss', 'sugarss', 'vue', 'wxss' },
     },
   },
 })
@@ -212,14 +212,17 @@ setup('vtsls', {
 })
 
 -- vue
+-- TypeScript 7.x removed tsserverlibrary.js, which @vue/language-server depends on.
+-- @vue/language-server reads TypeScript via --tsdk CLI flag (NOT init_options).
+-- Falls back to require('typescript') which resolves to incompatible global TS7.
+local vue_tsdk = bun_root .. '/vue-ts5/node_modules/typescript/lib'
+
 setup('vue_ls', {
-  init_options = {
-    typescript = {
-      tsdk = bun_root .. '/typescript/lib',
-    },
-  },
+  cmd = { 'vue-language-server', '--stdio', '--tsdk=' .. vue_tsdk },
   before_init = function(_, config)
     local lib_path = vim.fs.find('node_modules/typescript/lib', { path = config.root_dir, upward = true })[1]
-    if lib_path then config.init_options.typescript.tsdk = lib_path end
+    if lib_path and vim.uv.fs_stat(lib_path .. '/tsserverlibrary.js') then
+      config.cmd = { 'vue-language-server', '--stdio', '--tsdk=' .. lib_path }
+    end
   end,
 })

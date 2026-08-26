@@ -184,6 +184,19 @@ if (await confirm('Bun globals')) {
 
   await $`echo '{ "path": "cz-conventional-changelog" }' > ${resolveHome('.czrc')}`;
 
+  // TypeScript 7.x removed tsserverlibrary.js, which @vue/language-server depends on.
+  // Install a separate TypeScript 5.x for vue_ls via npm (bun incorrectly resolves to 7.x).
+  const vueTs5Dir = path.join(process.env.BUN_INSTALL || resolveHome('.bun'), 'install', 'global', 'vue-ts5');
+  if (!fs.existsSync(path.join(vueTs5Dir, 'node_modules', 'typescript', 'lib', 'tsserverlibrary.js'))) {
+    ensureDir(vueTs5Dir);
+    cd(vueTs5Dir);
+    await $`npm init -y`;
+    await $`npm install typescript@5`;
+    log.ok('vue-ts5 (TypeScript 5.x for vue_ls)');
+  } else {
+    log.skip('vue-ts5 already installed');
+  }
+
   log.done('Bun globals');
 } else {
   log.skip('Bun globals');
@@ -330,3 +343,4 @@ if (await confirm('WebAssembly toolchains')) {
   log.skip('WebAssembly toolchains');
 }
 ```
+
