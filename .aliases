@@ -13,7 +13,6 @@ alias grep='rg -p'
 alias less='less --quit-at-eof --no-init --tabs=4 --RAW-CONTROL-CHARS'
 alias ssh='ssh -q'
 alias cat='bat -p'
-alias zx='zx --experimental'
 
 alias ..='cd ..'
 alias ...='cd ../..'

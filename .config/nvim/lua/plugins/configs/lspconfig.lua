@@ -155,10 +155,10 @@ setup('stylelint_lsp', {
 setup('tombi')
 
 -- tsserver
-local bun_root = vim.fn.system('echo $BUN_INSTALL', nil):gsub('^%s*(.-)%s*$', '%1') .. '/install/global'
+local npm_root = vim.fn.system('npm root -g', nil):gsub('^%s*(.-)%s*$', '%1')
 
-if not bun_root or bun_root == '' then
-  vim.notify('No bun root found', vim.log.levels.ERROR, {
+if not npm_root or npm_root == '' then
+  vim.notify('No npm global root found', vim.log.levels.ERROR, {
     title = 'LSP Config',
   })
   return
@@ -176,7 +176,7 @@ local tsserver_filetypes = {
 }
 local vue_plugin = {
   name = '@vue/typescript-plugin',
-  location = bun_root .. '/@vue/language-server',
+  location = npm_root .. '/@vue/language-server',
   languages = { 'vue' },
   configNamespace = 'typescript',
   enableForWorkspaceTypeScriptVersions = true,
@@ -215,7 +215,7 @@ setup('vtsls', {
 -- TypeScript 7.x removed tsserverlibrary.js, which @vue/language-server depends on.
 -- @vue/language-server reads TypeScript via --tsdk CLI flag (NOT init_options).
 -- Falls back to require('typescript') which resolves to incompatible global TS7.
-local vue_tsdk = bun_root .. '/vue-ts5/node_modules/typescript/lib'
+local vue_tsdk = vim.fn.expand('~/.vue-ls/vue-ts5/node_modules/typescript/lib')
 
 setup('vue_ls', {
   cmd = { 'vue-language-server', '--stdio', '--tsdk=' .. vue_tsdk },

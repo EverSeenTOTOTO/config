@@ -8,9 +8,6 @@ export ZSH="$HOME/.oh-my-zsh";
 # nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-
 # riscv-gnu-toolchain
 export RISCV=/opt/riscv
 
@@ -21,7 +18,7 @@ export WASI_SDK_PATH=/opt/wasi-sdk
 # cargo
 export CARGO_HOME="$HOME/.cargo"
 
-export PATH="$BUN_INSTALL/bin:$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$WASI_SDK_PATH/bin:$CARGO_HOME/bin:$PATH"
+export PATH="$PYENV_ROOT/bin:$RISCV/bin:$WASMTIME_HOME/bin:$WASI_SDK_PATH/bin:$CARGO_HOME/bin:$PATH"
 
 # puppeteer
 export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox;
