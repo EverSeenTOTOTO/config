@@ -25,11 +25,14 @@ Bootstrap is manual by necessity — the skill that automates setup has to be pl
 
 ## Skills
 
-Three top-level skills live in [`.agents/skills/`](.agents/skills/), deployed by symlinking into `~/.claude/skills/`. One-liners here — details live in each `SKILL.md`:
+Two top-level skills live in [`.agents/skills/`](.agents/skills/), deployed by symlinking into `~/.claude/skills/`. One-liners here — details live in each `SKILL.md`:
 
 - **`/land`** — machine bootstrap; `/land <domain>` runs a single domain
 - **`/deploy`** — ship a project to the server: push 1dev, pull+build on the server, reload pm2
-- **`/boot`** — boot script
+
+## Scripts
+
+- **`boot.sh`** — boot-time services: pm2 apps (clash) + pdf rsync to `$TSS`, logged to `~/.cache/boot.log`. Idempotent (re-running skips what's already up) and self-contained (bootstraps `$TSS`/nvm-`pm2`, so it works from session autostart with no login shell). `/land` links it to `~/.local/bin/boot`.
 
 ## Layout
 
@@ -37,11 +40,11 @@ Three top-level skills live in [`.agents/skills/`](.agents/skills/), deployed by
 .
 ├── .agents/skills/              # agent skills, tool-agnostic by design
 │   ├── land/                    #   /land — machine bootstrap, one dir per domain
-│   ├── deploy/                  #   /deploy — push 1dev, build on server, reload pm2
-│   └── boot/                    #   /boot — boot script
+│   └── deploy/                  #   /deploy — push 1dev, build on server, reload pm2
 ├── .config/
 │   ├── nvim/                    # full nvim distro (core/plugins/config)
 │   └── pip/
+├── boot.sh                      # boot-time services (clash + pdf rsync) → ~/.local/bin/boot
 ├── .zshrc / .profile / .exports / .aliases    # shell
 ├── .vimrc / .tmux.conf / .inputrc             # terminal & editor
 ├── .gitconfig / .gitignore                    # git — repo .gitignore doubles as the global excludes file
@@ -54,5 +57,5 @@ Three top-level skills live in [`.agents/skills/`](.agents/skills/), deployed by
 Notes:
 
 - `~/.profile` also sources `~/.exports.local` etc. — machine-specific overrides live there, never in the repo
-- `/land` symlinks every skill from the repo into `~/.claude/skills` — new skills get linked on the next `/land` run
+- `/land` symlinks every skill from the repo into `~/.claude/skills` — new skills get linked on the next `/land` run — and `boot.sh` into `~/.local/bin/boot`
 - `keybindings.json`, `settings.json`, and `.luarc.json` are per-machine and are intentionally not copied by `/land`

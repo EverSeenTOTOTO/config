@@ -18,7 +18,7 @@ Set up a machine from this repo. Every sub-skill checks current state first and 
 1. Locate the repo root (below).
 2. Check prerequisites.
 3. Copy dotfiles into `$HOME`.
-4. Link agent skills.
+4. Link agent skills and `boot.sh`.
 5. Ask which domains to install (multi-select, default all), then run each selected sub-skill from its `<domain>/SKILL.md`.
 6. Report a summary and remind the user to restart the shell (`exec zsh`).
 
@@ -44,13 +44,13 @@ If any is missing, stop, tell the user which ones and the usual install command 
 
 Copy everything from the repo root into `$HOME` **except** the excludes below:
 
-- `.git`, `.ssh`, `.claude`, `.agents` — never copy (`.claude` would clobber the live `~/.claude`; `.agents` is consumed via symlinks in step 4, not copies)
+- `.git`, `.ssh`, `.claude`, `.agents`, `boot.sh` — never copy (`.claude` would clobber the live `~/.claude`; `.agents` and `boot.sh` are consumed via symlinks in step 4, not copies)
 - `*.json`, `*.md`, `*.mjs`, `*.bak` — machine-local or generated
 
 ```bash
 for file in .[!.]* *; do
   case "$file" in
-    .git|.ssh|.claude|.agents|*.json|*.md|*.mjs|*.bak) continue ;;
+    .git|.ssh|.claude|.agents|boot.sh|*.json|*.md|*.mjs|*.bak) continue ;;
   esac
   [ -e "$file" ] && command cp -r "$file" ~/
 done
@@ -61,7 +61,7 @@ Use `command cp` — a plain `cp` may be aliased to `cp -i` in the user's shell,
 
 `keybindings.json`, `settings.json`, and `.luarc.json` are intentionally excluded — they are per-machine, copy them manually only if the user asks.
 
-## 4. Link agent skills
+## 4. Link agent skills and `boot.sh`
 
 Symlink every skill from the repo's `.agents/skills/` **directly** into `~/.claude/skills/` — no intermediate copies, so edits in the repo take effect immediately. This is the self-healing step: skills added to the repo later get linked on the next `/land` run. `land` itself is usually already linked (bootstrap), and the guard skips valid links; broken ones are replaced:
 
@@ -75,6 +75,24 @@ for skill in "$root/.agents/skills"/*; do
   [ -L "$dest" ] && command rm -f "$dest"   # broken link — replace
   ln -s "$skill" "$dest"
 done
+```
+
+Then link the boot script so `boot` works from any cwd (same symlink philosophy — repo edits take effect immediately):
+
+```bash
+mkdir -p ~/.local/bin
+if [ ! -e ~/.local/bin/boot ]; then
+  command rm -f ~/.local/bin/boot       # broken link — replace
+  ln -s "$root/boot.sh" ~/.local/bin/boot
+fi
+```
+
+Ensure `~/.local/bin` is on PATH — per the convention below, via `~/.exports.local`, appended only when actually missing:
+
+```bash
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *)
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.exports.local ;;
+esac
 ```
 
 ## 5. Domains
